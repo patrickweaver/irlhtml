@@ -1,4 +1,4 @@
-const secret = localStorage.getItem('secret')
+const secret = localStorage.getItem("secret");
 
 async function main() {
   try {
@@ -26,8 +26,10 @@ async function main() {
       } catch (error) {
         console.log(error);
       }
-      const deleteButton = secret ? `<button onclick="deleteItem('${id}')">Delete</button>` : '';
-      return `<li>${dateCopy}: <a href="${pageUrl}">${pageTitleCopy}</a> ${deleteButton}</li>`;
+      const deleteButton = secret
+        ? `<span>&nbsp;&nbsp;&nbsp;</span><button onclick="deleteItem('${id}')">Delete</button>`
+        : "";
+      return `<li><time>${dateCopy}</time>: <a href="${pageUrl}">${pageTitleCopy}</a> ${deleteButton}</li>`;
     });
     document.getElementById("pages-list").innerHTML = pagesListItems.join("");
   } catch (error) {
@@ -38,7 +40,7 @@ async function main() {
 }
 
 async function deleteItem(id) {
-  const proceed = confirm(`Do you want to delete: ${id}?`)
+  const proceed = confirm(`Do you want to delete: ${id}?`);
   if (!proceed) return;
   try {
     console.log("Deleting:", id);
@@ -46,14 +48,13 @@ async function deleteItem(id) {
       method: "DELETE",
     });
     const data = await response.json();
-    console.log({ data })
-    if (data.status !== 'deleted') throw new Error(data.error)
+    console.log({ data });
+    if (data.status !== "deleted") throw new Error(data.error);
     alert(`Successfully deleted ${id}`);
   } catch (error) {
     alert(`Error deleting ${id}`);
-    
   }
-  window.location.href = '/'
+  window.location.href = "/";
 }
 
 main();
