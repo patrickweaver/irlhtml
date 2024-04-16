@@ -1,5 +1,10 @@
 /* global Tesseract */
 
+const OCR_TYPES = {
+  GOOGLE_VISION: "GOOGLE_VISION",
+  ANTHROPIC_CLAUDE: "ANTHROPIC_CLAUDE",
+};
+
 const uploadElement = document.getElementById("upload-button");
 const statusElement = document.getElementById("status");
 const statusList = document.getElementById("status-list");
@@ -45,7 +50,7 @@ function processImage(data_uri, file) {
   // formData.append('source_code', text);
   formData.append("image", file);
 
-  fetch("/api/new", {
+  fetch(`/api/new?ocrType=${OCR_TYPES.ANTHROPIC_CLAUDE}`, {
     method: "POST",
     body: formData,
   })

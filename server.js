@@ -24,18 +24,7 @@ app.use(express.json({ limit: "15mb" }));
 app.use(express.static("public"));
 var upload = multer({ dest: __dirname + "/.data/images/" });
 
-app.get("/test", async (req, res) => {
-  try {
-    const msg = await claudeOcr();
-    res.send(msg?.content?.[0]?.text ?? "Invalid Data");
-  } catch (error) {
-    res.json({ error });
-  }
-});
-
 app.post("/api/new", upload.single("image"), async (req, res) => {
-  // console.log({ body: req.body });
-
   const ocrType = OCR_TYPES?.[req.query?.ocrType] ?? DEFAULT_OCR_TYPE;
 
   let imagePath = false;
