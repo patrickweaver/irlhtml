@@ -134,7 +134,6 @@ app.get("/api/pages", async (req, res) => {
 });
 
 app.get("/pages/:id", async (req, res) => {
-  console.log("hi", req.params.id);
   try {
     const row = (
       await db.all(`
