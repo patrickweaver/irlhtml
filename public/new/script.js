@@ -3,6 +3,7 @@
 const OCR_TYPES = {
   GOOGLE_VISION: "GOOGLE_VISION",
   ANTHROPIC_CLAUDE: "ANTHROPIC_CLAUDE",
+  OPEN_AI_GPT_3: "OPEN_AI_GPT_3",
 };
 
 const uploadElement = document.getElementById("upload-button");
@@ -10,14 +11,14 @@ const statusElement = document.getElementById("status");
 const statusList = document.getElementById("status-list");
 let startTime;
 
-uploadElement.addEventListener("change", async (event) => {
-  startTime = new Date();
-  setStatus("📸 Image Captured");
-  const { type, files } = event.currentTarget;
-  const dataUrl = await getDataURLFromFile(files[0]);
-  console.log(dataUrl);
-  processImage(dataUrl, files[0]);
-});
+// uploadElement.addEventListener("change", async (event) => {
+//   startTime = new Date();
+//   setStatus("📸 Image Captured");
+//   const { type, files } = event.currentTarget;
+//   const dataUrl = await getDataURLFromFile(files[0]);
+//   console.log(dataUrl);
+//   processImage(dataUrl, files[0]);
+// });
 
 function setStatus(newStatus) {
   const logTime = new Date();

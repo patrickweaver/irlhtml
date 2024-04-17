@@ -3,19 +3,18 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>IRL HTML</title>
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="https://cdn.glitch.global/0376eb45-8092-4a19-bd47-e2b242c0dced/Screen%20Shot%202023-06-03%20at%2010.32.26%20AM.png?v=1685813563065"
-    />
+    <link rel="shortcut icon" type="image/png" href="/icon.png" />
     <link rel="stylesheet" type="text/css" href="/style.css" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
   </head>
   <body>
     <div id="header">
       <h1>IRL HTML: New Page</h1>
     </div>
-    
+
     <ul>
       <li><a href="/">Back to index</a></li>
     </ul>
@@ -23,14 +22,51 @@
     <main>
       <h2>Create a new HTML page</h2>
       <p>Click the button below to upload a photo of HTML.</p>
-      <input type="file" id="upload-button" />
+      <form method="post" enctype="multipart/form-data">
+        <fieldset>
+          <legend>Select OCR method:</legend>
+          <input
+            type="radio"
+            id="google-vision"
+            name="ocr-method"
+            value="google-vision"
+            checked
+          />
+          <label for="google-vision">Google Vision</label>
+          <input
+            type="radio"
+            id="anthropic-claude"
+            name="ocr-method"
+            value="anthropic-claude"
+          />
+          <label for="anthropic-claude">Anthropic Claude</label>
+          <input
+            type="radio"
+            id="open-ai-gpt-3"
+            name="ocr-method"
+            value="open-ai-gpt-3"
+            disabled
+          />
+          <label for="open-ai-gpt-3">OpenAI GPT-3</label>
+          <input
+            type="radio"
+            id="tesseract"
+            name="ocr-method"
+            value="tesseract"
+            disabled
+          />
+          <label for="tesseract">Tesseract (local)</label>
+        </fieldset>
+        <input type="file" id="upload-button" name="html-image" />
+        <button type="submit">Submit</button>
+      </form>
       <div id="status" style="display: none">
         <h2>Status</h2>
         <ol reversed id="status-list"></ol>
       </div>
     </main>
 
-<!--     <script
+    <!--     <script
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"
     ></script> -->

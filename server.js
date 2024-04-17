@@ -24,6 +24,77 @@ app.use(express.json({ limit: "15mb" }));
 app.use(express.static("public"));
 var upload = multer({ dest: __dirname + "/.data/images/" });
 
+app.post("/new", upload.single("html-image"), async (req, res) => {
+  const ocrType = OCR_TYPES?.[req.body?.["ocr-method"]] ?? DEFAULT_OCR_TYPE;
+
+  let imagePath = false;
+  if (req.file && req.file.filename) {
+    imagePath = "./.data/images/" + req.file.filename;
+  }
+
+  const id = uuidv4();
+  const timestamp = new Date().toISOString();
+
+  const source_code = req.body?.source_code?.replaceAll('"', "'");
+  // const image_url = req.body.image_url;
+
+  let htmlContent = OCR_COMMENTS[ocrType];
+
+  switch (ocrType) {
+    case OCR_TYPES.GOOGLE_VISION:
+      const gvOcrGuess = await gvocr(imagePath);
+      const googleHtml = gvOcrGuess.text;
+      htmlContent += googleHtml;
+      break;
+
+    case OCR_TYPES.ANTHROPIC_CLAUDE:
+      const claudeOcrMsg = await claudeOcr(imagePath);
+      const claudeHtml =
+        claudeOcrMsg?.content?.[0]?.text ??
+        `<h1>OCR Error</h1><p>Image processing failed</p>`;
+      htmlContent += claudeHtml;
+      break;
+  }
+
+  if (imagePath) {
+    try {
+      fs.unlinkSync(imagePath);
+    } catch (err) {
+      console.log("error deleting " + imagePath + ": " + err);
+    }
+  }
+
+  const createQuery = `
+    INSERT INTO Pages
+    (
+      id,
+      source_code,
+      date_created,
+      date_updated
+    ) VALUES (
+      "${id}",
+      "${htmlContent}",
+      "${timestamp}",
+      "${timestamp}"
+    );
+  `;
+  try {
+    const success = await db.exec(createQuery);
+  } catch (error) {
+    console.log(error);
+    res.json({ error: error });
+    return;
+  }
+
+  try {
+    const row = (await db.all(`SELECT * FROM Pages WHERE id = '${id}'`))[0];
+    res.redirect(`/pages/${row.id}`);
+  } catch (error) {
+    console.log(error);
+    res.json({ error: error });
+  }
+});
+
 app.post("/api/new", upload.single("image"), async (req, res) => {
   const ocrType = OCR_TYPES?.[req.query?.ocrType] ?? DEFAULT_OCR_TYPE;
 

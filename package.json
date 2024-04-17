@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node -r dotenv/config server.js"
+    "dev": "nodemon -r dotenv/config server.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.20.4",
@@ -30,6 +30,7 @@
     "html"
   ],
   "devDependencies": {
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "nodemon": "^3.1.0"
   }
 }
