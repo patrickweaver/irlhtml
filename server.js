@@ -14,6 +14,7 @@ app.use(express.static("public"));
 var upload = multer({ dest: __dirname + "/.data/images/" });
 
 app.post("/new", upload.single("html-image"), async (req, res) => {
+  console.log({ query: req.query, body: req.body });
   const ocrType = OCR_TYPES?.[req.body?.["ocr-method"]];
 
   let imagePath = false;
@@ -54,7 +55,6 @@ app.post("/new", upload.single("html-image"), async (req, res) => {
 });
 
 app.post("/api/new", upload.single("image"), async (req, res) => {
-  console.log({ query: req.query, body: req.body });
   const ocrType = OCR_TYPES?.[req.query?.ocrType];
 
   let imagePath = false;
@@ -79,13 +79,6 @@ app.post("/api/new", upload.single("image"), async (req, res) => {
 
   try {
     await page.insert({ id, htmlContent });
-  } catch (error) {
-    console.log(error);
-    res.json({ error: error });
-    return;
-  }
-
-  try {
     const row = await page.get({ id });
     res.json({ ...row, url: `${BASE_URL}/pages/${row.id}` });
   } catch (error) {
