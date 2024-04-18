@@ -1,5 +1,6 @@
 const { claudeOcr } = require("./claude");
 const gvOcr = require("./googleVision").googleVisionTextDetection;
+const { createWorker } = require("tesseract.js");
 
 const OCR_TYPES = {
   GOOGLE_VISION: "GOOGLE_VISION",
@@ -15,7 +16,7 @@ const OCR_COMMENTS = {
   TESSERACT: `<!-- Image OCRed with Tesseract, https://tesseract-ocr.github.io/ -->`,
 };
 
-const DEFAULT_OCR_TYPE = OCR_TYPES.ANTHROPIC_CLAUDE;
+const DEFAULT_OCR_TYPE = OCR_TYPES.TESSERACT;
 
 async function runOcr(imagePath, ocrType = DEFAULT_OCR_TYPE) {
   let htmlContent = OCR_COMMENTS[ocrType];
@@ -34,6 +35,13 @@ async function runOcr(imagePath, ocrType = DEFAULT_OCR_TYPE) {
         `<h1>OCR Error</h1><p>Image processing failed</p>`;
       htmlContent += claudeHtml;
       break;
+
+    case OCR_TYPES.TESSERACT:
+      const worker = await createWorker("eng");
+      const ret = await worker.recognize(imagePath);
+      console.log(ret.data.text);
+      await worker.terminate();
+      htmlContent += ret.data.text;
   }
 
   return htmlContent;

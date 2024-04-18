@@ -54,6 +54,7 @@ app.post("/new", upload.single("html-image"), async (req, res) => {
 });
 
 app.post("/api/new", upload.single("image"), async (req, res) => {
+  console.log({ query: req.query, body: req.body });
   const ocrType = OCR_TYPES?.[req.query?.ocrType];
 
   let imagePath = false;
@@ -122,7 +123,7 @@ app.get("/api/pages", async (req, res) => {
 
 app.get("/pages/:id", async (req, res) => {
   try {
-    const row = await get({ id: req.params.id });
+    const row = await page.get({ id: req.params.id });
     res.send(row.source_code);
   } catch (error) {
     console.log(error);
@@ -160,6 +161,7 @@ app.get("/set-secret", async (req, res) => {
   if (!enabled) {
     const body = "<h1>Setting Secret Disabled</h1>";
     res.send(render(title, body));
+    return;
   }
   const body = `<h1>Setting Secret</h1><p id="status"></p>`;
   const secret = process.env?.SECRET ?? undefined;
