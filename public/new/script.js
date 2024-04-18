@@ -49,7 +49,7 @@ function processImage(data_uri, file) {
 
   const formData = new FormData();
   // formData.append('source_code', text);
-  formData.append("image", file);
+  formData.append("html-image", file);
 
   fetch(`/api/new?ocrType=${OCR_TYPES.ANTHROPIC_CLAUDE}`, {
     method: "POST",

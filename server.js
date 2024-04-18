@@ -3,11 +3,10 @@ const express = require("express");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 
-const db = require("./db");
 const { runOcr, OCR_TYPES } = require("./ocr");
 const page = require("./db/page");
 
-const BASE_URL = "https://irlhtml.glitch.me";
+const BASE_URL = process.env.BASE_URL;
 
 var app = express();
 app.use(express.json({ limit: "15mb" }));
@@ -157,12 +156,11 @@ app.get("/set-secret", async (req, res) => {
   };
 
   const enabled = process.env?.ALLOW_SET_SECRET === "TRUE";
+  const title = "IRL HTML Set Secret";
   if (!enabled) {
-    const title = "IRL HTML Set Secret";
     const body = "<h1>Setting Secret Disabled</h1>";
     res.send(render(title, body));
   }
-  const title = "IRL HTML Set Secret";
   const body = `<h1>Setting Secret</h1><p id="status"></p>`;
   const secret = process.env?.SECRET ?? undefined;
   const script = `
