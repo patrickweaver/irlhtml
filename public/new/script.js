@@ -3,7 +3,7 @@
 const OCR_TYPES = {
   GOOGLE_VISION: "GOOGLE_VISION",
   ANTHROPIC_CLAUDE: "ANTHROPIC_CLAUDE",
-  OPEN_AI_GPT_3: "OPEN_AI_GPT_3",
+  OPEN_AI_GPT_4: "OPEN_AI_GPT_4",
 };
 
 const uploadElement = document.getElementById("upload-button");

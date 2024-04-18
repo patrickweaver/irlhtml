@@ -15,6 +15,7 @@
     "express": "^4.19.2",
     "file-type": "^16.5.4",
     "multer": "^1.4.4",
+    "openai": "^4.37.1",
     "sqlite3": "^5.1.7",
     "tesseract.js": "^5.0.5",
     "uuid": "^9.0.1"
