@@ -2,22 +2,12 @@ const fs = require("fs");
 const express = require("express");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
-const Database = require("better-sqlite3");
-const { claudeOcr } = require("./claude");
 
 const db = require("./db");
-const gvocr = require("./googleVision").googleVisionTextDetection;
+const { runOcr, OCR_TYPES } = require("./ocr");
+const page = require("./db/page");
 
 const BASE_URL = "https://irlhtml.glitch.me";
-const OCR_TYPES = {
-  GOOGLE_VISION: "GOOGLE_VISION",
-  ANTHROPIC_CLAUDE: "ANTHROPIC_CLAUDE",
-};
-const OCR_COMMENTS = {
-  GOOGLE_VISION: `<!-- Image OCRed with Google Vision API -->`,
-  ANTHROPIC_CLAUDE: `<!-- Image OCRed with Anthropic Claude LLM -->`,
-};
-const DEFAULT_OCR_TYPE = OCR_TYPES.ANTHROPIC_CLAUDE;
 
 var app = express();
 app.use(express.json({ limit: "15mb" }));
@@ -25,7 +15,7 @@ app.use(express.static("public"));
 var upload = multer({ dest: __dirname + "/.data/images/" });
 
 app.post("/new", upload.single("html-image"), async (req, res) => {
-  const ocrType = OCR_TYPES?.[req.body?.["ocr-method"]] ?? DEFAULT_OCR_TYPE;
+  const ocrType = OCR_TYPES?.[req.body?.["ocr-method"]];
 
   let imagePath = false;
   if (req.file && req.file.filename) {
@@ -33,28 +23,11 @@ app.post("/new", upload.single("html-image"), async (req, res) => {
   }
 
   const id = uuidv4();
-  const timestamp = new Date().toISOString();
 
   const source_code = req.body?.source_code?.replaceAll('"', "'");
   // const image_url = req.body.image_url;
 
-  let htmlContent = OCR_COMMENTS[ocrType];
-
-  switch (ocrType) {
-    case OCR_TYPES.GOOGLE_VISION:
-      const gvOcrGuess = await gvocr(imagePath);
-      const googleHtml = gvOcrGuess.text;
-      htmlContent += googleHtml;
-      break;
-
-    case OCR_TYPES.ANTHROPIC_CLAUDE:
-      const claudeOcrMsg = await claudeOcr(imagePath);
-      const claudeHtml =
-        claudeOcrMsg?.content?.[0]?.text ??
-        `<h1>OCR Error</h1><p>Image processing failed</p>`;
-      htmlContent += claudeHtml;
-      break;
-  }
+  const htmlContent = await runOcr(imagePath, ocrType);
 
   if (imagePath) {
     try {
@@ -64,22 +37,8 @@ app.post("/new", upload.single("html-image"), async (req, res) => {
     }
   }
 
-  const createQuery = `
-    INSERT INTO Pages
-    (
-      id,
-      source_code,
-      date_created,
-      date_updated
-    ) VALUES (
-      "${id}",
-      "${htmlContent}",
-      "${timestamp}",
-      "${timestamp}"
-    );
-  `;
   try {
-    const success = await db.exec(createQuery);
+    await page.insert({ id, htmlContent });
   } catch (error) {
     console.log(error);
     res.json({ error: error });
@@ -87,7 +46,7 @@ app.post("/new", upload.single("html-image"), async (req, res) => {
   }
 
   try {
-    const row = (await db.all(`SELECT * FROM Pages WHERE id = '${id}'`))[0];
+    const row = await page.get({ id });
     res.redirect(`/pages/${row.id}`);
   } catch (error) {
     console.log(error);
@@ -96,7 +55,7 @@ app.post("/new", upload.single("html-image"), async (req, res) => {
 });
 
 app.post("/api/new", upload.single("image"), async (req, res) => {
-  const ocrType = OCR_TYPES?.[req.query?.ocrType] ?? DEFAULT_OCR_TYPE;
+  const ocrType = OCR_TYPES?.[req.query?.ocrType];
 
   let imagePath = false;
   if (req.file && req.file.filename) {
@@ -104,28 +63,11 @@ app.post("/api/new", upload.single("image"), async (req, res) => {
   }
 
   const id = uuidv4();
-  const timestamp = new Date().toISOString();
 
   const source_code = req.body?.source_code?.replaceAll('"', "'");
   // const image_url = req.body.image_url;
 
-  let htmlContent = OCR_COMMENTS[ocrType];
-
-  switch (ocrType) {
-    case OCR_TYPES.GOOGLE_VISION:
-      const gvOcrGuess = await gvocr(imagePath);
-      const googleHtml = gvOcrGuess.text;
-      htmlContent += googleHtml;
-      break;
-
-    case OCR_TYPES.ANTHROPIC_CLAUDE:
-      const claudeOcrMsg = await claudeOcr(imagePath);
-      const claudeHtml =
-        claudeOcrMsg?.content?.[0]?.text ??
-        `<h1>OCR Error</h1><p>Image processing failed</p>`;
-      htmlContent += claudeHtml;
-      break;
-  }
+  const htmlContent = await runOcr(imagePath, ocrType);
 
   if (imagePath) {
     try {
@@ -135,22 +77,8 @@ app.post("/api/new", upload.single("image"), async (req, res) => {
     }
   }
 
-  const createQuery = `
-    INSERT INTO Pages
-    (
-      id,
-      source_code,
-      date_created,
-      date_updated
-    ) VALUES (
-      "${id}",
-      "${htmlContent}",
-      "${timestamp}",
-      "${timestamp}"
-    );
-  `;
   try {
-    const success = await db.exec(createQuery);
+    await page.insert({ id, htmlContent });
   } catch (error) {
     console.log(error);
     res.json({ error: error });
@@ -158,7 +86,7 @@ app.post("/api/new", upload.single("image"), async (req, res) => {
   }
 
   try {
-    const row = (await db.all(`SELECT * FROM Pages WHERE id = '${id}'`))[0];
+    const row = await page.get({ id });
     res.json({ ...row, url: `${BASE_URL}/pages/${row.id}` });
   } catch (error) {
     console.log(error);
@@ -178,7 +106,7 @@ app.get("/api/pages", async (req, res) => {
   }
 
   try {
-    const rows = await db.all(`SELECT * FROM Pages ORDER BY date_created DESC`);
+    const rows = await page.getAll();
     console.log({ pages_count: rows.length });
     const rowsWithTitles = rows.map((row) => {
       const source = row?.source_code;
@@ -195,11 +123,7 @@ app.get("/api/pages", async (req, res) => {
 
 app.get("/pages/:id", async (req, res) => {
   try {
-    const row = (
-      await db.all(`
-      SELECT * FROM Pages WHERE id = '${req.params.id}'
-    `)
-    )[0];
+    const row = await get({ id: req.params.id });
     res.send(row.source_code);
   } catch (error) {
     console.log(error);
@@ -211,9 +135,7 @@ app.delete("/api/pages/:id", async (req, res) => {
   const secret = req.query?.secret;
   try {
     if (secret !== process.env.SECRET) throw new Error("Invalid Secret");
-    const status = await db.all(`
-      DELETE FROM Pages WHERE id = '${req.params.id}'
-    `);
+    const status = await page.del(req.params.id);
     console.log({ status });
     res.status(200).json({ status: "deleted" });
   } catch (error) {
@@ -223,29 +145,33 @@ app.delete("/api/pages/:id", async (req, res) => {
 });
 
 app.get("/set-secret", async (req, res) => {
+  const render = (title, body, script = "") => {
+    return `
+    <!DOCTYPE html>
+    <html>
+      <head><title>${title}</title></head>
+      <body>${body}</body>
+      <script>${script}</script>
+    </html>
+  `;
+  };
+
   const enabled = process.env?.ALLOW_SET_SECRET === "TRUE";
   if (!enabled) {
-    res.send(`
-    <!DOCTYPE html>
-    <html>
-      <head><title>IRL HTML Set Secret</title></head>
-      <body><h1>Setting Secret Disabled</h1></body>
-    </html>
-  `);
+    const title = "IRL HTML Set Secret";
+    const body = "<h1>Setting Secret Disabled</h1>";
+    res.send(render(title, body));
   }
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-      <head><title>IRL HTML Set Secret</title></head>
-      <body><h1>Setting Secret</h1><p id="status"></p></body>
-      <script>
-        console.log("Setting Secret");
-        localStorage.setItem('secret', '${process.env?.SECRET ?? undefined}');
-        console.log("Secret set:", localStorage.getItem('secret'))
-        document.getElementById("status").innerHTML = 'Secret set:' + localStorage.getItem('secret');
-      </script>
-    </html>
-  `);
+  const title = "IRL HTML Set Secret";
+  const body = `<h1>Setting Secret</h1><p id="status"></p>`;
+  const secret = process.env?.SECRET ?? undefined;
+  const script = `
+    console.log("Setting Secret");
+    localStorage.setItem('secret', '${secret}');
+    console.log("Secret set:", localStorage.getItem('secret'))
+    document.getElementById("status").innerHTML = 'Secret set:' + localStorage.getItem('secret');
+  `;
+  res.send(render(title, body, script));
 });
 
 var listener = app.listen(process.env.PORT, function () {
