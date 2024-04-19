@@ -57,4 +57,4 @@ async function deleteItem(id) {
   window.location.href = "/";
 }
 
-main();
+// main();

@@ -5,13 +5,31 @@ const { v4: uuidv4 } = require("uuid");
 
 const { runOcr, OCR_TYPES } = require("./ocr");
 const page = require("./db/page");
+const getPageTitleFromSource = require("./util/getPageTitleFromSource");
 
 const BASE_URL = process.env.BASE_URL;
 
 var app = express();
 app.use(express.json({ limit: "15mb" }));
 app.use(express.static("public"));
+app.set("view engine", "ejs");
 var upload = multer({ dest: __dirname + "/.data/images/" });
+
+app.get("/test", async function (req, res) {
+  try {
+    const rows = await page.getAll();
+    const rowsWithTitles = rows.map((row) => {
+      const source = row?.source_code;
+      const title = getPageTitleFromSource(source);
+      const rowWithTitle = { ...row, title };
+      return rowWithTitle;
+    });
+    res.render("pages/index", { pages: rowsWithTitles });
+  } catch (error) {
+    console.log(error);
+    res.render("pages/error");
+  }
+});
 
 app.post("/new", upload.single("html-image"), async (req, res) => {
   console.log({ query: req.query, body: req.body });
@@ -88,16 +106,6 @@ app.post("/api/new", upload.single("image"), async (req, res) => {
 });
 
 app.get("/api/pages", async (req, res) => {
-  function getPageTitleFromSource(_source) {
-    if (!_source) return;
-    const source = _source.toLowerCase();
-    const splitOnTitleOpen = source.split("<title>");
-    if (splitOnTitleOpen?.length !== 2) return;
-    const splitOnTitleClose = splitOnTitleOpen[1].split("</title>");
-    if (splitOnTitleClose?.length !== 2) return;
-    return splitOnTitleClose[0];
-  }
-
   try {
     const rows = await page.getAll();
     console.log({ pages_count: rows.length });
