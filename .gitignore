@@ -3,6 +3,6 @@
 node_modules
 .DS_Store
 .env
-.data/*
+.data/change
 !.data/README.md
 *.traineddata
