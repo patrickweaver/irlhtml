@@ -15,7 +15,7 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 var upload = multer({ dest: __dirname + "/.data/images/" });
 
-app.get("/test", async function (req, res) {
+app.get("/", async function (req, res) {
   try {
     const rows = await page.getAll();
     const rowsWithTitles = rows.map((row) => {
@@ -24,7 +24,16 @@ app.get("/test", async function (req, res) {
       const rowWithTitle = { ...row, title };
       return rowWithTitle;
     });
-    res.render("pages/index", { pages: rowsWithTitles });
+    res.render("pages/index", { pages: rowsWithTitles, title: "home" });
+  } catch (error) {
+    console.log(error);
+    res.render("pages/error");
+  }
+});
+
+app.get("/new", async function (req, res) {
+  try {
+    res.render("pages/new", { title: "new" });
   } catch (error) {
     console.log(error);
     res.render("pages/error");

@@ -1,0 +1,12 @@
+body {
+  margin: 0 2rem;
+}
+
+a.current {
+  font-weight: 900;
+}
+
+#new-page-form > * {
+  display: block;
+  margin: 1rem 0;
+}
