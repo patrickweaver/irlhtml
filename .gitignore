@@ -3,6 +3,7 @@
 node_modules
 .DS_Store
 .env
-.data/change
+.data/db.sqlite3
+.data/images/*
 !.data/README.md
 *.traineddata
