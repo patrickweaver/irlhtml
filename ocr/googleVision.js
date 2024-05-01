@@ -26,10 +26,9 @@ async function askGoogleVision(imageUrl) {
     let gvGuess;
     try {
       const response = await axios.post(url, data);
-      gvGuess =
-        response.data.responses?.[0]?.fullTextAnnotation?.text;
-      gvGuess = gvGuess.replaceAll('"', "'")
-      gvGuess = gvGuess ?? ""
+      gvGuess = response.data.responses?.[0]?.fullTextAnnotation?.text;
+      gvGuess = gvGuess.replaceAll('"', "'");
+      gvGuess = gvGuess ?? "";
     } catch (error) {
       console.log(error);
     }

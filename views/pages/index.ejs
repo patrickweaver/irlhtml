@@ -1,0 +1,24 @@
+<%- include('../partials/top'); %>
+
+<h2>About IRL HTML</h2>
+<p>
+  IRL HTML is a web app that hosts HTML web pages created from photographs of
+  HTML code. Go to <a href="/new">Create new HTML Page</a> to upload a
+  photograph of some HTML!
+</p>
+
+<hr />
+
+<h2>Pages</h2>
+<ol id="pages-list">
+  <% pages.forEach(function(page) { %>
+  <li>
+    <time><%= page.date_created %></time>:
+    <a href="<%= `/pages/${page.id}` %>">
+      <%= page.title ?? `Untitled - ${page.id.slice(0, 5)}` %>
+    </a>
+  </li>
+  <% }); %>
+</ol>
+
+<%- include('../partials/bottom'); %>
