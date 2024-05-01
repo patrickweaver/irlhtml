@@ -19,16 +19,27 @@ var upload = multer({ dest: __dirname + "/.data/images/" });
 app.get("/", async function (req, res) {
   try {
     const rows = await page.getAll();
-    const rowsWithTitles = rows.map((row) => {
-      const source = row?.source_code;
-      const title = getPageTitleFromSource(source);
-      const rowWithTitle = { ...row, title };
-      return rowWithTitle;
-    });
+    const rowsWithTitles = rows.map(getRowWithTitle);
     res.render("pages/index", { ..._r, pages: rowsWithTitles, title: "home" });
   } catch (error) {
-    console.log(error);
-    res.render("pages/error", { ..._r });
+    return errorHandler(req, res, error, { ..._r });
+  }
+});
+
+app.get("/pages", (req, res) => {
+  return res.redirect("/");
+});
+
+app.get("/pages/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const row = await page.get({ id });
+    if (!row) return error404(req, res, id);
+    const sourceCode = row?.source_code;
+    if (!sourceCode) throw new Error("Invalid page");
+    res.send();
+  } catch (error) {
+    return errorHandler(req, res, error, { ..._r, id });
   }
 });
 
@@ -36,8 +47,7 @@ app.get("/new", async function (req, res) {
   try {
     res.render("pages/new", { ..._r, title: "new" });
   } catch (error) {
-    console.log(error);
-    res.render("pages/error", { ..._r });
+    return errorHandler(req, res, error, { ..._r });
   }
 });
 
@@ -67,17 +77,14 @@ app.post("/new", upload.single("html-image"), async (req, res) => {
   try {
     const success = await page.insert({ id, htmlContent });
   } catch (error) {
-    console.log(error);
-    res.render("pages/error", { ..._r });
-    return;
+    return errorHandler(req, res, error, { ..._r });
   }
 
   try {
     const row = await page.get({ id });
     res.redirect(`/pages/${row.id}`);
   } catch (error) {
-    console.log(error);
-    res.render("pages/error", { ..._r });
+    return errorHandler(req, res, error, { ..._r });
   }
 });
 
@@ -109,36 +116,28 @@ app.post("/api/new", upload.single("image"), async (req, res) => {
     const row = await page.get({ id });
     res.json({ ...row, url: `${BASE_URL}/pages/${row.id}` });
   } catch (error) {
-    console.log(error);
-    res.json({ error: error });
+    return errorHandler(req, res, error);
   }
 });
 
 app.get("/api/pages", async (req, res) => {
   try {
     const rows = await page.getAll();
-    console.log({ pages_count: rows.length });
-    const rowsWithTitles = rows.map((row) => {
-      const source = row?.source_code;
-      const title = getPageTitleFromSource(source);
-      const rowWithTitle = { ...row, title };
-      return rowWithTitle;
-    });
+    const rowsWithTitles = rows.map(getRowWithTitle);
     res.json(rowsWithTitles);
   } catch (error) {
-    console.log(error);
-    res.json({ error: error });
+    return errorHandler(req, res, error);
   }
 });
 
-app.get("/pages/:id", async (req, res) => {
+app.get("/api/pages/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const row = await page.get({ id });
-    res.send(row.source_code);
+    const rowWithTitle = getRowWithTitle(row);
+    res.json(rowWithTitle);
   } catch (error) {
-    console.log(error);
-    res.render("pages/error", { ..._r, id });
+    return errorHandler(req, res, error, { ..._r, id });
   }
 });
 
@@ -149,8 +148,7 @@ app.delete("/api/pages/:id", async (req, res) => {
     const status = await page.del(req.params.id);
     res.status(200).json({ status: "deleted" });
   } catch (error) {
-    console.log(error);
-    res.json({ error: error });
+    errorHandler(req, res, error);
   }
 });
 
@@ -187,3 +185,24 @@ app.get("/set-secret", async (req, res) => {
 var listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
+
+function errorHandler(req, res, error, params = {}) {
+  console.log(error);
+  console.log({ url: req.url.slice(0, 5) });
+  const apiRequest = req.url.slice(0, 5).toLowerCase() === "/api/";
+  res.status(500);
+  if (apiRequest) return res.json({ error: "Server error" });
+  return res.render("pages/error", params);
+}
+
+function error404(req, res, id) {
+  res.status(404);
+  return res.render("pages/error404", { ..._r, id });
+}
+
+function getRowWithTitle(row) {
+  const source = row?.source_code;
+  const title = getPageTitleFromSource(source);
+  const rowWithTitle = { ...row, title };
+  return rowWithTitle;
+}
