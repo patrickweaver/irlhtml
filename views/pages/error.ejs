@@ -1,6 +1,10 @@
 <%- include('../partials/top'); %>
 
 <h2>Error</h2>
+<% if (id) { %>
 <p>There was an error getting that page 🧩</p>
+<p>Page requested: <%= id %></p>
+<% } %>
 
+<!-- prettier-ignore -->
 <%- include('../partials/bottom'); %>

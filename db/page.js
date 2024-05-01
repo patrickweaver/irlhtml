@@ -10,13 +10,13 @@ async function insert({ id, htmlContent }) {
       date_created,
       date_updated
     ) VALUES (
-      "${id}",
-      "${htmlContent}",
-      "${timestamp}",
-      "${timestamp}"
+      ?,
+      ?,
+      ?,
+      ?
     );
   `;
-  const success = await db.exec(query);
+  const success = await db.run(query, [id, htmlContent, timestamp, timestamp]);
   return success;
 }
 
@@ -24,9 +24,9 @@ async function get({ id }) {
   const query = `
     SELECT *
     FROM Pages
-    WHERE id = '${id}'
+    WHERE id = ?
   `;
-  const rows = await db.all(query);
+  const rows = await db.all(query, [id]);
   return rows[0];
 }
 

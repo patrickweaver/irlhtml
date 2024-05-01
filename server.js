@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 const { runOcr, OCR_TYPES } = require("./ocr");
 const page = require("./db/page");
 const getPageTitleFromSource = require("./util/getPageTitleFromSource");
+const { defaultRenderObj: _r } = require("./util/render");
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -24,24 +25,23 @@ app.get("/", async function (req, res) {
       const rowWithTitle = { ...row, title };
       return rowWithTitle;
     });
-    res.render("pages/index", { pages: rowsWithTitles, title: "home" });
+    res.render("pages/index", { ..._r, pages: rowsWithTitles, title: "home" });
   } catch (error) {
     console.log(error);
-    res.render("pages/error");
+    res.render("pages/error", { ..._r });
   }
 });
 
 app.get("/new", async function (req, res) {
   try {
-    res.render("pages/new", { title: "new" });
+    res.render("pages/new", { ..._r, title: "new" });
   } catch (error) {
     console.log(error);
-    res.render("pages/error");
+    res.render("pages/error", { ..._r });
   }
 });
 
 app.post("/new", upload.single("html-image"), async (req, res) => {
-  console.log({ query: req.query, body: req.body });
   const ocrType = OCR_TYPES?.[req.body?.["ocr-method"]];
 
   let imagePath = false;
@@ -65,10 +65,10 @@ app.post("/new", upload.single("html-image"), async (req, res) => {
   }
 
   try {
-    await page.insert({ id, htmlContent });
+    const success = await page.insert({ id, htmlContent });
   } catch (error) {
     console.log(error);
-    res.json({ error: error });
+    res.render("pages/error", { ..._r });
     return;
   }
 
@@ -77,7 +77,7 @@ app.post("/new", upload.single("html-image"), async (req, res) => {
     res.redirect(`/pages/${row.id}`);
   } catch (error) {
     console.log(error);
-    res.json({ error: error });
+    res.render("pages/error", { ..._r });
   }
 });
 
@@ -132,12 +132,13 @@ app.get("/api/pages", async (req, res) => {
 });
 
 app.get("/pages/:id", async (req, res) => {
+  const { id } = req.params;
   try {
-    const row = await page.get({ id: req.params.id });
+    const row = await page.get({ id });
     res.send(row.source_code);
   } catch (error) {
     console.log(error);
-    res.json({ error: error });
+    res.render("pages/error", { ..._r, id });
   }
 });
 
@@ -146,7 +147,6 @@ app.delete("/api/pages/:id", async (req, res) => {
   try {
     if (secret !== process.env.SECRET) throw new Error("Invalid Secret");
     const status = await page.del(req.params.id);
-    console.log({ status });
     res.status(200).json({ status: "deleted" });
   } catch (error) {
     console.log(error);

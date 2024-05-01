@@ -1,5 +1,5 @@
 const clear = process.env.CLEAR_ALL_ROWS === "TRUE";
-console.log("Clear:", clear, `(${process.env.CLEAR_ALL_ROWS})`)
+console.log("Clear:", clear, `(${process.env.CLEAR_ALL_ROWS})`);
 
 const successMessage = `Tables created successfully`;
 
@@ -10,18 +10,18 @@ CREATE TABLE IF NOT EXISTS Pages (
   date_created text NOT NULL,
   date_updated text NOT NULL
 );
-`
+`;
 
 const clearQuery = `
   DROP TABLE Pages;
-`
+`;
 
 module.exports = async (dbExec) => {
   try {
-    if (clear) await dbExec(clearQuery)
+    if (clear) await dbExec(clearQuery);
     await dbExec(schema);
     console.log(successMessage);
   } catch (error) {
-    console.log("Error:", error)
+    console.log("Error:", error);
   }
-}
+};
