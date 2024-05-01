@@ -2,8 +2,8 @@ module.exports = (successMessage) => {
   return (error) => {
     if (error) {
       console.log(`Error:\n${error}`);
-      return
+      return;
     }
-    console.log(successMessage)
-  }
-}
+    console.log(successMessage);
+  };
+};
