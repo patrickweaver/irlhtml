@@ -10,7 +10,7 @@ async function openaiOcr(imagePath) {
   const openai = new OpenAI({
     apiKey: process.env["OPENAI_API_KEY"],
   });
-  console.log({ PROMPT });
+
   const response = await openai.chat.completions.create({
     model: "gpt-4-turbo",
     messages: [
