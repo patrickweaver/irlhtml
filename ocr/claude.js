@@ -13,14 +13,12 @@ async function claudeOcr(imagePath) {
   const image = fs.readFileSync(imagePath);
   const content = Buffer.from(image).toString("base64");
   const mimeType = (await FileType.fromFile(imagePath)).mime;
-  console.log({ mimeType, imagePath });
   const anthropic = new Anthropic();
   const msg = await anthropic.messages.create({
     model: MODELS.HAIKU,
     max_tokens: 1024,
     messages: getClaudeMessages(content, mimeType),
   });
-  console.log({ msg });
   return msg;
 }
 

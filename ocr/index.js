@@ -45,7 +45,6 @@ async function runOcr(imagePath, ocrType = DEFAULT_OCR_TYPE) {
     case OCR_TYPES.TESSERACT:
       const worker = await createWorker("eng");
       const ret = await worker.recognize(imagePath);
-      console.log(ret.data.text);
       await worker.terminate();
       htmlContent += ret.data.text;
   }

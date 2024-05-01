@@ -34,7 +34,6 @@ async function openaiOcr(imagePath) {
     max_tokens: 300,
   });
 
-  console.log(response.choices);
   return response.choices[0].message.content;
 }
 
