@@ -42,9 +42,9 @@ async function getAll() {
 
 async function del({ id }) {
   const query = `
-      DELETE FROM Pages WHERE id = '${id}'
+      DELETE FROM Pages WHERE id = '?'
     `;
-  return db.all(query);
+  return db.run(query, [id]);
 }
 
 module.exports = { insert, get, getAll, del };
