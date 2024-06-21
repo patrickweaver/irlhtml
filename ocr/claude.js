@@ -4,9 +4,10 @@ const FileType = require("file-type");
 const { PROMPT } = require("./prompt");
 
 const MODELS = {
-  HAIKU: "claude-3-haiku-20240307",
-  SONNET: "claude-3-sonnet-20240229",
-  OPUS: "claude-3-opus-20240229",
+  HAIKU_3: "claude-3-haiku-20240307",
+  SONNET_3: "claude-3-sonnet-20240229",
+  OPUS_3: "claude-3-opus-20240229",
+  SONNET_3_5: "claude-3-5-sonnet-20240620",
 };
 
 async function claudeOcr(imagePath) {
@@ -15,7 +16,7 @@ async function claudeOcr(imagePath) {
   const mimeType = (await FileType.fromFile(imagePath)).mime;
   const anthropic = new Anthropic();
   const msg = await anthropic.messages.create({
-    model: MODELS.HAIKU,
+    model: MODELS.HAIKU_3,
     max_tokens: 1024,
     messages: getClaudeMessages(content, mimeType),
   });
