@@ -1,9 +1,35 @@
 body {
-  margin: 0 2rem;
+  margin: 2rem;
+  max-width: 800px;
+  font-size: 120%;
 }
 
 a.current {
   font-weight: 900;
+}
+
+ol#pages-list li {
+  margin: 0.25rem 0;
+}
+
+ol#pages-list li::marker {
+  color: black;
+}
+
+ol#pages-list li:hover {
+  background-color: #eff4ff;
+}
+
+ol#pages-list a {
+  text-decoration: none;
+}
+
+ol#pages-list time {
+  color: black;
+}
+
+.page-title-link {
+  text-decoration: underline;
 }
 
 #new-page-form > * {

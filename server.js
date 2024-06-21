@@ -37,7 +37,7 @@ app.get("/pages/:id", async (req, res) => {
     if (!row) return error404(req, res, id);
     const sourceCode = row?.source_code;
     if (!sourceCode) throw new Error("Invalid page");
-    res.send();
+    res.send(sourceCode);
   } catch (error) {
     return errorHandler(req, res, error, { ..._r, id });
   }
