@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1719091475938" clover="3.2.0">
-  <project timestamp="1719091475938" name="All files">
+<coverage generated="1719091552628" clover="3.2.0">
+  <project timestamp="1719091552628" name="All files">
     <metrics statements="14" coveredstatements="14" conditionals="7" coveredconditionals="7" methods="1" coveredmethods="1" elements="22" coveredelements="22" complexity="0" loc="14" ncloc="14" packages="1" files="1" classes="1"/>
     <file name="getPageTitleFromSource.js" path="/Users/pw/Projects/irlhtml/util/getPageTitleFromSource.js">
       <metrics statements="14" coveredstatements="14" conditionals="7" coveredconditionals="7" methods="1" coveredmethods="1"/>
