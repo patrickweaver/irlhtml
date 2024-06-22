@@ -6,30 +6,30 @@ var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database(DATABASE_PATH, callback);
 
 const run = async (query, params = []) => {
-  return await new Promise((resolve, reject) => {
-    db.run(query, params, (err) => {
-      if (err) {
-        reject(err);
-      }
-      resolve(true);
-    });
-  });
+	return await new Promise((resolve, reject) => {
+		db.run(query, params, (err) => {
+			if (err) {
+				reject(err);
+			}
+			resolve(true);
+		});
+	});
 };
 
 const all = async (query, params = []) => {
-  return await new Promise((resolve, reject) => {
-    db.all(query, params, (err, rows) => {
-      if (err) {
-        reject(err);
-      }
-      resolve(rows);
-    });
-  });
+	return await new Promise((resolve, reject) => {
+		db.all(query, params, (err, rows) => {
+			if (err) {
+				reject(err);
+			}
+			resolve(rows);
+		});
+	});
 };
 
 setup(run);
 
 module.exports = {
-  run,
-  all,
+	run,
+	all,
 };
