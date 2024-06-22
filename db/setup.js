@@ -5,23 +5,23 @@ const successMessage = "Tables created successfully";
 
 const schema = `
 CREATE TABLE IF NOT EXISTS Pages (
-  id text NOT NULL PRIMARY KEY,
-  source_code text NOT NULL,
-  date_created text NOT NULL,
-  date_updated text NOT NULL
+	id text NOT NULL PRIMARY KEY,
+	source_code text NOT NULL,
+	date_created text NOT NULL,
+	date_updated text NOT NULL
 );
 `;
 
 const clearQuery = `
-  DROP TABLE Pages;
+	DROP TABLE Pages;
 `;
 
 module.exports = async (dbExec) => {
-	try {
-		if (clear) await dbExec(clearQuery);
-		await dbExec(schema);
-		console.log(successMessage);
-	} catch (error) {
-		console.log("Error:", error);
-	}
+  try {
+    if (clear) await dbExec(clearQuery);
+    await dbExec(schema);
+    console.log(successMessage);
+  } catch (error) {
+    console.log("Error:", error);
+  }
 };

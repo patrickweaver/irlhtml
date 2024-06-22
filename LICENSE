@@ -46,7 +46,7 @@ THIRD-PARTY SOFTWARE
 ******************************************************************************
 1. fastify (also applies to fastify-formbody)
 URL: https://www.fastify.io/
-     https://github.com/fastify/fastify
+		 https://github.com/fastify/fastify
 ******************************************************************************
 MIT License
 
@@ -110,7 +110,7 @@ END, fastify/static
 ******************************************************************************
 3. handlebars.js
 URL: https://handlebarsjs.com/
-     https://github.com/handlebars-lang/handlebars.js
+		 https://github.com/handlebars-lang/handlebars.js
 ******************************************************************************
 Copyright (C) 2011-2019 by Yehuda Katz
 

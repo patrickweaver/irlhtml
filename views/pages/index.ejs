@@ -2,25 +2,25 @@
 
 <h2>About IRL HTML</h2>
 <p>
-  IRL HTML is a web app that hosts HTML web pages created from photographs of
-  HTML code. Go to <a href="/new">Create new HTML Page</a> to upload a
-  photograph of some HTML!
+	IRL HTML is a web app that hosts HTML web pages created from photographs of
+	HTML code. Go to <a href="/new">Create new HTML Page</a> to upload a
+	photograph of some HTML!
 </p>
 
 <hr />
 
 <h2>Pages</h2>
 <ol id="pages-list">
-  <% pages.forEach(function(page) { %>
-  <a href="<%= `/pages/${page.id}` %>">
-    <li>
-      <time><%= getReadableDate(page.date_created) %></time>:
-      <span class="page-title-link">
-        <%= page.title ?? `Untitled - ${page.id.slice(0, 5)}` %>
-      </span>
-    </li>
-  </a>
-  <% }); %>
+	<% pages.forEach(function(page) { %>
+	<a href="<%= `/pages/${page.id}` %>">
+		<li>
+			<time><%= getReadableDate(page.date_created) %></time>:
+			<span class="page-title-link">
+				<%= page.title ?? `Untitled - ${page.id.slice(0, 5)}` %>
+			</span>
+		</li>
+	</a>
+	<% }); %>
 </ol>
 
 <%- include('../partials/bottom'); %>
