@@ -1,38 +1,48 @@
 body {
-  margin: 2rem;
-  max-width: 800px;
-  font-size: 120%;
+	margin: 2rem;
+	max-width: 800px;
+	font-size: 120%;
 }
 
 a.current {
-  font-weight: 900;
+	font-weight: 900;
 }
 
 ol#pages-list li {
-  margin: 0.25rem 0;
+	margin: 0.25rem 0;
 }
 
 ol#pages-list li::marker {
-  color: black;
+	color: black;
 }
 
 ol#pages-list li:hover {
-  background-color: #eff4ff;
+	background-color: #eff4ff;
 }
 
 ol#pages-list a {
-  text-decoration: none;
+	text-decoration: none;
 }
 
 ol#pages-list time {
-  color: black;
+	color: black;
 }
 
 .page-title-link {
-  text-decoration: underline;
+	text-decoration: underline;
 }
 
 #new-page-form > * {
-  display: block;
-  margin: 1rem 0;
+	display: block;
+	margin: 1rem 0;
+}
+
+.radio-grid {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 10px;
+	align-items: center;
+}
+.radio-grid input[type="radio"] {
+	margin: 0;
 }

@@ -1,19 +1,21 @@
 const { claudeOcr } = require("./claude");
 const gvOcr = require("./googleVision").googleVisionTextDetection;
 const { createWorker } = require("tesseract.js");
-const { openaiOcr } = require("./openai");
+const { openaiOcr, models } = require("./openai");
 
 const OCR_TYPES = {
 	GOOGLE_VISION: "GOOGLE_VISION",
 	ANTHROPIC_CLAUDE: "ANTHROPIC_CLAUDE",
-	OPEN_AI_GPT_4: "OPEN_AI_GPT_4",
+	OPEN_AI_GPT_4_TURBO: "OPEN_AI_GPT_4_TURBO",
+	OPEN_AI_GPT_4_O: "OPEN_AI_GPT_4_O",
 	TESSERACT: "TESSERACT",
 };
 
 const OCR_COMMENTS = {
 	GOOGLE_VISION: "<!-- Image OCRed with Google Vision API -->\n",
 	ANTHROPIC_CLAUDE: "<!-- Image OCRed with Anthropic Claude LLM -->\n",
-	OPEN_AI_GPT_4: "<!-- Image OCRed with OpenAI GPT-3 -->\n",
+	OPEN_AI_GPT_4_TURBO: "<!-- Image OCRed with OpenAI GPT-4 Turbo -->\n",
+	OPEN_AI_GPT_4_O: "<!-- Image OCRed with OpenAI GPT-4o -->\n",
 	TESSERACT:
 		"<!-- Image OCRed with Tesseract, https://tesseract-ocr.github.io/ -->\n",
 };
@@ -26,43 +28,47 @@ async function runOcr(imagePath, ocrType = DEFAULT_OCR_TYPE) {
 
 	switch (ocrType) {
 		case OCR_TYPES.GOOGLE_VISION:
-			await googleVisionOCR();
+			await googleVisionOcr();
 			break;
 
 		case OCR_TYPES.ANTHROPIC_CLAUDE:
-			await anthropicClaudeOCR();
+			await anthropicClaudeOcr();
 			break;
 
-		case OCR_TYPES.OPEN_AI_GPT_4:
-			await openAIGPT4OCR();
+		case OCR_TYPES.OPEN_AI_GPT_4_TURBO:
+			await openAiOcr(models.GPT_4_TURBO);
+			break;
+
+		case OCR_TYPES.OPEN_AI_GPT_4_O:
+			await openAiOcr(models.GPT_4_O);
 			break;
 
 		case OCR_TYPES.TESSERACT:
-			await tesseractOCR();
+			await tesseractOcr();
 			break;
 	}
 
 	return htmlContent;
 
-	async function googleVisionOCR() {
+	async function googleVisionOcr() {
 		const gvOcrGuess = await gvOcr(imagePath);
 		const googleHtml = gvOcrGuess.text;
 		htmlContent += googleHtml;
 	}
 
-	async function anthropicClaudeOCR() {
+	async function anthropicClaudeOcr() {
 		const claudeOcrMsg = await claudeOcr(imagePath);
 		const claudeHtml = claudeOcrMsg?.content?.[0]?.text ?? OCR_FAILURE_TEXT;
 		htmlContent += claudeHtml;
 	}
 
-	async function openAIGPT4OCR() {
-		const ocrMessage = await openaiOcr(imagePath);
+	async function openAiOcr(model = models.GPT_4_O) {
+		const ocrMessage = await openaiOcr(imagePath, model);
 		const openaiHtml = ocrMessage ?? OCR_FAILURE_TEXT;
 		htmlContent += openaiHtml;
 	}
 
-	async function tesseractOCR() {
+	async function tesseractOcr() {
 		const worker = await createWorker("eng");
 		const ret = await worker.recognize(imagePath);
 		await worker.terminate();

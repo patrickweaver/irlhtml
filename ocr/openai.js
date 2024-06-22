@@ -3,7 +3,12 @@ const FileType = require("file-type");
 const OpenAI = require("openai");
 const { PROMPT } = require("./prompt");
 
-async function openaiOcr(imagePath) {
+const models = {
+	GPT_4_TURBO: "gpt-4-turbo",
+	GPT_4_O: "gpt-4o",
+};
+
+async function openaiOcr(imagePath, model = models.GPT_4_O) {
 	const image = fs.readFileSync(imagePath);
 	const content = Buffer.from(image).toString("base64");
 	const mimeType = (await FileType.fromFile(imagePath)).mime;
@@ -12,7 +17,7 @@ async function openaiOcr(imagePath) {
 	});
 
 	const response = await openai.chat.completions.create({
-		model: "gpt-4-turbo",
+		model: model,
 		messages: [
 			{
 				role: "user",
@@ -37,4 +42,4 @@ async function openaiOcr(imagePath) {
 	return response.choices[0].message.content;
 }
 
-module.exports = { openaiOcr };
+module.exports = { models, openaiOcr };
