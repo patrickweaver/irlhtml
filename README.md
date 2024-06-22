@@ -15,4 +15,4 @@ The LLM based OCR tools (OpenAI and Anthropic) usually generate the most correct
 
 This project intentionally uses an outdated version of Node.js (16.x) because it is hosted on Glitch, and that is the newest version supported there.
 
-- https://help.glitch.com/hc/en-us/articles/16287495688845-What-version-of-Node-can-I-use-and-how-do-I-change-update-upgrade-it
+- [help.glitch.com/hc/en-us/articles/16287495688845-What-version-of-Node-can-I-use-and-how-do-I-change-update-upgrade-it](https://help.glitch.com/hc/en-us/articles/16287495688845-What-version-of-Node-can-I-use-and-how-do-I-change-update-upgrade-it)
