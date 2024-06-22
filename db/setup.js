@@ -17,11 +17,11 @@ const clearQuery = `
 `;
 
 module.exports = async (dbExec) => {
-  try {
-    if (clear) await dbExec(clearQuery);
-    await dbExec(schema);
-    console.log(successMessage);
-  } catch (error) {
-    console.log("Error:", error);
-  }
+	try {
+		if (clear) await dbExec(clearQuery);
+		await dbExec(schema);
+		console.log(successMessage);
+	} catch (error) {
+		console.log("Error:", error);
+	}
 };

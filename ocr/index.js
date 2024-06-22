@@ -14,7 +14,8 @@ const OCR_COMMENTS = {
 	GOOGLE_VISION: "<!-- Image OCRed with Google Vision API -->\n",
 	ANTHROPIC_CLAUDE: "<!-- Image OCRed with Anthropic Claude LLM -->\n",
 	OPEN_AI_GPT_4: "<!-- Image OCRed with OpenAI GPT-3 -->\n",
-	TESSERACT: "<!-- Image OCRed with Tesseract, https://tesseract-ocr.github.io/ -->\n",
+	TESSERACT:
+		"<!-- Image OCRed with Tesseract, https://tesseract-ocr.github.io/ -->\n",
 };
 
 const DEFAULT_OCR_TYPE = OCR_TYPES.TESSERACT;
@@ -24,32 +25,49 @@ async function runOcr(imagePath, ocrType = DEFAULT_OCR_TYPE) {
 	let htmlContent = OCR_COMMENTS[ocrType];
 
 	switch (ocrType) {
-	case OCR_TYPES.GOOGLE_VISION:
+		case OCR_TYPES.GOOGLE_VISION:
+			await googleVisionOCR();
+			break;
+
+		case OCR_TYPES.ANTHROPIC_CLAUDE:
+			await anthropicClaudeOCR();
+			break;
+
+		case OCR_TYPES.OPEN_AI_GPT_4:
+			await openAIGPT4OCR();
+			break;
+
+		case OCR_TYPES.TESSERACT:
+			await tesseractOCR();
+			break;
+	}
+
+	return htmlContent;
+
+	async function googleVisionOCR() {
 		const gvOcrGuess = await gvOcr(imagePath);
 		const googleHtml = gvOcrGuess.text;
 		htmlContent += googleHtml;
-		break;
+	}
 
-	case OCR_TYPES.ANTHROPIC_CLAUDE:
+	async function anthropicClaudeOCR() {
 		const claudeOcrMsg = await claudeOcr(imagePath);
 		const claudeHtml = claudeOcrMsg?.content?.[0]?.text ?? OCR_FAILURE_TEXT;
 		htmlContent += claudeHtml;
-		break;
+	}
 
-	case OCR_TYPES.OPEN_AI_GPT_4:
+	async function openAIGPT4OCR() {
 		const ocrMessage = await openaiOcr(imagePath);
 		const openaiHtml = ocrMessage ?? OCR_FAILURE_TEXT;
 		htmlContent += openaiHtml;
-		break;
+	}
 
-	case OCR_TYPES.TESSERACT:
+	async function tesseractOCR() {
 		const worker = await createWorker("eng");
 		const ret = await worker.recognize(imagePath);
 		await worker.terminate();
 		htmlContent += ret.data.text;
 	}
-
-	return htmlContent;
 }
 
 module.exports = {

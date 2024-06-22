@@ -1,6 +1,7 @@
+const { defaultRenderObj: _r } = require("../util/render");
 const getPageTitleFromSource = require("../util/getPageTitleFromSource");
 
-function apiErrorHandler(req, res, error, params = {}) {
+function apiErrorHandler(req, res, error) {
 	if (process.env.NODE_ENV === "development") {
 		console.log(error);
 		console.log({ url: req.url.slice(0, 5) });

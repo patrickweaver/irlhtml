@@ -1,8 +1,8 @@
 const db = require("./");
 
 async function insert({ id, htmlContent }) {
-  const timestamp = new Date().toISOString();
-  const query = `
+	const timestamp = new Date().toISOString();
+	const query = `
 		INSERT INTO Pages
 		(
 			id,
@@ -16,35 +16,35 @@ async function insert({ id, htmlContent }) {
 			?
 		);
 	`;
-  const success = await db.run(query, [id, htmlContent, timestamp, timestamp]);
-  return success;
+	const success = await db.run(query, [id, htmlContent, timestamp, timestamp]);
+	return success;
 }
 
 async function get({ id }) {
-  const query = `
+	const query = `
 		SELECT *
 		FROM Pages
 		WHERE id = ?
 	`;
-  const rows = await db.all(query, [id]);
-  return rows[0];
+	const rows = await db.all(query, [id]);
+	return rows[0];
 }
 
 async function getAll() {
-  const query = `
+	const query = `
 		SELECT *
 		FROM Pages
 		ORDER BY date_created
 		DESC
 	`;
-  return db.all(query);
+	return db.all(query);
 }
 
 async function del({ id }) {
-  const query = `
+	const query = `
 			DELETE FROM Pages WHERE id = '?'
 		`;
-  return db.run(query, [id]);
+	return db.run(query, [id]);
 }
 
 module.exports = { insert, get, getAll, del };

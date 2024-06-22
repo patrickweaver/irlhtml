@@ -1,5 +1,4 @@
 const fs = require("fs");
-const vision = require("@google-cloud/vision").v1p3beta1;
 const axios = require("axios");
 const gcpApiUrl = "https://vision.googleapis.com/v1/images:annotate?";
 const GCP_API_KEY = process.env.GCP_API_KEY;
@@ -21,23 +20,21 @@ function getGcpRequestOptions(imagePath) {
 }
 
 async function askGoogleVision(imageUrl) {
-	return new Promise(async function (resolve, reject) {
-		const { url, data } = getGcpRequestOptions(imageUrl);
-		let gvGuess;
-		try {
-			const response = await axios.post(url, data);
-			gvGuess = response.data.responses?.[0]?.fullTextAnnotation?.text;
-			gvGuess = gvGuess.replaceAll("\"", "'");
-			gvGuess = gvGuess ?? "";
-		} catch (error) {
-			console.log(error);
-		}
-		if (gvGuess) {
-			resolve({ text: gvGuess });
-		} else {
-			reject(Error("No response from Google Vision"));
-		}
-	});
+	const { url, data } = getGcpRequestOptions(imageUrl);
+	let gvGuess;
+	try {
+		const response = await axios.post(url, data);
+		gvGuess = response.data.responses?.[0]?.fullTextAnnotation?.text;
+		gvGuess = gvGuess.replaceAll("\"", "'");
+		gvGuess = gvGuess ?? "";
+	} catch (error) {
+		console.log(error);
+	}
+	if (gvGuess) {
+		return { text: gvGuess };
+	} else {
+		throw Error("No response from Google Vision");
+	}
 }
 
 module.exports = {

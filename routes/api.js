@@ -65,7 +65,7 @@ router.delete("/pages/:id", async (req, res) => {
 	const secret = req.query?.secret;
 	try {
 		if (secret !== process.env.SECRET) throw new Error("Invalid Secret");
-		const status = await page.del(req.params.id);
+		await page.del(req.params.id);
 		res.status(200).json({ status: "deleted" });
 	} catch (error) {
 		apiErrorHandler(req, res, error);
