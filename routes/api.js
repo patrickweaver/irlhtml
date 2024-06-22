@@ -21,10 +21,6 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
   }
 
   const id = uuidv4();
-
-  const source_code = req.body?.source_code?.replaceAll('"', "'");
-  // const image_url = req.body.image_url;
-
   const htmlContent = await runOcr(imagePath, ocrType);
 
   if (imagePath) {

@@ -11,10 +11,10 @@ const OCR_TYPES = {
 };
 
 const OCR_COMMENTS = {
-  GOOGLE_VISION: `<!-- Image OCRed with Google Vision API -->`,
-  ANTHROPIC_CLAUDE: `<!-- Image OCRed with Anthropic Claude LLM -->`,
-  OPEN_AI_GPT_4: `<!-- Image OCRed with OpenAI GPT-3 -->`,
-  TESSERACT: `<!-- Image OCRed with Tesseract, https://tesseract-ocr.github.io/ -->`,
+  GOOGLE_VISION: `<!-- Image OCRed with Google Vision API -->\n`,
+  ANTHROPIC_CLAUDE: `<!-- Image OCRed with Anthropic Claude LLM -->\n`,
+  OPEN_AI_GPT_4: `<!-- Image OCRed with OpenAI GPT-3 -->\n`,
+  TESSERACT: `<!-- Image OCRed with Tesseract, https://tesseract-ocr.github.io/ -->\n`,
 };
 
 const DEFAULT_OCR_TYPE = OCR_TYPES.TESSERACT;
