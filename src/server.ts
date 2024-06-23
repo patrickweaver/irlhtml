@@ -3,8 +3,9 @@ import { AddressInfo } from "net";
 
 var app: Express = express();
 app.use(express.json({ limit: "15mb" }));
-app.use(express.static("public"));
+app.use(express.static("src/public"));
 app.set("view engine", "ejs");
+app.set("views", "src/views");
 
 const apiRoutes = require("./routes/api");
 app.use("/api", apiRoutes);
