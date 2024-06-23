@@ -1,6 +1,6 @@
 import { HtmlPage, HtmlPageDb } from "../types/HtmlPage";
 import * as page from "../db/page";
-import { getPageTitle } from "../routes/helpers";
+import getPageTitleFromSource from "../util/getPageTitleFromSource";
 
 export async function get(id: string): Promise<HtmlPage> {
 	const data: HtmlPageDb = await page.get({ id });
@@ -21,7 +21,7 @@ export async function index(
 }
 
 function render(data: HtmlPageDb): HtmlPage {
-	const title = getPageTitle(data);
+	const title = getPageTitleFromSource(data?.source_code) ?? "";
 	return {
 		...data,
 		title,

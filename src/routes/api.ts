@@ -2,7 +2,7 @@ import fs from "fs";
 import express from "express";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
-import { apiErrorHandler } from "./helpers";
+import { apiErrorHandler } from "./errorHandlers";
 import { runOcr, OCR_TYPES } from "../ocr";
 import * as page from "../db/page";
 import * as HtmlPage from "../models/HtmlPage";

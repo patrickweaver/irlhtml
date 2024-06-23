@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { runOcr, OCR_TYPES } from "../ocr";
 import * as page from "../db/page";
 import { defaultRenderObj as _r } from "../util/constants";
-import { error404, errorHandler } from "./helpers";
+import { error404, errorHandler } from "./errorHandlers";
 import * as HtmlPage from "../models/HtmlPage";
 
 const router = express.Router();
