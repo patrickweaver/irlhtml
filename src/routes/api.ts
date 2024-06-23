@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { apiErrorHandler, getRowWithTitle } from "./helpers";
 import { runOcr, OCR_TYPES } from "../ocr";
 import * as page from "../db/page";
+import * as HtmlPage from "../models/HtmlPage";
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -55,9 +56,9 @@ router.get("/pages", async (req, res) => {
 router.get("/pages/:id", async (req, res) => {
 	const { id } = req.params;
 	try {
-		const row = await page.get({ id });
-		const rowWithTitle = getRowWithTitle(row);
-		res.json(rowWithTitle);
+		const page = await HtmlPage.get(id);
+		if (!page?.id) throw new Error("Page not found");
+		res.json(page);
 	} catch (error) {
 		return apiErrorHandler(req, res, error);
 	}

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { defaultRenderObj as _r } from "../util/render";
+import { defaultRenderObj as _r } from "../util/constants";
 import getPageTitleFromSource from "../util/getPageTitleFromSource";
+import { HtmlPageDb } from "../types/HtmlPage";
 
 export function apiErrorHandler(req: Request, res: Response, error: unknown) {
 	if (process.env.NODE_ENV === "development") {
@@ -32,9 +33,9 @@ export function error404(req: Request, res: Response, id: string) {
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-export function getRowWithTitle(row: any) {
+export function getRowWithTitle(row: HtmlPageDb) {
 	const source = row?.source_code;
-	const title = getPageTitleFromSource(source);
+	const title = getPageTitleFromSource(source) ?? "";
 	const rowWithTitle = { ...row, title };
 	return rowWithTitle;
 }

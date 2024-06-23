@@ -5,8 +5,9 @@ import { v4 as uuidv4 } from "uuid";
 
 import { runOcr, OCR_TYPES } from "../ocr";
 import * as page from "../db/page";
-import { defaultRenderObj as _r } from "../util/render";
+import { defaultRenderObj as _r } from "../util/constants";
 import { error404, errorHandler, getRowWithTitle } from "./helpers";
+import * as HtmlPage from "../models/HtmlPage";
 
 const router = express.Router();
 const upload = multer({ dest: __dirname + "/../../.data/images/" });
@@ -28,9 +29,9 @@ router.get("/pages", (req, res) => {
 router.get("/pages/:id", async (req, res) => {
 	const { id } = req.params;
 	try {
-		const row = await page.get({ id });
-		if (!row) return error404(req, res, id);
-		const sourceCode = row?.source_code;
+		const page = await HtmlPage.get(id);
+		if (!page?.id) return error404(req, res, id);
+		const sourceCode = page?.source_code;
 		if (!sourceCode) throw new Error("Invalid page");
 		res.send(sourceCode);
 	} catch (error) {
@@ -102,7 +103,7 @@ router.get("/set-secret", async (req, res) => {
 		res.send(render(title, body));
 		return;
 	}
-	const body = "<h1>Setting Secret</h1><p id=\"status\"></p>";
+	const body = '<h1>Setting Secret</h1><p id="status"></p>';
 	const secret = process.env?.SECRET ?? undefined;
 	const script = `
 		console.log("Setting Secret");
