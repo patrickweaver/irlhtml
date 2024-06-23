@@ -1,6 +1,7 @@
-const express = require("express");
+import express, { Express } from "express";
+import { AddressInfo } from "net";
 
-var app = express();
+var app: Express = express();
 app.use(express.json({ limit: "15mb" }));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -11,5 +12,6 @@ const mainRoutes = require("./routes/main");
 app.use("/", mainRoutes);
 
 var listener = app.listen(process.env.PORT, function () {
-	console.log("Your app is listening on port " + listener.address().port);
+	const { port } = listener.address() as AddressInfo;
+	console.log("Your app is listening on port " + port);
 });

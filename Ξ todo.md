@@ -5,6 +5,11 @@
 - Overlay on hosted pages
 - Analytics for OCR methods
 - Update copy
+- TypeScript
+- More Backend Tests
+- Set up Testing Library
+- Set up Playwright
+- Better admin access
 
 ## 2024-06-22
 
