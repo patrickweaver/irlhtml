@@ -5,44 +5,53 @@
 <h2>Create a new HTML page</h2>
 <p>Click the button below to upload a photo of HTML.</p>
 <form method="post" enctype="multipart/form-data" id="new-page-form">
-  <fieldset>
-    <legend>Select OCR method:</legend>
-    <input
-      type="radio"
-      id="google-vision"
-      name="ocr-method"
-      value="GOOGLE_VISION"
-    />
-    <label for="google-vision">Google Vision</label>
-    <input
-      type="radio"
-      id="anthropic-claude"
-      name="ocr-method"
-      value="ANTHROPIC_CLAUDE"
-    />
-    <label for="anthropic-claude">Anthropic Claude</label>
-    <input
-      type="radio"
-      id="open-ai-gpt-4"
-      name="ocr-method"
-      value="OPEN_AI_GPT_4"
-    />
-    <label for="open-ai-gpt-4">OpenAI GPT-4</label>
-    <input
-      type="radio"
-      id="tesseract"
-      name="ocr-method"
-      value="TESSERACT"
-      checked
-    />
-    <label for="tesseract">Tesseract (local)</label>
-  </fieldset>
-  <input type="file" id="upload-button" name="html-image" />
-  <button type="submit">Submit</button>
+	<fieldset class="ocr-method-list">
+		<legend>Select OCR method:</legend>
+		<div class="radio-grid">
+			<input
+				type="radio"
+				id="google-vision"
+				name="ocr-method"
+				value="GOOGLE_VISION"
+			/>
+			<label for="google-vision">Google Vision</label>
+			<input
+				type="radio"
+				id="anthropic-claude"
+				name="ocr-method"
+				value="ANTHROPIC_CLAUDE"
+			/>
+			<label for="anthropic-claude">Anthropic Claude</label>
+			<input
+				type="radio"
+				id="open-ai-gpt-turbo"
+				name="ocr-method"
+				value="OPEN_AI_GPT_4_TURBO"
+			/>
+			<label for="open-ai-gpt-turbo">OpenAI GPT-4 Turbo</label>
+			<input
+				type="radio"
+				id="open-ai-gpt-4-o"
+				name="ocr-method"
+				value="OPEN_AI_GPT_4_O"
+			/>
+			<label for="open-ai-gpt-4-o">OpenAI GPT-4o</label>
+			<input
+				type="radio"
+				id="tesseract"
+				name="ocr-method"
+				value="TESSERACT"
+				checked
+			/>
+			<label for="tesseract">Tesseract (local)</label>
+		</div>
+	</fieldset>
+	<input type="file" id="upload-button" name="html-image" />
+	<button type="submit">Submit</button>
 </form>
 <div id="status" style="display: none">
-  <h2>Status</h2>
-  <ol reversed id="status-list"></ol>
+	<h2>Status</h2>
+	<ol reversed id="status-list"></ol>
 </div>
 
 <%- include('../partials/bottom'); %>

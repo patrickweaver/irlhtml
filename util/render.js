@@ -1,6 +1,6 @@
 const defaultRenderObj = {
-  id: null,
-  title: "",
+	id: null,
+	title: "",
 };
 
 module.exports = { defaultRenderObj };
