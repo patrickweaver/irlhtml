@@ -2,3 +2,4 @@ views/partials
 shrinkwrap.yaml
 package.json
 package-lock.json
+dist

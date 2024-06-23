@@ -1,3 +1,4 @@
+import { run } from "./index";
 const clear = process.env.CLEAR_ALL_ROWS === "TRUE";
 console.log("Clear:", clear, `(${process.env.CLEAR_ALL_ROWS})`);
 
@@ -16,7 +17,7 @@ const clearQuery = `
 	DROP TABLE Pages;
 `;
 
-module.exports = async (dbExec) => {
+export default async (dbExec: typeof run) => {
 	try {
 		if (clear) await dbExec(clearQuery);
 		await dbExec(schema);

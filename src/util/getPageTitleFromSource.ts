@@ -1,4 +1,4 @@
-function getPageTitleFromSource(source) {
+export default function getPageTitleFromSource(source: string) {
 	const openTag = "<title>";
 	const closeTag = "</title>";
 	if (!source) return;
@@ -10,5 +10,3 @@ function getPageTitleFromSource(source) {
 	const title = source.slice(titleOpenIndex + openTag.length, titleCloseIndex);
 	return title.trim().replace("  ", " ").replace("	", " ");
 }
-
-module.exports = getPageTitleFromSource;

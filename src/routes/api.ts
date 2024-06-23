@@ -4,13 +4,12 @@ import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import { apiErrorHandler, getRowWithTitle } from "./helpers";
 import { runOcr, OCR_TYPES } from "../ocr";
-import page from "../db/page";
-import { defaultRenderObj as _r } from "../util/render";
+import * as page from "../db/page";
 
 const BASE_URL = process.env.BASE_URL;
 
 const router = express.Router();
-var upload = multer({ dest: __dirname + "/../../.data/images/" });
+const upload = multer({ dest: __dirname + "/../../.data/images/" });
 
 router.post("/new", upload.single("html-image"), async (req, res) => {
 	const ocrTypeKey = req.query?.ocrType;

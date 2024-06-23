@@ -1,15 +1,15 @@
-const fs = require("fs");
-const express = require("express");
-const multer = require("multer");
-const { v4: uuidv4 } = require("uuid");
+import fs from "fs";
+import express from "express";
+import multer from "multer";
+import { v4 as uuidv4 } from "uuid";
 
-const { runOcr, OCR_TYPES_JS } = require("../ocr");
-const page = require("../db/page");
-const { defaultRenderObj: _r } = require("../util/render");
-const { error404, errorHandler, getRowWithTitle } = require("./helpers");
+import { runOcr, OCR_TYPES } from "../ocr";
+import * as page from "../db/page";
+import { defaultRenderObj as _r } from "../util/render";
+import { error404, errorHandler, getRowWithTitle } from "./helpers";
 
 const router = express.Router();
-var upload = multer({ dest: __dirname + "/../../.data/images/" });
+const upload = multer({ dest: __dirname + "/../../.data/images/" });
 
 router.get("/", async function (req, res) {
 	try {
@@ -47,9 +47,12 @@ router.get("/new", async function (req, res) {
 });
 
 router.post("/new", upload.single("html-image"), async (req, res) => {
-	const ocrType = OCR_TYPES_JS?.[req.body?.["ocr-method"]];
+	const ocrTypeKey = req.body?.["ocr-method"];
+	if (!ocrTypeKey || typeof ocrTypeKey !== "string")
+		throw new Error("Invalid ocrType");
+	const ocrType = OCR_TYPES?.[ocrTypeKey as keyof typeof OCR_TYPES];
 
-	let imagePath = false;
+	let imagePath: string = "";
 	if (req.file && req.file.filename) {
 		imagePath = __dirname + "/../../.data/images/" + req.file.filename;
 	}
@@ -81,7 +84,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 });
 
 router.get("/set-secret", async (req, res) => {
-	const render = (title, body, script = "") => {
+	const render = (title: string, body: string, script: string = "") => {
 		return `
 		<!DOCTYPE html>
 		<html>
@@ -99,7 +102,7 @@ router.get("/set-secret", async (req, res) => {
 		res.send(render(title, body));
 		return;
 	}
-	const body = '<h1>Setting Secret</h1><p id="status"></p>';
+	const body = "<h1>Setting Secret</h1><p id=\"status\"></p>";
 	const secret = process.env?.SECRET ?? undefined;
 	const script = `
 		console.log("Setting Secret");
@@ -110,4 +113,4 @@ router.get("/set-secret", async (req, res) => {
 	res.send(render(title, body, script));
 });
 
-module.exports = router;
+export = router;

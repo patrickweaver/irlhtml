@@ -1,6 +1,12 @@
-const db = require("./");
+import * as db from "./";
 
-async function insert({ id, htmlContent }) {
+export async function insert({
+	id,
+	htmlContent,
+}: {
+	id: string;
+	htmlContent: string;
+}) {
 	const timestamp = new Date().toISOString();
 	const query = `
 		INSERT INTO Pages
@@ -20,7 +26,7 @@ async function insert({ id, htmlContent }) {
 	return success;
 }
 
-async function get({ id }) {
+export async function get({ id }: { id: string }) {
 	const query = `
 		SELECT *
 		FROM Pages
@@ -30,7 +36,7 @@ async function get({ id }) {
 	return rows[0];
 }
 
-async function getAll() {
+export async function getAll() {
 	const query = `
 		SELECT *
 		FROM Pages
@@ -40,11 +46,9 @@ async function getAll() {
 	return db.all(query);
 }
 
-async function del({ id }) {
+export async function del({ id }: { id: string }) {
 	const query = `
 			DELETE FROM Pages WHERE id = '?'
 		`;
 	return db.run(query, [id]);
 }
-
-module.exports = { insert, get, getAll, del };

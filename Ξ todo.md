@@ -10,6 +10,8 @@
 - Set up Testing Library
 - Set up Playwright
 - Better admin access
+- Use better-sqlite3
+- Better typing for db modules
 
 ## 2024-06-22
 

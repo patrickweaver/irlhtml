@@ -1,9 +1,9 @@
-const { describe, expect, test } = require("@jest/globals");
-const getPageTitleFromSource = require("./getPageTitleFromSource");
+import { describe, expect, test } from "@jest/globals";
+import getPageTitleFromSource from "./getPageTitleFromSource";
 
 describe("getPageTitleFromSource", () => {
-	test("Returns undefined with undefined source", () => {
-		expect(getPageTitleFromSource()).toBe(undefined);
+	test("Returns undefined with empty source", () => {
+		expect(getPageTitleFromSource("")).toBe(undefined);
 	});
 
 	test("Returns undefined with empty string source", () => {
