@@ -4,16 +4,15 @@
   "description": "A hosting service for images of HTML files",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon -r dotenv/config server.js",
+    "build": "npx tsc",
+    "start": "PORT=3000 node dist/src/server.js",
+    "dev": "nodemon -r dotenv/config src/server.ts",
     "test": "jest"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",
     "@eslint/create-config": "^0.4.6",
     "@google-cloud/vision": "^4.3.0",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
     "axios": "^1.7.2",
     "better-sqlite3": "^8.4.0",
     "ejs": "^3.1.10",
@@ -38,10 +37,20 @@
     "ocr"
   ],
   "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/multer": "^1.4.11",
+    "@types/node": "^20.14.8",
+    "@types/sqlite3": "^3.1.11",
+    "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "dotenv": "^16.4.5",
     "eslint": "^8.57.0",
     "jest": "^29.7.0",
     "nodemon": "^3.1.4",
-    "prettier": "^3.3.2"
+    "prettier": "^3.3.2",
+    "ts-jest": "^29.1.5",
+    "typescript": "^5.5.2"
   }
 }
