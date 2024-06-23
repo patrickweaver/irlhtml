@@ -32,10 +32,8 @@ export function error404(req: Request, res: Response, id: string) {
 	return res.render("pages/error404", { ..._r, id });
 }
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-export function getRowWithTitle(row: HtmlPageDb) {
-	const source = row?.source_code;
+export function getPageTitle(pageData: HtmlPageDb): string {
+	const source = pageData?.source_code;
 	const title = getPageTitleFromSource(source) ?? "";
-	const rowWithTitle = { ...row, title };
-	return rowWithTitle;
+	return title;
 }

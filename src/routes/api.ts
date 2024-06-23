@@ -2,7 +2,7 @@ import fs from "fs";
 import express from "express";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
-import { apiErrorHandler, getRowWithTitle } from "./helpers";
+import { apiErrorHandler } from "./helpers";
 import { runOcr, OCR_TYPES } from "../ocr";
 import * as page from "../db/page";
 import * as HtmlPage from "../models/HtmlPage";
@@ -45,9 +45,8 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 
 router.get("/pages", async (req, res) => {
 	try {
-		const rows = await page.getAll();
-		const rowsWithTitles = rows.map(getRowWithTitle);
-		res.json(rowsWithTitles);
+		const pages = await HtmlPage.index();
+		res.json(pages);
 	} catch (error) {
 		return apiErrorHandler(req, res, error);
 	}

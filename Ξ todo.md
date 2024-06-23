@@ -12,6 +12,7 @@
 - Better admin access
 - Use better-sqlite3
 - Better typing for db modules
+- Pagination
 
 ## 2024-06-22
 

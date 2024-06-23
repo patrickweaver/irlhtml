@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { runOcr, OCR_TYPES } from "../ocr";
 import * as page from "../db/page";
 import { defaultRenderObj as _r } from "../util/constants";
-import { error404, errorHandler, getRowWithTitle } from "./helpers";
+import { error404, errorHandler } from "./helpers";
 import * as HtmlPage from "../models/HtmlPage";
 
 const router = express.Router();
@@ -14,9 +14,8 @@ const upload = multer({ dest: __dirname + "/../../.data/images/" });
 
 router.get("/", async function (req, res) {
 	try {
-		const rows = await page.getAll();
-		const rowsWithTitles = rows.map(getRowWithTitle);
-		res.render("pages/index", { ..._r, pages: rowsWithTitles, title: "home" });
+		const pages = HtmlPage.index();
+		res.render("pages/index", { ..._r, pages, title: "Home" });
 	} catch (error) {
 		return errorHandler(req, res, error, { ..._r });
 	}
@@ -41,7 +40,7 @@ router.get("/pages/:id", async (req, res) => {
 
 router.get("/new", async function (req, res) {
 	try {
-		res.render("pages/new", { ..._r, title: "new" });
+		res.render("pages/new", { ..._r, title: "New Page" });
 	} catch (error) {
 		return errorHandler(req, res, error, { ..._r });
 	}
