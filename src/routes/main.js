@@ -3,7 +3,7 @@ const express = require("express");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 
-const { runOcr, OCR_TYPES } = require("../ocr");
+const { runOcr, OCR_TYPES_JS } = require("../ocr");
 const page = require("../db/page");
 const { defaultRenderObj: _r } = require("../util/render");
 const { error404, errorHandler, getRowWithTitle } = require("./helpers");
@@ -47,7 +47,7 @@ router.get("/new", async function (req, res) {
 });
 
 router.post("/new", upload.single("html-image"), async (req, res) => {
-	const ocrType = OCR_TYPES?.[req.body?.["ocr-method"]];
+	const ocrType = OCR_TYPES_JS?.[req.body?.["ocr-method"]];
 
 	let imagePath = false;
 	if (req.file && req.file.filename) {

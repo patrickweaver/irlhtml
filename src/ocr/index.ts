@@ -1,9 +1,17 @@
-const { claudeOcr } = require("./claude");
-const gvOcr = require("./googleVision").googleVisionTextDetection;
-const { createWorker } = require("tesseract.js");
-const { openaiOcr, models } = require("./openai");
+import { claudeOcr } from "./claude";
+import { googleVisionTextDetection as gvOcr } from "./googleVision";
+import { createWorker } from "tesseract.js";
+import { openaiOcr, models } from "./openai";
 
-const OCR_TYPES = {
+export enum OCR_TYPES {
+	GOOGLE_VISION = "GOOGLE_VISION",
+	ANTHROPIC_CLAUDE = "ANTHROPIC_CLAUDE",
+	OPEN_AI_GPT_4_TURBO = "OPEN_AI_GPT_4_TURBO",
+	OPEN_AI_GPT_4_O = "OPEN_AI_GPT_4_O",
+	TESSERACT = "TESSERACT",
+}
+
+export const OCR_TYPES_JS = {
 	GOOGLE_VISION: "GOOGLE_VISION",
 	ANTHROPIC_CLAUDE: "ANTHROPIC_CLAUDE",
 	OPEN_AI_GPT_4_TURBO: "OPEN_AI_GPT_4_TURBO",
@@ -11,39 +19,38 @@ const OCR_TYPES = {
 	TESSERACT: "TESSERACT",
 };
 
-const OCR_COMMENTS = {
-	GOOGLE_VISION: "<!-- Image OCRed with Google Vision API -->\n",
-	ANTHROPIC_CLAUDE: "<!-- Image OCRed with Anthropic Claude LLM -->\n",
-	OPEN_AI_GPT_4_TURBO: "<!-- Image OCRed with OpenAI GPT-4 Turbo -->\n",
-	OPEN_AI_GPT_4_O: "<!-- Image OCRed with OpenAI GPT-4o -->\n",
-	TESSERACT:
-		"<!-- Image OCRed with Tesseract, https://tesseract-ocr.github.io/ -->\n",
-};
+enum OCR_COMMENTS {
+	GOOGLE_VISION = "<!-- Image OCRed with Google Vision API -->\n",
+	ANTHROPIC_CLAUDE = "<!-- Image OCRed with Anthropic Claude LLM -->\n",
+	OPEN_AI_GPT_4_TURBO = "<!-- Image OCRed with OpenAI GPT-4 Turbo -->\n",
+	OPEN_AI_GPT_4_O = "<!-- Image OCRed with OpenAI GPT-4o -->\n",
+	TESSERACT = "<!-- Image OCRed with Tesseract, https://tesseract-ocr.github.io/ -->\n",
+}
 
-const DEFAULT_OCR_TYPE = OCR_TYPES.TESSERACT;
+const DEFAULT_OCR_TYPE = OCR_TYPES_JS.TESSERACT;
 const OCR_FAILURE_TEXT = "<h1>OCR Error</h1><p>Image processing failed</p>";
 
-async function runOcr(imagePath, ocrType = DEFAULT_OCR_TYPE) {
-	let htmlContent = OCR_COMMENTS[ocrType];
+export async function runOcr(imagePath: string, ocrType = DEFAULT_OCR_TYPE) {
+	let htmlContent: string = OCR_COMMENTS[ocrType as keyof typeof OCR_COMMENTS];
 
 	switch (ocrType) {
-		case OCR_TYPES.GOOGLE_VISION:
+		case OCR_TYPES_JS.GOOGLE_VISION:
 			await googleVisionOcr();
 			break;
 
-		case OCR_TYPES.ANTHROPIC_CLAUDE:
+		case OCR_TYPES_JS.ANTHROPIC_CLAUDE:
 			await anthropicClaudeOcr();
 			break;
 
-		case OCR_TYPES.OPEN_AI_GPT_4_TURBO:
+		case OCR_TYPES_JS.OPEN_AI_GPT_4_TURBO:
 			await openAiOcr(models.GPT_4_TURBO);
 			break;
 
-		case OCR_TYPES.OPEN_AI_GPT_4_O:
+		case OCR_TYPES_JS.OPEN_AI_GPT_4_O:
 			await openAiOcr(models.GPT_4_O);
 			break;
 
-		case OCR_TYPES.TESSERACT:
+		case OCR_TYPES_JS.TESSERACT:
 			await tesseractOcr();
 			break;
 	}
@@ -75,8 +82,3 @@ async function runOcr(imagePath, ocrType = DEFAULT_OCR_TYPE) {
 		htmlContent += ret.data.text;
 	}
 }
-
-module.exports = {
-	OCR_TYPES,
-	runOcr,
-};
