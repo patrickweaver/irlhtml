@@ -1,4 +1,4 @@
-const DATABASE_PATH = process.env.DATABASE_PATH || "./src/.data/db.sqlite3";
+const DATABASE_PATH = process.env.DATABASE_PATH || "./.data/db.sqlite3";
 const successMessage = `SQLite Database at ${DATABASE_PATH} opened successfully.`;
 const callback = require("./callback")(successMessage);
 const setup = require("./setup");

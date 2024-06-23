@@ -10,14 +10,14 @@ const { defaultRenderObj: _r } = require("../util/render");
 const BASE_URL = process.env.BASE_URL;
 
 const router = express.Router();
-var upload = multer({ dest: __dirname + "/../.data/images/" });
+var upload = multer({ dest: __dirname + "/../../.data/images/" });
 
 router.post("/new", upload.single("html-image"), async (req, res) => {
 	const ocrType = OCR_TYPES?.[req.query?.ocrType];
 
 	let imagePath = false;
 	if (req.file && req.file.filename) {
-		imagePath = __dirname + "/../.data/images/" + req.file.filename;
+		imagePath = __dirname + "/../../.data/images/" + req.file.filename;
 	}
 
 	const id = uuidv4();

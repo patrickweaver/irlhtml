@@ -9,7 +9,7 @@ const { defaultRenderObj: _r } = require("../util/render");
 const { error404, errorHandler, getRowWithTitle } = require("./helpers");
 
 const router = express.Router();
-var upload = multer({ dest: __dirname + "/../.data/images/" });
+var upload = multer({ dest: __dirname + "/../../.data/images/" });
 
 router.get("/", async function (req, res) {
 	try {
@@ -51,7 +51,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 
 	let imagePath = false;
 	if (req.file && req.file.filename) {
-		imagePath = __dirname + "/../.data/images/" + req.file.filename;
+		imagePath = __dirname + "/../../.data/images/" + req.file.filename;
 	}
 
 	const id = uuidv4();
@@ -99,7 +99,7 @@ router.get("/set-secret", async (req, res) => {
 		res.send(render(title, body));
 		return;
 	}
-	const body = "<h1>Setting Secret</h1><p id=\"status\"></p>";
+	const body = '<h1>Setting Secret</h1><p id="status"></p>';
 	const secret = process.env?.SECRET ?? undefined;
 	const script = `
 		console.log("Setting Secret");
