@@ -1,7 +1,8 @@
 import { claudeOcr } from "./claude";
 import { googleVisionTextDetection as gvOcr } from "./googleVision";
 import { createWorker } from "tesseract.js";
-import { openaiOcr, models } from "./openai";
+import { openaiOcr, Models } from "./openai";
+import { ContentBlock } from "@anthropic-ai/sdk/resources";
 
 export enum OCR_TYPES {
 	GOOGLE_VISION = "GOOGLE_VISION",
@@ -43,11 +44,11 @@ export async function runOcr(imagePath: string, ocrType = DEFAULT_OCR_TYPE) {
 			break;
 
 		case OCR_TYPES_JS.OPEN_AI_GPT_4_TURBO:
-			await openAiOcr(models.GPT_4_TURBO);
+			await openAiOcr(Models.GPT_4_TURBO);
 			break;
 
 		case OCR_TYPES_JS.OPEN_AI_GPT_4_O:
-			await openAiOcr(models.GPT_4_O);
+			await openAiOcr(Models.GPT_4_O);
 			break;
 
 		case OCR_TYPES_JS.TESSERACT:
@@ -65,11 +66,16 @@ export async function runOcr(imagePath: string, ocrType = DEFAULT_OCR_TYPE) {
 
 	async function anthropicClaudeOcr() {
 		const claudeOcrMsg = await claudeOcr(imagePath);
-		const claudeHtml = claudeOcrMsg?.content?.[0]?.text ?? OCR_FAILURE_TEXT;
-		htmlContent += claudeHtml;
+		const claudeContent: ContentBlock = claudeOcrMsg?.content?.[0];
+		if ("text" in claudeContent) {
+			const claudeHtml = claudeContent?.text ?? OCR_FAILURE_TEXT;
+			htmlContent += claudeHtml;
+		} else {
+			throw new Error("Invalid response from Claude");
+		}
 	}
 
-	async function openAiOcr(model = models.GPT_4_O) {
+	async function openAiOcr(model = Models.GPT_4_O) {
 		const ocrMessage = await openaiOcr(imagePath, model);
 		const openaiHtml = ocrMessage ?? OCR_FAILURE_TEXT;
 		htmlContent += openaiHtml;

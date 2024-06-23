@@ -1,17 +1,17 @@
-const fs = require("fs");
-const FileType = require("file-type");
-const OpenAI = require("openai");
-const { PROMPT } = require("./prompt");
+import fs from "fs";
+import FileType from "file-type";
+import OpenAI from "openai";
+import { PROMPT } from "./prompt";
 
-const models = {
-	GPT_4_TURBO: "gpt-4-turbo",
-	GPT_4_O: "gpt-4o",
-};
+export enum Models {
+	GPT_4_TURBO = "gpt-4-turbo",
+	GPT_4_O = "gpt-4o",
+}
 
-async function openaiOcr(imagePath, model = models.GPT_4_O) {
+export async function openaiOcr(imagePath: string, model = Models.GPT_4_O) {
 	const image = fs.readFileSync(imagePath);
 	const content = Buffer.from(image).toString("base64");
-	const mimeType = (await FileType.fromFile(imagePath)).mime;
+	const mimeType = (await FileType.fromFile(imagePath))?.mime;
 	const openai = new OpenAI({
 		apiKey: process.env["OPENAI_API_KEY"],
 	});
@@ -41,5 +41,3 @@ async function openaiOcr(imagePath, model = models.GPT_4_O) {
 
 	return response.choices[0].message.content;
 }
-
-module.exports = { models, openaiOcr };
