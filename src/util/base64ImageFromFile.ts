@@ -11,7 +11,7 @@ async function base64ImageFromFile(
 	const fileType = await FileType.fromBuffer(buffer);
 	const mimeType = fileType?.mime;
 	if (mimeType === undefined) throw new Error("Invalid mimeType");
-	return { content, mimeType: "image/png" };
+	return { content, mimeType };
 }
 
 export default base64ImageFromFile;
