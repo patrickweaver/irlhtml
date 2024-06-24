@@ -2,11 +2,12 @@
   "name": "irlhtml",
   "version": "0.3.0",
   "description": "A hosting service for images of HTML files",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "build": "npx tsc",
     "start": "PORT=3000 node dist/src/server.js",
-    "dev": "nodemon -r dotenv/config src/server.ts",
+    "dev": "tsx -r dotenv/config src/server.ts",
     "test": "jest"
   },
   "dependencies": {
@@ -51,6 +52,7 @@
     "nodemon": "^3.1.4",
     "prettier": "^3.3.2",
     "ts-jest": "^29.1.5",
+    "tsx": "^3.14.0",
     "typescript": "^5.5.2"
   }
 }

@@ -7,10 +7,13 @@ import { runOcr, OCR_TYPES } from "../ocr";
 import * as page from "../db/page";
 import * as HtmlPage from "../models/HtmlPage";
 
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
 const BASE_URL = process.env.BASE_URL;
 
 const router = express.Router();
-const upload = multer({ dest: __dirname + "/../../.data/images/" });
+const upload = multer({ dest: "./../../.data/images/" });
 
 router.post("/new", upload.single("html-image"), async (req, res) => {
 	const ocrTypeKey = req.query?.ocrType;
@@ -20,7 +23,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 
 	let imagePath = "";
 	if (req.file && req.file.filename) {
-		imagePath = __dirname + "/../../.data/images/" + req.file.filename;
+		imagePath = "./../../.data/images/" + req.file.filename;
 	}
 
 	const id = uuidv4();

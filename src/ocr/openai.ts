@@ -1,20 +1,17 @@
-import fs from "fs";
-import FileType from "file-type";
 import OpenAI from "openai";
 import { PROMPT } from "./prompt";
+import base64ImageFromFile from "../util/base64ImageFromFile";
 
 export enum Models {
 	GPT_4_TURBO = "gpt-4-turbo",
 	GPT_4_O = "gpt-4o",
 }
 
+const apiKey = process.env["OPENAI_API_KEY"];
+
 export async function openaiOcr(imagePath: string, model = Models.GPT_4_O) {
-	const image = fs.readFileSync(imagePath);
-	const content = Buffer.from(image).toString("base64");
-	const mimeType = (await FileType.fromFile(imagePath))?.mime;
-	const openai = new OpenAI({
-		apiKey: process.env["OPENAI_API_KEY"],
-	});
+	const { content, mimeType } = await base64ImageFromFile(imagePath);
+	const openai = new OpenAI({ apiKey });
 
 	const response = await openai.chat.completions.create({
 		model: model,
@@ -22,10 +19,7 @@ export async function openaiOcr(imagePath: string, model = Models.GPT_4_O) {
 			{
 				role: "user",
 				content: [
-					{
-						type: "text",
-						text: PROMPT,
-					},
+					{ type: "text", text: PROMPT },
 					{
 						type: "image_url",
 						image_url: {

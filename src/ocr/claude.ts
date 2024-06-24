@@ -1,9 +1,8 @@
-import fs from "fs";
 import Anthropic from "@anthropic-ai/sdk";
-import FileType from "file-type";
 import { PROMPT } from "./prompt";
 import { ImageBlockParam } from "@anthropic-ai/sdk/resources";
 import core from "file-type/core";
+import base64ImageFromFile from "../util/base64ImageFromFile";
 
 enum MODELS {
 	HAIKU_3 = "claude-3-haiku-20240307",
@@ -19,11 +18,7 @@ type ClaudeValidMimeTypes = Extends<
 >;
 
 export async function claudeOcr(imagePath: string) {
-	const image = fs.readFileSync(imagePath);
-	const content = Buffer.from(image).toString("base64");
-	const _mimeType: core.MimeType | null =
-		(await FileType.fromFile(imagePath))?.mime ?? null;
-	if (!_mimeType) throw new Error("Invalid mimeType");
+	const { content, mimeType: _mimeType } = await base64ImageFromFile(imagePath);
 	const mimeType: ImageBlockParam.Source["media_type"] =
 		_mimeType as ClaudeValidMimeTypes;
 	const anthropic = new Anthropic();
