@@ -102,7 +102,7 @@ router.get("/set-secret", async (req, res) => {
 		res.send(render(title, body));
 		return;
 	}
-	const body = '<h1>Setting Secret</h1><p id="status"></p>';
+	const body = "<h1>Setting Secret</h1><p id=\"status\"></p>";
 	const secret = process.env?.SECRET ?? undefined;
 	const script = `
 		console.log("Setting Secret");

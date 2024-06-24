@@ -24,7 +24,7 @@ export async function googleVisionTextDetection(imageUrl: string) {
 	try {
 		const response = await axios.post(url, data);
 		gvGuess = response.data.responses?.[0]?.fullTextAnnotation?.text ?? "";
-		gvGuess = gvGuess.replaceAll('"', "'");
+		gvGuess = gvGuess.replaceAll("\"", "'");
 	} catch (error) {
 		console.log(error);
 		throw Error("Invalid response from Google Vision");

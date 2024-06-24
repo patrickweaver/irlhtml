@@ -7,9 +7,6 @@ import { runOcr, OCR_TYPES } from "../ocr";
 import * as page from "../db/page";
 import * as HtmlPage from "../models/HtmlPage";
 
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-
 const BASE_URL = process.env.BASE_URL;
 
 const router = express.Router();
