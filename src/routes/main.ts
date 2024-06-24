@@ -14,7 +14,7 @@ const upload = multer({ dest: "./../../.data/images/" });
 
 router.get("/", async function (req, res) {
 	try {
-		const pages = HtmlPage.index();
+		const pages = await HtmlPage.index();
 		res.render("pages/index", { ..._r, pages, title: "Home" });
 	} catch (error) {
 		return errorHandler(req, res, error, { ..._r });

@@ -13,6 +13,7 @@
 - Use better-sqlite3
 - Better typing for db modules
 - Pagination
+- EJS-Lint
 
 ## 2024-06-22
 

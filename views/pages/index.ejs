@@ -11,12 +11,12 @@
 
 <h2>Pages</h2>
 <ol id="pages-list">
-	<% pages.forEach(function(page) { %>
+	<% pages?.[0] && pages.forEach(function(page) { %>
 	<a href="<%= `/pages/${page.id}` %>">
 		<li>
 			<time><%= getReadableDate(page.date_created) %></time>:
 			<span class="page-title-link">
-				<%= page.title ?? `Untitled - ${page.id.slice(0, 5)}` %>
+				<%= page.title || `Untitled - ${page.id.slice(0, 5)}` %>
 			</span>
 		</li>
 	</a>
