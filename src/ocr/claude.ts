@@ -30,7 +30,7 @@ export async function claudeOcr(imagePath: string) {
 	return msg;
 }
 
-function getClaudeMessages(
+export function getClaudeMessages(
 	content: string,
 	mimeType: ImageBlockParam.Source["media_type"],
 ): Anthropic.Messages.MessageParam[] {
