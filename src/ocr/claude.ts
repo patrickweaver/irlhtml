@@ -3,6 +3,7 @@ import { PROMPT } from "./prompt";
 import { ImageBlockParam } from "@anthropic-ai/sdk/resources";
 import core from "file-type/core";
 import base64ImageFromFile from "../util/base64ImageFromFile";
+import { z } from "zod";
 
 enum MODELS {
 	HAIKU_3 = "claude-3-haiku-20240307",
@@ -11,16 +12,28 @@ enum MODELS {
 	SONNET_3_5 = "claude-3-5-sonnet-20240620",
 }
 
-type Extends<T, U extends T> = U;
-type ClaudeValidMimeTypes = Extends<
-	core.MimeType,
-	"image/jpeg" | "image/png" | "image/gif" | "image/webp"
->;
+const ClaudeValidMimeTypesEnum = z.enum([
+	"image/jpeg",
+	"image/png",
+	"image/gif",
+	"image/webp",
+]);
+type ClaudeValidMimeType = z.infer<typeof ClaudeValidMimeTypesEnum>;
+
+export function validateMimeType(mimeType: string): ClaudeValidMimeType | null {
+	const result = ClaudeValidMimeTypesEnum.safeParse(mimeType);
+	if (result.success) {
+		return result.data;
+	} else {
+		return null;
+	}
+}
 
 export async function claudeOcr(imagePath: string) {
 	const { content, mimeType: _mimeType } = await base64ImageFromFile(imagePath);
-	const mimeType: ImageBlockParam.Source["media_type"] =
-		_mimeType as ClaudeValidMimeTypes;
+	const mimeType: ImageBlockParam.Source["media_type"] | null =
+		validateMimeType(_mimeType);
+	if (!mimeType) throw new Error("Invalid mimeType");
 	const anthropic = new Anthropic();
 	const msg = await anthropic.messages.create({
 		model: MODELS.HAIKU_3,

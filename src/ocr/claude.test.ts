@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { claudeOcr, getClaudeMessages } from "./claude";
+import { claudeOcr, getClaudeMessages, validateMimeType } from "./claude";
 import { PROMPT } from "./prompt";
 import Anthropic from "@anthropic-ai/sdk";
 
@@ -8,6 +8,28 @@ jest.mock("@anthropic-ai/sdk", () => {
 	return jest.fn().mockImplementation(() => ({
 		messages: { create: mockCreate },
 	}));
+});
+
+describe("validateMimeType", () => {
+	test("gif should be valid", () => {
+		expect(validateMimeType("image/gif")).toBe("image/gif");
+	});
+
+	test("jpeg should be valid", () => {
+		expect(validateMimeType("image/jpeg")).toBe("image/jpeg");
+	});
+
+	test("png should be valid", () => {
+		expect(validateMimeType("image/png")).toBe("image/png");
+	});
+
+	test("webp should be valid", () => {
+		expect(validateMimeType("image/webp")).toBe("image/webp");
+	});
+
+	test("bmp should be valid", () => {
+		expect(validateMimeType("image/bmp")).toBe(null);
+	});
 });
 
 describe("claudeOcr", () => {
@@ -32,7 +54,6 @@ describe("claudeOcr", () => {
 		};
 		mockCreate.mockResolvedValue(mockResponse);
 
-		// Your function that uses anthropic.messages.create
 		const filePath = "tests/test-image-files/test.png";
 		const ocrText = await claudeOcr(filePath);
 
@@ -51,7 +72,6 @@ describe("claudeOcr", () => {
 		};
 		mockCreate.mockResolvedValue(mockResponse);
 
-		// Your function that uses anthropic.messages.create
 		const filePath = "tests/test-image-files/test.bmp";
 		await expect(claudeOcr(filePath)).rejects.toThrow("Invalid mimeType");
 	});
