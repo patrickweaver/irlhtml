@@ -27,7 +27,7 @@ export async function googleVisionTextDetection(imageUrl: string) {
 		gvGuess = gvGuess.replaceAll('"', "'");
 	} catch (error) {
 		console.log(error);
-		throw Error("Invalid response from Google Vision");
+		throw Error("Error making request to Google Vision");
 	}
 	if (gvGuess) {
 		return { text: gvGuess };

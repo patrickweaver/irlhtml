@@ -1,9 +1,16 @@
 import { describe, expect, test } from "@jest/globals";
 import base64ImageFromFile from "./base64ImageFromFile";
+import {
+	txt,
+	png,
+	jpg,
+	jpeg,
+	bmp,
+} from "../../tests/test-image-files/imageFileData";
 
 describe("base64ImageFromFile", () => {
 	test("Throws for invalid file", async () => {
-		const filePath = "tests/test-image-files/test.txt";
+		const filePath = txt.filePath;
 		await expect(base64ImageFromFile(filePath)).rejects.toThrow(
 			"Invalid mimeType",
 		);
@@ -12,27 +19,24 @@ describe("base64ImageFromFile", () => {
 	test("Gets base64 and mimeType for .png", async () => {
 		const filePath = "tests/test-image-files/test.png";
 		expect(await base64ImageFromFile(filePath)).toStrictEqual({
-			content:
-				"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+L+U4T8ABu8CpCYJ1DQAAAAASUVORK5CYII=",
-			mimeType: "image/png",
+			content: png.content,
+			mimeType: png.mimeType,
 		});
 	});
 
 	test("Gets base64 and mimeType for .jpg", async () => {
-		const filePath = "tests/test-image-files/test.jpg";
+		const filePath = jpg.filePath;
 		expect(await base64ImageFromFile(filePath)).toStrictEqual({
-			content:
-				"/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wgARCAABAAEDAREAAhEBAxEB/8QAFAABAAAAAAAAAAAAAAAAAAAAB//EABQBAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhADEAAAAH8//8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPwB//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAgEBPwB//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAwEBPwB//9k=",
-			mimeType: "image/jpeg",
+			content: jpg.content,
+			mimeType: jpg.mimeType,
 		});
 	});
 
 	test("Gets base64 and mimeType for .jpeg", async () => {
-		const filePath = "tests/test-image-files/test.jpeg";
+		const filePath = jpeg.filePath;
 		expect(await base64ImageFromFile(filePath)).toStrictEqual({
-			content:
-				"/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wgARCAABAAEDAREAAhEBAxEB/8QAFAABAAAAAAAAAAAAAAAAAAAAB//EABQBAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhADEAAAAH8//8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPwB//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAgEBPwB//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAwEBPwB//9k=",
-			mimeType: "image/jpeg",
+			content: jpeg.content,
+			mimeType: jpeg.mimeType,
 		});
 	});
 });
