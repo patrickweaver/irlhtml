@@ -1,7 +1,7 @@
 import { claudeOcr } from "./claude";
 import { googleVisionTextDetection as gvOcr } from "./googleVision";
 import { createWorker } from "tesseract.js";
-import { openaiOcr, Models } from "./openai";
+import { openAiOcr, Model } from "./openAi";
 import { ContentBlock } from "@anthropic-ai/sdk/resources";
 
 export enum OCR_TYPES {
@@ -36,11 +36,11 @@ export async function runOcr(imagePath: string, ocrType = DEFAULT_OCR_TYPE) {
 			break;
 
 		case OCR_TYPES.OPEN_AI_GPT_4_TURBO:
-			await openAiOcr(Models.GPT_4_TURBO);
+			await runOpenAiOcr(Model.GPT_4_TURBO);
 			break;
 
 		case OCR_TYPES.OPEN_AI_GPT_4_O:
-			await openAiOcr(Models.GPT_4_O);
+			await runOpenAiOcr(Model.GPT_4_O);
 			break;
 
 		case OCR_TYPES.TESSERACT:
@@ -67,8 +67,8 @@ export async function runOcr(imagePath: string, ocrType = DEFAULT_OCR_TYPE) {
 		}
 	}
 
-	async function openAiOcr(model = Models.GPT_4_O) {
-		const ocrMessage = await openaiOcr(imagePath, model);
+	async function runOpenAiOcr(model = Model.GPT_4_O) {
+		const ocrMessage = await openAiOcr(imagePath, model);
 		const openaiHtml = ocrMessage ?? OCR_FAILURE_TEXT;
 		htmlContent += openaiHtml;
 	}

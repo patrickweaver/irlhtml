@@ -1,5 +1,10 @@
 import { describe, expect, test } from "@jest/globals";
-import { claudeOcr, getClaudeMessages, validateMimeType } from "./claude";
+import {
+	Model,
+	claudeOcr,
+	getClaudeMessages,
+	validateMimeType,
+} from "./claude";
 import { PROMPT } from "./prompt";
 import Anthropic from "@anthropic-ai/sdk";
 import { png } from "../../tests/test-image-files/imageFileData";
@@ -34,9 +39,9 @@ describe("claudeOcr", () => {
 		const ocrText = await claudeOcr(png.filePath);
 
 		expect(anthropic!.messages!.create).toHaveBeenCalledWith({
-			model: "claude-3-haiku-20240307",
-			max_tokens: 1024,
+			model: Model.HAIKU_3,
 			messages: getClaudeMessages(png.content, mimeType),
+			max_tokens: 1024,
 		});
 
 		expect(ocrText).toEqual(mockResponse);
