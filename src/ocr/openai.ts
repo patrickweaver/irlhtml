@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { PROMPT } from "./prompt";
 import base64ImageFromFile from "../util/base64ImageFromFile";
+import { OCR_TYPES } from ".";
 
 export enum Model {
 	GPT_4_TURBO = "gpt-4-turbo",
@@ -9,7 +10,14 @@ export enum Model {
 
 const apiKey = process.env["OPENAI_API_KEY"];
 
-export async function openAiOcr(imagePath: string, model = Model.GPT_4_O) {
+export async function openAiOcr(
+	imagePath: string,
+	ocrType = OCR_TYPES.OPEN_AI_GPT_4_O,
+) {
+	let model;
+	if (ocrType === OCR_TYPES.OPEN_AI_GPT_4_O) model = Model.GPT_4_O;
+	if (ocrType === OCR_TYPES.OPEN_AI_GPT_4_TURBO) model = Model.GPT_4_TURBO;
+	if (!model) throw new Error("Invalid OCR type for OpenAI");
 	const { content, mimeType } = await base64ImageFromFile(imagePath);
 	const openai = new OpenAI({ apiKey });
 	const response = await openai.chat.completions.create({
