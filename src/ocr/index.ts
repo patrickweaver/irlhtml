@@ -1,7 +1,7 @@
 import { claudeOcr } from "./claude";
 import { googleVisionTextDetection as gvOcr } from "./googleVision";
 import { createWorker } from "tesseract.js";
-import { openAiOcr, Model } from "./openAi";
+import { openAiOcr } from "./openAi";
 import { ContentBlock } from "@anthropic-ai/sdk/resources";
 
 export enum OCR_TYPES {
@@ -56,7 +56,7 @@ export async function runOcr(imagePath: string, ocrType = DEFAULT_OCR_TYPE) {
 	async function anthropicClaudeOcr() {
 		const claudeOcrMsg = await claudeOcr(imagePath);
 		const claudeContent: ContentBlock = claudeOcrMsg?.content?.[0];
-		if ("text" in claudeContent) {
+		if (claudeContent && "text" in claudeContent) {
 			const claudeHtml = claudeContent?.text ?? OCR_FAILURE_TEXT;
 			htmlContent += claudeHtml;
 		} else {

@@ -3,6 +3,7 @@ import { png } from "../../tests/test-image-files/imageFileData";
 import { Model, getOpenAiMessages, openAiOcr } from "./openAi";
 import { PROMPT } from "./prompt";
 import OpenAI from "openai";
+import { OCR_TYPES } from ".";
 
 jest.mock("openai", () => {
 	const mockCreate = jest.fn();
@@ -38,6 +39,12 @@ describe("openAiOcr", () => {
 		});
 
 		expect(ocrText).toEqual(mockResponse.choices[0].message.content);
+	});
+
+	test("Should throw error on invalid model", async () => {
+		await expect(
+			openAiOcr(png.filePath, OCR_TYPES.GOOGLE_VISION),
+		).rejects.toThrow("Invalid OCR type for OpenAI");
 	});
 });
 

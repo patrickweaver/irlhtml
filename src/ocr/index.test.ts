@@ -83,9 +83,43 @@ describe("runOcr", () => {
 		expect(claudeOcr).not.toHaveBeenCalled();
 	});
 
+	test("Should handle empty OpenAI OCR response", async () => {
+		mockedOpenAiOcr.mockResolvedValueOnce(null);
+		const result = await runOcr(png.filePath, OCR_TYPES.OPEN_AI_GPT_4_O);
+		expect(result).toBe(
+			OCR_COMMENTS.OPEN_AI_GPT_4_O +
+				"<h1>OCR Error</h1><p>Image processing failed</p>",
+		);
+	});
+
 	test("Should use Claude OCR when passed option", async () => {
 		const result = await runOcr(png.filePath, OCR_TYPES.ANTHROPIC_CLAUDE);
 		expect(result).toBe(OCR_COMMENTS.ANTHROPIC_CLAUDE + mockedOcrResult);
+
+		expect(mockedCreateWorker).not.toHaveBeenCalled();
+		expect(googleVisionTextDetection).not.toHaveBeenCalled();
+		expect(openAiOcr).not.toHaveBeenCalled();
+		expect(claudeOcr).toHaveBeenCalled();
+	});
+
+	test("Should handle Claude OCR error", async () => {
+		mockedClaudeOcr.mockResolvedValueOnce({ content: [{}] });
+		await expect(
+			runOcr(png.filePath, OCR_TYPES.ANTHROPIC_CLAUDE),
+		).rejects.toThrow("Invalid response from Claude");
+		mockedClaudeOcr.mockResolvedValue({ content: [] });
+		await expect(
+			runOcr(png.filePath, OCR_TYPES.ANTHROPIC_CLAUDE),
+		).rejects.toThrow("Invalid response from Claude");
+	});
+
+	test("Should handle empty Claude response", async () => {
+		mockedClaudeOcr.mockResolvedValueOnce({ content: [{ text: null }] });
+		const result = await runOcr(png.filePath, OCR_TYPES.ANTHROPIC_CLAUDE);
+		expect(result).toBe(
+			OCR_COMMENTS.ANTHROPIC_CLAUDE +
+				"<h1>OCR Error</h1><p>Image processing failed</p>",
+		);
 
 		expect(mockedCreateWorker).not.toHaveBeenCalled();
 		expect(googleVisionTextDetection).not.toHaveBeenCalled();

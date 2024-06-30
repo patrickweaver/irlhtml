@@ -7,7 +7,7 @@ import {
 } from "./claude";
 import { PROMPT } from "./prompt";
 import Anthropic from "@anthropic-ai/sdk";
-import { png } from "../../tests/test-image-files/imageFileData";
+import { bmp, png } from "../../tests/test-image-files/imageFileData";
 import { ImageBlockParam } from "@anthropic-ai/sdk/resources";
 
 jest.mock("@anthropic-ai/sdk", () => {
@@ -52,9 +52,7 @@ describe("claudeOcr", () => {
 			content: [{ text: "Mocked OCR result" }],
 		};
 		mockCreate.mockResolvedValue(mockResponse);
-
-		const filePath = "tests/test-image-files/test.bmp";
-		await expect(claudeOcr(filePath)).rejects.toThrow("Invalid mimeType");
+		await expect(claudeOcr(bmp.filePath)).rejects.toThrow("Invalid mimeType");
 	});
 });
 
