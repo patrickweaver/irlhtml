@@ -1,14 +1,6 @@
 import * as db from "./";
 
-export async function insert({
-	id,
-	htmlContent,
-}: {
-	id: string;
-	htmlContent: string;
-}) {
-	const timestamp = new Date().toISOString();
-	const query = `
+export const insertQuery = `
 		INSERT INTO Pages
 		(
 			id,
@@ -22,33 +14,63 @@ export async function insert({
 			?
 		);
 	`;
-	const success = await db.run(query, [id, htmlContent, timestamp, timestamp]);
+export async function insert({
+	id,
+	htmlContent,
+}: {
+	id: string;
+	htmlContent: string;
+}) {
+	const timestamp = new Date().toISOString();
+	const success = await db.run(insertQuery, [
+		id,
+		htmlContent,
+		timestamp,
+		timestamp,
+	]);
 	return success;
 }
 
-export async function get({ id }: { id: string }) {
-	const query = `
+export const getOneQuery = `
 		SELECT *
 		FROM Pages
 		WHERE id = ?
 	`;
-	const rows = await db.all(query, [id]);
+export async function getOne({ id }: { id: string }): Promise<{
+	id: string;
+	htmlContent: string;
+	created_at: string;
+	updated_at: string;
+}> {
+	const rows = await db.all(getOneQuery, [id]);
 	return rows[0];
 }
 
-export async function getAll() {
-	const query = `
+export const getAllQuery = `
 		SELECT *
 		FROM Pages
 		ORDER BY date_created
 		DESC
 	`;
-	return db.all(query);
+export async function getAll(): Promise<
+	{
+		id: string;
+		htmlContent: string;
+		created_at: string;
+		updated_at: string;
+	}[]
+> {
+	return db.all(getAllQuery);
 }
 
-export async function del({ id }: { id: string }) {
-	const query = `
+export const delQuery = `
 			DELETE FROM Pages WHERE id = '?'
 		`;
-	return db.run(query, [id]);
+export async function del({ id }: { id: string }) {
+	try {
+		await db.run(delQuery, [id]);
+		return true;
+	} catch (error) {
+		return false;
+	}
 }

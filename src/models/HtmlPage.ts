@@ -2,8 +2,8 @@ import { HtmlPage, HtmlPageDb } from "../types/HtmlPage";
 import * as page from "../db/page";
 import getPageTitleFromSource from "../util/getPageTitleFromSource";
 
-export async function get(id: string): Promise<HtmlPage> {
-	const data: HtmlPageDb = await page.get({ id });
+export async function getOne(id: string): Promise<HtmlPage> {
+	const data: HtmlPageDb = await page.getOne({ id });
 	return render(data);
 }
 

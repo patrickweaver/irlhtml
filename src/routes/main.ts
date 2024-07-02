@@ -28,7 +28,7 @@ router.get("/pages", (req, res) => {
 router.get("/pages/:id", async (req, res) => {
 	const { id } = req.params;
 	try {
-		const page = await HtmlPage.get(id);
+		const page = await HtmlPage.getOne(id);
 		if (!page?.id) return error404(req, res, id);
 		const sourceCode = page?.source_code;
 		if (!sourceCode) throw new Error("Invalid page");
@@ -102,7 +102,7 @@ router.get("/set-secret", async (req, res) => {
 		res.send(render(title, body));
 		return;
 	}
-	const body = "<h1>Setting Secret</h1><p id=\"status\"></p>";
+	const body = '<h1>Setting Secret</h1><p id="status"></p>';
 	const secret = process.env?.SECRET ?? undefined;
 	const script = `
 		console.log("Setting Secret");
