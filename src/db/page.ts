@@ -67,10 +67,6 @@ export const delQuery = `
 			DELETE FROM Pages WHERE id = '?'
 		`;
 export async function del({ id }: { id: string }) {
-	try {
-		await db.run(delQuery, [id]);
-		return true;
-	} catch (error) {
-		return false;
-	}
+	await db.run(delQuery, [id]);
+	return true;
 }
