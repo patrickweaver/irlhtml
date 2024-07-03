@@ -24,7 +24,7 @@ describe("openAiOcr", () => {
 		mockCreate = openAi.chat!.completions.create as jest.Mock;
 	});
 
-	test("Should successfully use OpenAI SDK to OCR image", async () => {
+	test("Should successfully use OpenAI SDK to OCR image with GPT-4o as default", async () => {
 		const mimeType = png.mimeType;
 		const mockResponse = {
 			choices: [{ message: { content: "Mocked OCR result" } }],
@@ -34,6 +34,26 @@ describe("openAiOcr", () => {
 
 		expect(openAi!.chat!.completions.create).toHaveBeenCalledWith({
 			model: Model.GPT_4_O,
+			messages: getOpenAiMessages(png.content, mimeType),
+			max_tokens: 300,
+		});
+
+		expect(ocrText).toEqual(mockResponse.choices[0].message.content);
+	});
+
+	test("Should successfully use OpenAI SDK to OCR image with GPT-4 Turbo", async () => {
+		const mimeType = png.mimeType;
+		const mockResponse = {
+			choices: [{ message: { content: "Mocked OCR result" } }],
+		};
+		mockCreate.mockResolvedValue(mockResponse);
+		const ocrText = await openAiOcr(
+			png.filePath,
+			OCR_TYPES.OPEN_AI_GPT_4_TURBO,
+		);
+
+		expect(openAi!.chat!.completions.create).toHaveBeenCalledWith({
+			model: Model.GPT_4_TURBO,
 			messages: getOpenAiMessages(png.content, mimeType),
 			max_tokens: 300,
 		});
