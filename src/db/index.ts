@@ -24,7 +24,8 @@ export const all = async (
 	/* eslint-disable  @typescript-eslint/no-explicit-any */
 ): Promise<Array<any>> => {
 	return await new Promise((resolve, reject) => {
-		db.all(query, params, (err, rows) => {
+		/* eslint-disable  @typescript-eslint/no-explicit-any */
+		db.all(query, params, (err, rows): any => {
 			if (err) {
 				reject(err);
 			}
