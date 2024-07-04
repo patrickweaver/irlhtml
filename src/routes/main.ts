@@ -76,7 +76,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 	}
 
 	try {
-		const row = await page.get({ id });
+		const row = await page.getOne({ id });
 		res.redirect(`/pages/${row.id}`);
 	} catch (error) {
 		return errorHandler(req, res, error, { ..._r });

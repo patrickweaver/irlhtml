@@ -38,9 +38,9 @@ export const getOneQuery = `
 	`;
 export async function getOne({ id }: { id: string }): Promise<{
 	id: string;
-	htmlContent: string;
-	created_at: string;
-	updated_at: string;
+	source_code: string;
+	date_created: string;
+	date_updated: string;
 }> {
 	const rows = await db.all(getOneQuery, [id]);
 	return rows[0];
@@ -55,9 +55,9 @@ export const getAllQuery = `
 export async function getAll(): Promise<
 	{
 		id: string;
-		htmlContent: string;
-		created_at: string;
-		updated_at: string;
+		source_code: string;
+		date_created: string;
+		date_updated: string;
 	}[]
 > {
 	return db.all(getAllQuery);

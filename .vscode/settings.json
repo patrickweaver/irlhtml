@@ -1,3 +1,10 @@
 {
-	"cSpell.words": ["irlhtml", "linebreak", "openai", "TESSERACT", "uuidv"]
+	"cSpell.words": [
+		"irlhtml",
+		"linebreak",
+		"openai",
+		"supertest",
+		"TESSERACT",
+		"uuidv"
+	]
 }
