@@ -17,7 +17,7 @@ router.get("/", async function (req, res) {
 		const pages = await HtmlPage.index();
 		res.render("pages/index", { ..._r, pages, title: "Home" });
 	} catch (error) {
-		return errorHandler(req, res, error, { ..._r });
+		return errorHandler(req, res, error, 500, { ..._r });
 	}
 });
 
@@ -34,7 +34,7 @@ router.get("/pages/:id", async (req, res) => {
 		if (!sourceCode) throw new Error("Invalid page");
 		res.send(sourceCode);
 	} catch (error) {
-		return errorHandler(req, res, error, { ..._r, id });
+		return errorHandler(req, res, error, 500, { ..._r, id });
 	}
 });
 
@@ -42,44 +42,44 @@ router.get("/new", async function (req, res) {
 	try {
 		res.render("pages/new", { ..._r, title: "New Page" });
 	} catch (error) {
-		return errorHandler(req, res, error, { ..._r });
+		return errorHandler(req, res, error, 500, { ..._r });
 	}
 });
 
 router.post("/new", upload.single("html-image"), async (req, res) => {
-	const ocrTypeKey = req.body?.["ocr-method"];
-	if (!ocrTypeKey || typeof ocrTypeKey !== "string")
-		throw new Error("Invalid ocrType");
-	const ocrType = OCR_TYPES?.[ocrTypeKey as keyof typeof OCR_TYPES];
+	try {
+		const ocrTypeKey = req.body?.["ocr-method"];
+		console.log(ocrTypeKey);
+		if (
+			!ocrTypeKey ||
+			typeof ocrTypeKey !== "string" ||
+			!(ocrTypeKey in OCR_TYPES)
+		)
+			return errorHandler(req, res, "Invalid ocr-method", 400, { ..._r });
+		const ocrType = OCR_TYPES?.[ocrTypeKey as keyof typeof OCR_TYPES];
 
-	let imagePath: string = "";
-	if (req.file && req.file.filename) {
-		imagePath = "./../../.data/images/" + req.file.filename;
-	}
-
-	const id = uuidv4();
-
-	const htmlContent = await runOcr(imagePath, ocrType);
-
-	if (imagePath) {
-		try {
-			fs.unlinkSync(imagePath);
-		} catch (err) {
-			console.log("error deleting " + imagePath + ": " + err);
+		let imagePath: string = "";
+		if (req.file && req.file.filename) {
+			imagePath = "./../../.data/images/" + req.file.filename;
 		}
-	}
 
-	try {
+		const id = uuidv4();
+
+		const htmlContent = await runOcr(imagePath, ocrType);
+
+		if (imagePath) {
+			try {
+				fs.unlinkSync(imagePath);
+			} catch (err) {
+				console.log("error deleting " + imagePath + ": " + err);
+			}
+		}
+
 		await page.insert({ id, htmlContent });
-	} catch (error) {
-		return errorHandler(req, res, error, { ..._r });
-	}
-
-	try {
 		const row = await page.getOne({ id });
 		res.redirect(`/pages/${row.id}`);
 	} catch (error) {
-		return errorHandler(req, res, error, { ..._r });
+		return errorHandler(req, res, error, 500, { ..._r });
 	}
 });
 

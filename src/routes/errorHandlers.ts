@@ -22,6 +22,7 @@ export function errorHandler(
 	req: Request,
 	res: Response,
 	error: unknown,
+	status: number,
 	/* eslint-disable  @typescript-eslint/no-explicit-any */
 	params: any = {},
 ) {
@@ -29,7 +30,7 @@ export function errorHandler(
 		console.log(error);
 		console.log({ url: req.url.slice(0, 5) });
 	}
-	res.status(500);
+	res.status(status);
 	return res.render("pages/error", params);
 }
 

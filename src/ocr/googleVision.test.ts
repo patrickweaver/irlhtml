@@ -64,9 +64,9 @@ describe("googleVisionTextDetection", () => {
 	});
 
 	test("Should handle Axios error", async () => {
-		(
-			axios.post as jest.MockedFunction<typeof axios.post>
-		).mockImplementationOnce(() => Promise.reject(new Error("Network error")));
+		mockedAxios.post.mockImplementationOnce(() =>
+			Promise.reject(new Error("Network error")),
+		);
 		await expect(googleVisionTextDetection(png.filePath)).rejects.toThrow(
 			"Error making request to Google Vision",
 		);
