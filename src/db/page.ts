@@ -64,7 +64,7 @@ export async function getAll(): Promise<
 }
 
 export const delQuery = `
-			DELETE FROM Pages WHERE id = '?'
+			DELETE FROM Pages WHERE id = ?
 		`;
 export async function del({ id }: { id: string }) {
 	await db.run(delQuery, [id]);

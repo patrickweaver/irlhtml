@@ -1,10 +1,18 @@
 import { Request, Response } from "express";
 import { defaultRenderObj as _r } from "../util/constants";
 
-export function apiErrorHandler(req: Request, res: Response, error: unknown) {
+export function apiErrorHandler(
+	req: Request,
+	res: Response,
+	error: unknown,
+	status?: number,
+) {
 	if (process.env.NODE_ENV === "development") {
 		console.log(error);
 		console.log({ url: req.url.slice(0, 5) });
+	}
+	if (status && status >= 400 && status < 500) {
+		return res.status(status).json({ error: String(error) });
 	}
 	res.status(500);
 	return res.json({ error: "Server error" });
