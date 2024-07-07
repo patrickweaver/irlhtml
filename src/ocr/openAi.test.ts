@@ -1,6 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
 import { png } from "../../tests/test-image-files/imageFileData";
-import { Model, getOpenAiMessages, openAiOcr } from "./openAi";
+import { Model, getOpenAiMessages, openAiOcr } from "./openAi_2";
 import { PROMPT } from "./prompt";
 import OpenAI from "openai";
 import { OCR_TYPES } from ".";

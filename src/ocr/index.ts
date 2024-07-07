@@ -1,7 +1,7 @@
 import { claudeOcr } from "./claude";
 import { googleVisionTextDetection as gvOcr } from "./googleVision";
 import { createWorker } from "tesseract.js";
-import { openAiOcr } from "./openAi";
+import { openAiOcr } from "./openAi_2";
 import { ContentBlock } from "@anthropic-ai/sdk/resources";
 
 export enum OCR_TYPES {
