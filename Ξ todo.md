@@ -1,9 +1,5 @@
 # To Do
 
-## 2024-06-23
-
-- ~~TypeScript~~
-- More Backend Tests
 - Overlay on hosted pages
 - Analytics for OCR methods
 - Update copy
@@ -14,6 +10,14 @@
 - Better typing for db modules
 - Pagination
 - EJS-Lint
+
+## 2024-07-06
+
+~~- More Backend Tests~~
+
+## 2024-06-23
+
+- ~~TypeScript~~
 
 ## 2024-06-22
 
