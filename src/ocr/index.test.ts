@@ -1,6 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
 import { googleVisionTextDetection } from "./googleVision";
-import { openAiOcr } from "./openAi_2";
+import { openAiOcr } from "./openAi";
 import { claudeOcr } from "./claude";
 import { createWorker } from "tesseract.js";
 import { OCR_COMMENTS, OCR_TYPES, runOcr } from ".";
@@ -12,7 +12,7 @@ jest.mock("tesseract.js", () => ({ createWorker: jest.fn() }));
 
 jest.mock("./googleVision", () => ({ googleVisionTextDetection: jest.fn() }));
 
-jest.mock("./openAi_2", () => ({ openAiOcr: jest.fn() }));
+jest.mock("./openAi", () => ({ openAiOcr: jest.fn() }));
 jest.mock("./claude", () => ({ claudeOcr: jest.fn() }));
 
 const mockedCreateWorker = createWorker as jest.Mock;
