@@ -10,6 +10,8 @@ import {
 	testData1,
 	testData2,
 } from "../../tests/util/createPagesData";
+import * as HTMLPage from "../models/HtmlPage";
+import * as page from "../db/page";
 
 const db = new (sqlite3.verbose().Database)(DATABASE_PATH, callback);
 jest.mock("tesseract.js", () => ({ createWorker: jest.fn() }));
@@ -52,6 +54,19 @@ describe("API routes", () => {
 			expect(response.statusCode).toEqual(400);
 		});
 
+		test("renders 500 error when thrown", async () => {
+			const insertSpy = jest
+				.spyOn(page, "insert")
+				.mockRejectedValue(new Error("DB error"));
+			const response = await request(app)
+				.post("/api/new")
+				.query({ ocrType: "TESSERACT" })
+				.attach("html-image", "tests/test-image-files/test.jpeg");
+			expect(response.statusCode).toEqual(500);
+			expect(response.body.error).toEqual("Server error");
+			insertSpy.mockRestore();
+		});
+
 		test("should successfully OCR image and upload new page", async () => {
 			const response = await request(app)
 				.post("/api/new")
@@ -65,6 +80,18 @@ describe("API routes", () => {
 	});
 
 	describe("GET pages", () => {
+		test("renders 500 error when thrown", async () => {
+			createPagesData(db, testData1);
+			createPagesData(db, testData2);
+			const indexSpy = jest
+				.spyOn(HTMLPage, "index")
+				.mockRejectedValue(new Error("DB error"));
+			const response = await request(app).get("/api/pages");
+			expect(response.statusCode).toEqual(500);
+			expect(response.body.error).toEqual("Server error");
+			indexSpy.mockRestore();
+		});
+
 		test("It should return pages index with title for pages", async () => {
 			createPagesData(db, testData1);
 			createPagesData(db, testData2);
@@ -79,6 +106,17 @@ describe("API routes", () => {
 	});
 
 	describe("GET pages/:id", () => {
+		test("renders 500 error when thrown", async () => {
+			createPagesData(db, testData2);
+			const getOneSpy = jest
+				.spyOn(HTMLPage, "getOne")
+				.mockRejectedValue(new Error("DB error"));
+			const response = await request(app).get(`/api/pages/${testData2.id}`);
+			expect(response.statusCode).toEqual(500);
+			expect(response.body.error).toEqual("Server error");
+			getOneSpy.mockRestore();
+		});
+
 		test("should 404 for invalid id", async () => {
 			const response = await request(app).get(`/api/pages/abcd-invalid`);
 			expect(response.statusCode).toEqual(404);
@@ -102,6 +140,18 @@ describe("API routes", () => {
 			const response = await request(app).delete(`/api/pages/${testData2.id}`);
 			expect(response.statusCode).toEqual(401);
 			expect(response.body.error).toEqual("Invalid secret");
+		});
+
+		test("renders 500 error when thrown", async () => {
+			const delSpy = jest
+				.spyOn(page, "del")
+				.mockRejectedValue(new Error("DB error"));
+			const response = await request(app)
+				.delete(`/api/pages/${testData2.id}`)
+				.query({ secret: "secret-admin-token" });
+			expect(response.statusCode).toEqual(500);
+			expect(response.body.error).toEqual("Server error");
+			delSpy.mockRestore();
 		});
 
 		test("It should successfully delete page", async () => {

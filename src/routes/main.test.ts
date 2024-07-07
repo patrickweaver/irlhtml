@@ -129,7 +129,6 @@ describe("Rendered view routes", () => {
 		});
 
 		test("renders 500 error when thrown", async () => {
-			createPagesData(db, testData2);
 			const insertSpy = jest
 				.spyOn(page, "insert")
 				.mockRejectedValue(new Error("DB error"));
