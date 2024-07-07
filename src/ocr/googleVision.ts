@@ -1,11 +1,10 @@
-import fs from "fs";
 import axios from "axios";
+import base64ImageFromFile from "../util/base64ImageFromFile";
 const gcpApiUrl = "https://vision.googleapis.com/v1/images:annotate?";
 const GCP_API_KEY = process.env.GCP_API_KEY;
 
-function getGcpRequestOptions(imagePath: string) {
-	const image = fs.readFileSync(imagePath);
-	const content = Buffer.from(image).toString("base64");
+export async function getGcpRequestOptions(imagePath: string) {
+	const { content } = await base64ImageFromFile(imagePath);
 	return {
 		url: gcpApiUrl + "key=" + GCP_API_KEY,
 		data: {
@@ -20,15 +19,15 @@ function getGcpRequestOptions(imagePath: string) {
 }
 
 export async function googleVisionTextDetection(imageUrl: string) {
-	const { url, data } = getGcpRequestOptions(imageUrl);
+	const { url, data } = await getGcpRequestOptions(imageUrl);
 	let gvGuess: string = "";
 	try {
 		const response = await axios.post(url, data);
 		gvGuess = response.data.responses?.[0]?.fullTextAnnotation?.text ?? "";
-		gvGuess = gvGuess.replaceAll("\"", "'");
+		gvGuess = gvGuess.replaceAll('"', "'");
 	} catch (error) {
 		console.log(error);
-		throw Error("Invalid response from Google Vision");
+		throw Error("Error making request to Google Vision");
 	}
 	if (gvGuess) {
 		return { text: gvGuess };

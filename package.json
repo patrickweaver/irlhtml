@@ -1,12 +1,13 @@
 {
   "name": "irlhtml",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A hosting service for images of HTML files",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "build": "npx tsc",
     "start": "PORT=3000 node dist/src/server.js",
-    "dev": "nodemon -r dotenv/config src/server.ts",
+    "dev": "tsx watch -r dotenv/config src/server.ts",
     "test": "jest"
   },
   "dependencies": {
@@ -21,8 +22,10 @@
     "multer": "^1.4.5-lts.1",
     "openai": "^4.52.0",
     "sqlite3": "^5.1.7",
+    "supertest": "^7.0.0",
     "tesseract.js": "^5.1.0",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "zod": "3.20"
   },
   "engines": {
     "node": "16.x"
@@ -42,15 +45,16 @@
     "@types/multer": "^1.4.11",
     "@types/node": "^20.14.8",
     "@types/sqlite3": "^3.1.11",
+    "@types/supertest": "^6.0.2",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "dotenv": "^16.4.5",
     "eslint": "^8.57.0",
     "jest": "^29.7.0",
-    "nodemon": "^3.1.4",
     "prettier": "^3.3.2",
     "ts-jest": "^29.1.5",
+    "tsx": "^3.14.0",
     "typescript": "^5.5.2"
   }
 }

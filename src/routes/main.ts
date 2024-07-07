@@ -5,19 +5,19 @@ import { v4 as uuidv4 } from "uuid";
 
 import { runOcr, OCR_TYPES } from "../ocr";
 import * as page from "../db/page";
-import { defaultRenderObj as _r } from "../util/render";
-import { error404, errorHandler, getRowWithTitle } from "./helpers";
+import { defaultRenderObj as _r } from "../util/constants";
+import { error404, errorHandler } from "./errorHandlers";
+import * as HtmlPage from "../models/HtmlPage";
 
 const router = express.Router();
-const upload = multer({ dest: __dirname + "/../../.data/images/" });
+const upload = multer({ dest: "./../../.data/images/" });
 
 router.get("/", async function (req, res) {
 	try {
-		const rows = await page.getAll();
-		const rowsWithTitles = rows.map(getRowWithTitle);
-		res.render("pages/index", { ..._r, pages: rowsWithTitles, title: "home" });
+		const pages = await HtmlPage.index();
+		res.render("pages/index", { ..._r, pages, title: "Home" });
 	} catch (error) {
-		return errorHandler(req, res, error, { ..._r });
+		return errorHandler(req, res, error, 500, { ..._r });
 	}
 });
 
@@ -28,58 +28,59 @@ router.get("/pages", (req, res) => {
 router.get("/pages/:id", async (req, res) => {
 	const { id } = req.params;
 	try {
-		const row = await page.get({ id });
-		if (!row) return error404(req, res, id);
-		const sourceCode = row?.source_code;
+		const page = await HtmlPage.getOne(id);
+		if (!page?.id) return error404(req, res, id);
+		const sourceCode = page?.source_code;
 		if (!sourceCode) throw new Error("Invalid page");
 		res.send(sourceCode);
 	} catch (error) {
-		return errorHandler(req, res, error, { ..._r, id });
+		return errorHandler(req, res, error, 500, { ..._r, id });
 	}
 });
 
 router.get("/new", async function (req, res) {
 	try {
-		res.render("pages/new", { ..._r, title: "new" });
+		res.render("pages/new", { ..._r, title: "New Page" });
 	} catch (error) {
-		return errorHandler(req, res, error, { ..._r });
+		return errorHandler(req, res, error, 500, { ..._r });
 	}
 });
 
 router.post("/new", upload.single("html-image"), async (req, res) => {
-	const ocrTypeKey = req.body?.["ocr-method"];
-	if (!ocrTypeKey || typeof ocrTypeKey !== "string")
-		throw new Error("Invalid ocrType");
-	const ocrType = OCR_TYPES?.[ocrTypeKey as keyof typeof OCR_TYPES];
+	try {
+		const ocrTypeKey = req.body?.["ocr-method"];
+		console.log(ocrTypeKey);
+		if (
+			!ocrTypeKey ||
+			typeof ocrTypeKey !== "string" ||
+			!(ocrTypeKey in OCR_TYPES)
+		)
+			return errorHandler(req, res, "Invalid ocr-method", 400, { ..._r });
+		const ocrType = OCR_TYPES?.[ocrTypeKey as keyof typeof OCR_TYPES];
 
-	let imagePath: string = "";
-	if (req.file && req.file.filename) {
-		imagePath = __dirname + "/../../.data/images/" + req.file.filename;
-	}
-
-	const id = uuidv4();
-
-	const htmlContent = await runOcr(imagePath, ocrType);
-
-	if (imagePath) {
-		try {
-			fs.unlinkSync(imagePath);
-		} catch (err) {
-			console.log("error deleting " + imagePath + ": " + err);
+		let imagePath: string = "";
+		if (req.file && req.file.filename) {
+			imagePath = "./../../.data/images/" + req.file.filename;
 		}
-	}
 
-	try {
+		const id = uuidv4();
+
+		const htmlContent = await runOcr(imagePath, ocrType);
+
+		if (imagePath) {
+			try {
+				fs.unlinkSync(imagePath);
+			} catch (err) {
+				console.log("error deleting " + imagePath + ": " + err);
+			}
+		}
+
 		await page.insert({ id, htmlContent });
-	} catch (error) {
-		return errorHandler(req, res, error, { ..._r });
-	}
-
-	try {
-		const row = await page.get({ id });
+		const row = await page.getOne({ id });
+		if (!row?.id) throw new Error("Upload failed");
 		res.redirect(`/pages/${row.id}`);
 	} catch (error) {
-		return errorHandler(req, res, error, { ..._r });
+		return errorHandler(req, res, error, 500, { ..._r });
 	}
 });
 
@@ -102,7 +103,7 @@ router.get("/set-secret", async (req, res) => {
 		res.send(render(title, body));
 		return;
 	}
-	const body = "<h1>Setting Secret</h1><p id=\"status\"></p>";
+	const body = '<h1>Setting Secret</h1><p id="status"></p>';
 	const secret = process.env?.SECRET ?? undefined;
 	const script = `
 		console.log("Setting Secret");
