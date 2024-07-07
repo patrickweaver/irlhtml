@@ -3,7 +3,7 @@ import * as page from "../db/page";
 import getPageTitleFromSource from "../util/getPageTitleFromSource";
 
 export async function getOne(id: string): Promise<HtmlPage | null> {
-	const data: HtmlPageDb = await page.getOne({ id });
+	const data: HtmlPageDb | null = await page.getOne({ id });
 	if (!data) return null;
 	return render(data);
 }

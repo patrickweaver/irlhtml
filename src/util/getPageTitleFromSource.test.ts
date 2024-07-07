@@ -2,24 +2,24 @@ import { describe, expect, test } from "@jest/globals";
 import getPageTitleFromSource from "./getPageTitleFromSource";
 
 describe("getPageTitleFromSource", () => {
-	test("Returns undefined with empty source", () => {
-		expect(getPageTitleFromSource("")).toBe(undefined);
+	test("Returns null with empty source", () => {
+		expect(getPageTitleFromSource("")).toBe(null);
 	});
 
-	test("Returns undefined with empty string source", () => {
+	test("Returns null with empty string source", () => {
 		const source = "";
-		expect(getPageTitleFromSource(source)).toBe(undefined);
+		expect(getPageTitleFromSource(source)).toBe(null);
 	});
 
-	test("Returns undefined when no open title tag in source", () => {
+	test("Returns null when no open title tag in source", () => {
 		const source = "<html><h1>Website</h1></html>";
-		expect(getPageTitleFromSource(source)).toBe(undefined);
+		expect(getPageTitleFromSource(source)).toBe(null);
 	});
 
-	test("Returns undefined when no close title tag in source", () => {
+	test("Returns null when no close title tag in source", () => {
 		const source =
 			"<html><head><title>My Website</head><h1>Website</h1></html>";
-		expect(getPageTitleFromSource(source)).toBe(undefined);
+		expect(getPageTitleFromSource(source)).toBe(null);
 	});
 
 	test("Returns title with correct casing when included in source", () => {

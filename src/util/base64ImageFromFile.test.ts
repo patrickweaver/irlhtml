@@ -1,4 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
+import FileType from "file-type";
 import base64ImageFromFile from "./base64ImageFromFile";
 import {
 	txt,
@@ -9,6 +10,10 @@ import {
 } from "../../tests/test-image-files/imageFileData";
 
 describe("base64ImageFromFile", () => {
+	beforeEach(() => {
+		jest.resetAllMocks();
+	});
+
 	test("Throws for invalid file", async () => {
 		const filePath = txt.filePath;
 		await expect(base64ImageFromFile(filePath)).rejects.toThrow(
@@ -37,6 +42,18 @@ describe("base64ImageFromFile", () => {
 		expect(await base64ImageFromFile(filePath)).toStrictEqual({
 			content: jpeg.content,
 			mimeType: jpeg.mimeType,
+		});
+	});
+
+	describe("mocked file-type", () => {
+		test("throws error on no mimetype", async () => {
+			const fromBufferSpy = jest.spyOn(FileType, "fromBuffer");
+			fromBufferSpy.mockResolvedValueOnce(undefined);
+			const filePath = jpeg.filePath;
+			await expect(base64ImageFromFile(filePath)).rejects.toThrow(
+				"Invalid mimeType",
+			);
+			fromBufferSpy.mockRestore();
 		});
 	});
 });

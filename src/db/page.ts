@@ -41,9 +41,9 @@ export async function getOne({ id }: { id: string }): Promise<{
 	source_code: string;
 	date_created: string;
 	date_updated: string;
-}> {
+} | null> {
 	const rows = await db.all(getOneQuery, [id]);
-	return rows[0];
+	return rows?.[0] ?? null;
 }
 
 export const getAllQuery = `

@@ -81,8 +81,8 @@ describe("API routes", () => {
 
 	describe("GET pages", () => {
 		test("renders 500 error when thrown", async () => {
-			createPagesData(db, testData1);
-			createPagesData(db, testData2);
+			await createPagesData(db, testData1);
+			await createPagesData(db, testData2);
 			const indexSpy = jest
 				.spyOn(HTMLPage, "index")
 				.mockRejectedValue(new Error("DB error"));
@@ -93,8 +93,8 @@ describe("API routes", () => {
 		});
 
 		test("It should return pages index with title for pages", async () => {
-			createPagesData(db, testData1);
-			createPagesData(db, testData2);
+			await createPagesData(db, testData1);
+			await createPagesData(db, testData2);
 			const response = await request(app).get("/api/pages");
 			expect(response.statusCode).toEqual(200);
 			expect(response.body[0]).toStrictEqual({
@@ -107,7 +107,7 @@ describe("API routes", () => {
 
 	describe("GET pages/:id", () => {
 		test("renders 500 error when thrown", async () => {
-			createPagesData(db, testData2);
+			await createPagesData(db, testData2);
 			const getOneSpy = jest
 				.spyOn(HTMLPage, "getOne")
 				.mockRejectedValue(new Error("DB error"));
@@ -124,7 +124,7 @@ describe("API routes", () => {
 		});
 
 		test("It should return page with title for page", async () => {
-			createPagesData(db, testData2);
+			await createPagesData(db, testData2);
 			const response = await request(app).get(`/api/pages/${testData2.id}`);
 			expect(response.statusCode).toEqual(200);
 			expect(response.body).toStrictEqual({
@@ -136,7 +136,7 @@ describe("API routes", () => {
 
 	describe("DELETE pages/:id", () => {
 		test("should 401 for invalid secret", async () => {
-			createPagesData(db, testData2);
+			await createPagesData(db, testData2);
 			const response = await request(app).delete(`/api/pages/${testData2.id}`);
 			expect(response.statusCode).toEqual(401);
 			expect(response.body.error).toEqual("Invalid secret");
@@ -155,7 +155,7 @@ describe("API routes", () => {
 		});
 
 		test("It should successfully delete page", async () => {
-			createPagesData(db, testData2);
+			await createPagesData(db, testData2);
 			const response = await request(app)
 				.delete(`/api/pages/${testData2.id}`)
 				.query({ secret: "secret-admin-token" });

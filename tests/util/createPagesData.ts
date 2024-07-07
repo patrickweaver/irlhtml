@@ -20,7 +20,7 @@ export const testData2: HtmlPageDb = {
 	date_updated: "2024-02-02T02:02:02.002Z",
 };
 
-export function createPagesData(
+export async function createPagesData(
 	db: sqlite3.Database,
 	{
 		id = uuidv4(),
@@ -44,4 +44,5 @@ export function createPagesData(
     )
     ;
   `);
+	await new Promise((r) => setTimeout(r, 1));
 }

@@ -51,8 +51,8 @@ describe("Rendered view routes", () => {
 		});
 
 		test("renders successfully", async () => {
-			createPagesData(db, testData1);
-			createPagesData(db, testData2);
+			await createPagesData(db, testData1);
+			await createPagesData(db, testData2);
 			const response = await request(app).get("/");
 			expect(response.statusCode).toEqual(200);
 			expect(response.text).toContain("<title>IRL HTML: Home</title>");
@@ -71,7 +71,7 @@ describe("Rendered view routes", () => {
 
 	describe("GET /pages/:id", () => {
 		test("renders 500 error when thrown", async () => {
-			createPagesData(db, testData2);
+			await createPagesData(db, testData2);
 			const getOneSpy = jest
 				.spyOn(HTMLPage, "getOne")
 				.mockRejectedValue(new Error("DB error"));
@@ -90,8 +90,8 @@ describe("Rendered view routes", () => {
 		});
 
 		test("renders successfully for correct page", async () => {
-			createPagesData(db, testData1);
-			createPagesData(db, testData2);
+			await createPagesData(db, testData1);
+			await createPagesData(db, testData2);
 			const response = await request(app).get(`/pages/${testData2.id}`);
 			expect(response.statusCode).toEqual(200);
 			expect(response.text).toContain("<title>Test Title</title>");
@@ -101,8 +101,8 @@ describe("Rendered view routes", () => {
 
 	describe("GET /new", () => {
 		test("renders successfully", async () => {
-			createPagesData(db, testData1);
-			createPagesData(db, testData2);
+			await createPagesData(db, testData1);
+			await createPagesData(db, testData2);
 			const response = await request(app).get("/new");
 			expect(response.statusCode).toEqual(200);
 			expect(response.text).toContain("<title>IRL HTML: New Page</title>");
