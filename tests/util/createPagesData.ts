@@ -30,7 +30,9 @@ export async function createPagesData(
 	}: HtmlPageDb,
 ) {
 	const testData: HtmlPageDb = { id, source_code, date_created, date_updated };
-	db.run(`
+	return await new Promise((resolve, reject) => {
+		db.run(
+			`
     INSERT INTO Pages (
       id,
       source_code,
@@ -43,6 +45,14 @@ export async function createPagesData(
       "${testData.date_updated}"
     )
     ;
-  `);
-	await new Promise((r) => setTimeout(r, 5));
+  `,
+			{},
+			(err) => {
+				if (err) {
+					reject(err);
+				}
+				resolve(true);
+			},
+		);
+	});
 }
