@@ -5,8 +5,7 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "build": "npx tsc",
-    "start": "PORT=3000 node dist/src/server.js",
+    "start": "PORT=3000 vite-node src/server.ts",
     "dev": "tsx watch -r dotenv/config src/server.ts",
     "test": "jest"
   },
@@ -25,6 +24,7 @@
     "supertest": "^7.0.0",
     "tesseract.js": "^5.1.0",
     "uuid": "^10.0.0",
+    "vite-node": "^0.34.7",
     "zod": "3.20"
   },
   "engines": {

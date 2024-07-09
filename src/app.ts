@@ -12,4 +12,4 @@ app.set("views", "views");
 app.use("/api", apiRoutes);
 app.use("/", mainRoutes);
 
-export = app;
+export default app;

@@ -114,4 +114,4 @@ router.get("/set-secret", async (req, res) => {
 	res.send(render(title, body, script));
 });
 
-export = router;
+export default router;

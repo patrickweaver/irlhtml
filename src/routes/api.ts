@@ -80,4 +80,4 @@ router.delete("/pages/:id", async (req, res) => {
 	}
 });
 
-export = router;
+export default router;
