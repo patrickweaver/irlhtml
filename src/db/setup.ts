@@ -18,6 +18,7 @@ export const clearQuery = `
 `;
 
 export default async (dbExec: typeof run) => {
+	if (process.env.NODE_ENV === "production") return;
 	try {
 		if (checkClear()) await dbExec(clearQuery);
 		await dbExec(schema);
