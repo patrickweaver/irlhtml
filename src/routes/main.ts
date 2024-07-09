@@ -5,7 +5,10 @@ import { v4 as uuidv4 } from "uuid";
 
 import { runOcr, OCR_TYPES } from "../ocr";
 import * as page from "../db/page";
-import { defaultRenderObj as _r } from "../util/constants";
+import {
+	defaultRenderObj as _r,
+	insufficientCreditMessage,
+} from "../util/constants";
 import { error404, errorHandler } from "./errorHandlers";
 import * as HtmlPage from "../models/HtmlPage";
 import { PROMPT } from "../ocr/prompt";
@@ -74,7 +77,19 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 
 		const id = uuidv4();
 
-		const htmlContent = await runOcr(imagePath, ocrType);
+		const result = await runOcr(imagePath, ocrType);
+
+		if (typeof result === "object") {
+			if (result?.handledError) {
+				return errorHandler(req, res, null, 503, {
+					..._r,
+					errorMessage: ocrType + " " + insufficientCreditMessage,
+				});
+			}
+			throw new Error("Invalid OCR response");
+		}
+
+		const htmlContent = result;
 
 		if (imagePath) {
 			try {

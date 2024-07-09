@@ -6,6 +6,7 @@ import { apiErrorHandler } from "./errorHandlers";
 import { runOcr, OCR_TYPES } from "../ocr";
 import * as page from "../db/page";
 import * as HtmlPage from "../models/HtmlPage";
+import { insufficientCreditMessage } from "../util/constants";
 
 if (!process.env.IMAGES_PATH) process.exit(1);
 
@@ -31,7 +32,16 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 		}
 
 		const id = uuidv4();
-		const htmlContent = await runOcr(imagePath, ocrType);
+		const result = await runOcr(imagePath, ocrType);
+
+		if (typeof result === "object") {
+			if (result?.handledError) {
+				throw new Error(insufficientCreditMessage);
+			}
+			throw new Error("Invalid OCR response");
+		}
+
+		const htmlContent = result;
 
 		if (imagePath) {
 			try {

@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { PROMPT } from "./prompt";
-import { ImageBlockParam } from "@anthropic-ai/sdk/resources";
+import { ContentBlock, ImageBlockParam } from "@anthropic-ai/sdk/resources";
 import base64ImageFromFile from "../util/base64ImageFromFile";
 import { z } from "zod";
 
@@ -19,6 +19,9 @@ const ClaudeValidMimeTypesEnum = z.enum([
 ]);
 type ClaudeValidMimeType = z.infer<typeof ClaudeValidMimeTypesEnum>;
 
+const noCreditSubstring = "Your credit balance is too low";
+const OCR_FAILURE_TEXT = "<h1>OCR Error</h1><p>Image processing failed</p>";
+
 export function validateMimeType(mimeType: string): ClaudeValidMimeType | null {
 	const result = ClaudeValidMimeTypesEnum.safeParse(mimeType);
 	if (result.success) {
@@ -34,12 +37,30 @@ export async function claudeOcr(imagePath: string) {
 		validateMimeType(_mimeType);
 	if (!mimeType) throw new Error("Invalid mimeType");
 	const anthropic = new Anthropic();
-	const msg = await anthropic.messages.create({
-		model: Model.HAIKU_3,
-		max_tokens: 1024,
-		messages: getClaudeMessages(content, mimeType),
-	});
-	return msg;
+	let msg: Anthropic.Messages.Message;
+	try {
+		msg = await anthropic.messages.create({
+			model: Model.HAIKU_3,
+			max_tokens: 1024,
+			messages: getClaudeMessages(content, mimeType),
+		});
+	} catch (error: any) {
+		if (error?.message.includes(noCreditSubstring)) {
+			return {
+				handledError: true,
+				error: "The project is out of Claude API credits.",
+			};
+		} else {
+			throw error;
+		}
+	}
+	const claudeContent: ContentBlock = msg?.content?.[0];
+	if (claudeContent && "text" in claudeContent) {
+		const claudeHtml = claudeContent?.text ?? OCR_FAILURE_TEXT;
+		return claudeHtml;
+	} else {
+		throw new Error("Invalid response from Claude");
+	}
 }
 
 export function getClaudeMessages(

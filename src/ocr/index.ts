@@ -2,7 +2,6 @@ import { claudeOcr } from "./claude";
 import { googleVisionTextDetection as gvOcr } from "./googleVision";
 import { createWorker } from "tesseract.js";
 import { openAiOcr } from "./openAi";
-import { ContentBlock } from "@anthropic-ai/sdk/resources";
 
 export enum OCR_TYPES {
 	GOOGLE_VISION = "GOOGLE_VISION",
@@ -20,60 +19,55 @@ export enum OCR_COMMENTS {
 	TESSERACT = "<!-- Image OCRed with Tesseract, https://tesseract-ocr.github.io/ -->\n",
 }
 
-const DEFAULT_OCR_TYPE = OCR_TYPES.TESSERACT;
 const OCR_FAILURE_TEXT = "<h1>OCR Error</h1><p>Image processing failed</p>";
+
+const DEFAULT_OCR_TYPE = OCR_TYPES.TESSERACT;
 
 export async function runOcr(imagePath: string, ocrType = DEFAULT_OCR_TYPE) {
 	let htmlContent: string = OCR_COMMENTS[ocrType as keyof typeof OCR_COMMENTS];
 
-	switch (ocrType) {
-		case OCR_TYPES.GOOGLE_VISION:
-			await googleVisionOcr();
-			break;
+	const ocrTypeFunctions = {
+		[OCR_TYPES.GOOGLE_VISION]: googleVisionOcr,
+		[OCR_TYPES.ANTHROPIC_CLAUDE]: anthropicClaudeOcr,
+		[OCR_TYPES.OPEN_AI_GPT_4_O]: () => runOpenAiOcr(OCR_TYPES.OPEN_AI_GPT_4_O),
+		[OCR_TYPES.OPEN_AI_GPT_4_TURBO]: () =>
+			runOpenAiOcr(OCR_TYPES.OPEN_AI_GPT_4_TURBO),
+		[OCR_TYPES.TESSERACT]: tesseractOcr,
+	};
 
-		case OCR_TYPES.ANTHROPIC_CLAUDE:
-			await anthropicClaudeOcr();
-			break;
+	const ocrFunction = ocrTypeFunctions[ocrType];
 
-		case OCR_TYPES.OPEN_AI_GPT_4_TURBO:
-		case OCR_TYPES.OPEN_AI_GPT_4_O:
-			await runOpenAiOcr(ocrType);
-			break;
+	const result = await ocrFunction();
 
-		case OCR_TYPES.TESSERACT:
-			await tesseractOcr();
-			break;
+	if (typeof result === "object") {
+		if (result?.handledError) {
+			return result;
+		}
 	}
 
-	return htmlContent;
+	return htmlContent + result;
 
 	async function googleVisionOcr() {
 		const gvOcrGuess = await gvOcr(imagePath);
 		const googleHtml = gvOcrGuess.text;
-		htmlContent += googleHtml;
+		return googleHtml;
 	}
 
 	async function anthropicClaudeOcr() {
-		const claudeOcrMsg = await claudeOcr(imagePath);
-		const claudeContent: ContentBlock = claudeOcrMsg?.content?.[0];
-		if (claudeContent && "text" in claudeContent) {
-			const claudeHtml = claudeContent?.text ?? OCR_FAILURE_TEXT;
-			htmlContent += claudeHtml;
-		} else {
-			throw new Error("Invalid response from Claude");
-		}
+		const result = await claudeOcr(imagePath);
+		return result;
 	}
 
 	async function runOpenAiOcr(ocrType = OCR_TYPES.OPEN_AI_GPT_4_O) {
 		const ocrMessage = await openAiOcr(imagePath, ocrType);
 		const openaiHtml = ocrMessage ?? OCR_FAILURE_TEXT;
-		htmlContent += openaiHtml;
+		return openaiHtml;
 	}
 
 	async function tesseractOcr() {
 		const worker = await createWorker("eng");
 		const ret = await worker.recognize(imagePath);
 		await worker.terminate();
-		htmlContent += ret.data.text;
+		return ret.data.text;
 	}
 }
