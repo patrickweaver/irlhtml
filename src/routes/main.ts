@@ -8,6 +8,7 @@ import * as page from "../db/page";
 import { defaultRenderObj as _r } from "../util/constants";
 import { error404, errorHandler } from "./errorHandlers";
 import * as HtmlPage from "../models/HtmlPage";
+import { PROMPT } from "../ocr/prompt";
 
 const router = express.Router();
 const upload = multer({ dest: process.env.IMAGES_PATH });
@@ -42,7 +43,13 @@ router.get("/pages/:id", async (req, res) => {
 
 router.get("/new", async function (req, res) {
 	try {
-		res.render("pages/new", { ..._r, title: "New Page" });
+		res.render("pages/new", {
+			..._r,
+			title: "New Page",
+			llmPrompt: PROMPT,
+			contactEmail:
+				process.env.CONTACT_EMAIL ?? "[Error: Email not configured]",
+		});
 	} catch (error) {
 		return errorHandler(req, res, error, 500, { ..._r });
 	}

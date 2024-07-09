@@ -2,6 +2,35 @@
 
 <h2>New Page</h2>
 
+<p>
+	You can create a new HTML page on IRL HTML by uploading a photo or screenshot
+	of your HTML here.
+</p>
+<h3>About the OCR methods</h3>
+<p>
+	In my experience the LLM based OCR methods, Claude and GPT-4 tend to work best
+	with handwritten text. Google Vision can also read some handwritten text, but
+	doesn’t have the ability to automatically fix syntax errors. The prompt used
+	for the LLM models is below.
+</p>
+<details>
+	<summary>LLM Prompt</summary>
+	<em><%= llmPrompt %></em>
+</details>
+<p>
+	I have added $5 to both the Claude and OpenAI APIs, not sure how long it will
+	last. If the project is out of credits, or you would like to contribute to buy
+	more credits email me at
+	<a href="mailto:<%= contactEmail %>"><%= contactEmail %></a>.
+</p>
+
+<h3>About JavaScript</h3>
+<p>
+	IRL HTML will remove any <code>&lt;script&gt;</code> tags from your uploaded
+	HTML code. I am not informed enough about security risks to host pages with
+	JavaScript in them.
+</p>
+
 <h2>Create a new HTML page</h2>
 <p>Click the button below to upload a photo of HTML.</p>
 <form method="post" enctype="multipart/form-data" id="new-page-form">
@@ -10,25 +39,21 @@
 		<div class="radio-grid">
 			<input
 				type="radio"
-				id="google-vision"
-				name="ocr-method"
-				value="GOOGLE_VISION"
-			/>
-			<label for="google-vision">Google Vision</label>
-			<input
-				type="radio"
 				id="anthropic-claude"
 				name="ocr-method"
 				value="ANTHROPIC_CLAUDE"
 			/>
 			<label for="anthropic-claude">Anthropic Claude</label>
+			<!--
 			<input
 				type="radio"
 				id="open-ai-gpt-turbo"
 				name="ocr-method"
 				value="OPEN_AI_GPT_4_TURBO"
+				disabled
 			/>
 			<label for="open-ai-gpt-turbo">OpenAI GPT-4 Turbo</label>
+			-->
 			<input
 				type="radio"
 				id="open-ai-gpt-4-o"
@@ -36,6 +61,13 @@
 				value="OPEN_AI_GPT_4_O"
 			/>
 			<label for="open-ai-gpt-4-o">OpenAI GPT-4o</label>
+			<input
+				type="radio"
+				id="google-vision"
+				name="ocr-method"
+				value="GOOGLE_VISION"
+			/>
+			<label for="google-vision">Google Vision</label>
 			<input
 				type="radio"
 				id="tesseract"
