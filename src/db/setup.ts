@@ -19,9 +19,9 @@ export const clearQuery = `
 
 export default async (dbExec: typeof run) => {
 	console.log(
-		`Running db setup on ${process.env?.NODE_ENV ?? "unknown"} environment`,
+		`Running db setup on ${process.env?.ENVIRONMENT ?? "unknown"} environment`,
 	);
-	if (process.env.NODE_ENV === "production") return;
+	if (process.env.ENVIRONMENT === "production") return;
 	try {
 		if (checkClear()) await dbExec(clearQuery);
 		await dbExec(schema);
