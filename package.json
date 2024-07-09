@@ -1,13 +1,13 @@
 {
   "name": "irlhtml",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "A hosting service for images of HTML files",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "PORT=3000 vite-node src/server.ts",
     "dev": "tsx watch -r dotenv/config src/server.ts",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",

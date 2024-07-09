@@ -11,6 +11,10 @@
 - Pagination
 - EJS-Lint
 
+## 2024-07-08
+
+~~- Get running on glitch~~
+
 ## 2024-07-06
 
 ~~- More Backend Tests~~

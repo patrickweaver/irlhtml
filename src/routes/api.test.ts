@@ -12,6 +12,7 @@ import {
 } from "../../tests/util/createPagesData";
 import * as HTMLPage from "../models/HtmlPage";
 import * as page from "../db/page";
+import { clearPagesData } from "../../tests/util/clearPagesData";
 
 const db = new (sqlite3.verbose().Database)(DATABASE_PATH, callback);
 jest.mock("tesseract.js", () => ({ createWorker: jest.fn() }));
@@ -34,11 +35,11 @@ describe("API routes", () => {
 		mockedCreateWorker.mockResolvedValue(mockWorker);
 	});
 
-	afterEach(() => {
-		db.run("DELETE FROM Pages;");
-	});
-
 	describe("POST new", () => {
+		beforeEach(async () => {
+			await clearPagesData(db);
+		});
+
 		test("should 400 without ocrType", async () => {
 			const response = await request(app)
 				.post("/api/new")
@@ -80,6 +81,10 @@ describe("API routes", () => {
 	});
 
 	describe("GET pages", () => {
+		beforeEach(async () => {
+			await clearPagesData(db);
+		});
+
 		test("renders 500 error when thrown", async () => {
 			await createPagesData(db, testData1);
 			await createPagesData(db, testData2);
@@ -106,6 +111,10 @@ describe("API routes", () => {
 	});
 
 	describe("GET pages/:id", () => {
+		beforeEach(async () => {
+			await clearPagesData(db);
+		});
+
 		test("renders 500 error when thrown", async () => {
 			await createPagesData(db, testData2);
 			const getOneSpy = jest
@@ -135,6 +144,10 @@ describe("API routes", () => {
 	});
 
 	describe("DELETE pages/:id", () => {
+		beforeEach(async () => {
+			await clearPagesData(db);
+		});
+
 		test("should 401 for invalid secret", async () => {
 			await createPagesData(db, testData2);
 			const response = await request(app).delete(`/api/pages/${testData2.id}`);

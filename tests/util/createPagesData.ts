@@ -1,5 +1,4 @@
 import sqlite3 from "sqlite3";
-import { v4 as uuidv4 } from "uuid";
 import { HtmlPageDb } from "../../src/types/HtmlPage";
 
 export const testData1: HtmlPageDb = {
@@ -22,14 +21,8 @@ export const testData2: HtmlPageDb = {
 
 export async function createPagesData(
 	db: sqlite3.Database,
-	{
-		id = uuidv4(),
-		source_code,
-		date_created = new Date().toISOString(),
-		date_updated = new Date().toISOString(),
-	}: HtmlPageDb,
+	{ id, source_code, date_created, date_updated }: HtmlPageDb,
 ) {
-	const testData: HtmlPageDb = { id, source_code, date_created, date_updated };
 	return await new Promise((resolve, reject) => {
 		db.run(
 			`
@@ -39,15 +32,15 @@ export async function createPagesData(
       date_created,
       date_updated
     ) VALUES  (
-      "${testData.id}",
-      "${testData.source_code}",
-      "${testData.date_created}",
-      "${testData.date_updated}"
+      ?,
+      ?,
+      ?,
+      ?
     )
     ;
   `,
-			{},
-			(err) => {
+			[id, source_code, date_created, date_updated],
+			async (err) => {
 				if (err) {
 					reject(err);
 				}

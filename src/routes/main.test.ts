@@ -13,6 +13,7 @@ import {
 } from "../../tests/util/createPagesData";
 import * as HTMLPage from "../models/HtmlPage";
 import * as page from "../db/page";
+import { clearPagesData } from "../../tests/util/clearPagesData";
 
 const db = new (sqlite3.verbose().Database)(DATABASE_PATH, callback);
 
@@ -36,11 +37,11 @@ describe("Rendered view routes", () => {
 		mockedCreateWorker.mockResolvedValue(mockWorker);
 	});
 
-	afterEach(() => {
-		db.run("DELETE FROM Pages;");
-	});
-
 	describe("GET /", () => {
+		beforeEach(async () => {
+			await clearPagesData(db);
+		});
+
 		test("renders 500 error when thrown", async () => {
 			const indexSpy = jest
 				.spyOn(HTMLPage, "index")
@@ -64,12 +65,20 @@ describe("Rendered view routes", () => {
 	});
 
 	describe("/", () => {
+		beforeEach(async () => {
+			await clearPagesData(db);
+		});
+
 		test("redirects to index", async () => {
 			await request(app).get("/pages").expect(302).expect("Location", "/");
 		});
 	});
 
 	describe("GET /pages/:id", () => {
+		beforeEach(async () => {
+			await clearPagesData(db);
+		});
+
 		test("renders 500 error when thrown", async () => {
 			await createPagesData(db, testData2);
 			const getOneSpy = jest
@@ -100,6 +109,10 @@ describe("Rendered view routes", () => {
 	});
 
 	describe("GET /new", () => {
+		beforeEach(async () => {
+			await clearPagesData(db);
+		});
+
 		test("renders successfully", async () => {
 			await createPagesData(db, testData1);
 			await createPagesData(db, testData2);
@@ -113,6 +126,10 @@ describe("Rendered view routes", () => {
 	});
 
 	describe("POST /new", () => {
+		beforeEach(async () => {
+			await clearPagesData(db);
+		});
+
 		test("should 400 without ocr-method", async () => {
 			const response = await request(app)
 				.post("/new")
