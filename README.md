@@ -11,7 +11,7 @@ IRL HTML currently supports the following OCR tools:
 
 The LLM based OCR tools (OpenAI and Anthropic) usually generate the most correct HTML code and use a short custom prompt to inform the LLM that the uploaded image is HTML and instructs the LLM to fix any syntax errors.
 
-## Node on Node.js version
+## Note on Node.js version
 
 This project intentionally uses an outdated version of Node.js (16.x) because it is hosted on Glitch, and that is the newest version supported there.
 
