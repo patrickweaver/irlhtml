@@ -10,7 +10,9 @@ import { error404, errorHandler } from "./errorHandlers";
 import * as HtmlPage from "../models/HtmlPage";
 
 const router = express.Router();
-const upload = multer({ dest: "./../../.data/images/" });
+const upload = multer({ dest: process.env.IMAGES_PATH });
+
+if (!process.env.IMAGES_PATH) process.exit(1);
 
 router.get("/", async function (req, res) {
 	try {
@@ -60,7 +62,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 
 		let imagePath: string = "";
 		if (req.file && req.file.filename) {
-			imagePath = "./../../.data/images/" + req.file.filename;
+			imagePath = process.env.IMAGES_PATH + req.file.filename;
 		}
 
 		const id = uuidv4();

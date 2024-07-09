@@ -7,10 +7,12 @@ import { runOcr, OCR_TYPES } from "../ocr";
 import * as page from "../db/page";
 import * as HtmlPage from "../models/HtmlPage";
 
+if (!process.env.IMAGES_PATH) process.exit(1);
+
 const BASE_URL = process.env.BASE_URL;
 
 const router = express.Router();
-const upload = multer({ dest: "./../../.data/images/" });
+const upload = multer({ dest: process.env.IMAGES_PATH });
 
 router.post("/new", upload.single("html-image"), async (req, res) => {
 	try {
@@ -25,7 +27,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 
 		let imagePath = "";
 		if (req.file && req.file.filename) {
-			imagePath = "./../../.data/images/" + req.file.filename;
+			imagePath = process.env.IMAGES_PATH + req.file.filename;
 		}
 
 		const id = uuidv4();
