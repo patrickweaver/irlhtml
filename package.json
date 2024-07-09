@@ -1,6 +1,6 @@
 {
   "name": "irlhtml",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A hosting service for images of HTML files",
   "type": "module",
   "main": "server.js",
@@ -14,7 +14,6 @@
     "@eslint/create-config": "^0.4.6",
     "@google-cloud/vision": "^4.3.0",
     "axios": "^1.7.2",
-    "better-sqlite3": "^8.4.0",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "file-type": "^16.5.4",
