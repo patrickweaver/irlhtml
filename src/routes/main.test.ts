@@ -24,7 +24,7 @@ const mockedCreateWorker = createWorker as jest.Mock;
 describe("Rendered view routes", () => {
 	let mockWorker: any;
 
-	beforeEach(() => {
+	afterEach(() => {
 		jest.clearAllMocks();
 
 		mockWorker = {
@@ -38,7 +38,7 @@ describe("Rendered view routes", () => {
 	});
 
 	describe("GET /", () => {
-		beforeEach(async () => {
+		afterEach(async () => {
 			await clearPagesData(db);
 		});
 
@@ -65,7 +65,7 @@ describe("Rendered view routes", () => {
 	});
 
 	describe("/", () => {
-		beforeEach(async () => {
+		afterEach(async () => {
 			await clearPagesData(db);
 		});
 
@@ -75,7 +75,7 @@ describe("Rendered view routes", () => {
 	});
 
 	describe("GET /pages/:id", () => {
-		beforeEach(async () => {
+		afterEach(async () => {
 			await clearPagesData(db);
 		});
 
@@ -109,7 +109,7 @@ describe("Rendered view routes", () => {
 	});
 
 	describe("GET /new", () => {
-		beforeEach(async () => {
+		afterEach(async () => {
 			await clearPagesData(db);
 		});
 
@@ -126,7 +126,7 @@ describe("Rendered view routes", () => {
 	});
 
 	describe("POST /new", () => {
-		beforeEach(async () => {
+		afterEach(async () => {
 			await clearPagesData(db);
 		});
 
@@ -185,7 +185,7 @@ describe("Rendered view routes", () => {
 			const originalEnv = process.env;
 			let app: Express;
 
-			beforeEach(() => {
+			afterEach(() => {
 				jest.resetModules();
 				process.env = { ...originalEnv };
 				require("../../.jest/setEnvVars");
