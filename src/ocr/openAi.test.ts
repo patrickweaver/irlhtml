@@ -3,7 +3,7 @@ import { png } from "../../tests/test-image-files/imageFileData";
 import { Model, getOpenAiMessages, openAiOcr } from "./openAi";
 import { PROMPT } from "./prompt";
 import OpenAI from "openai";
-import { OCR_TYPES } from ".";
+import { OcrTypes } from "../types/Ocr";
 
 jest.mock("openai", () => {
 	const mockCreate = jest.fn();
@@ -38,7 +38,11 @@ describe("openAiOcr", () => {
 			max_tokens: 300,
 		});
 
-		expect(ocrText).toEqual(mockResponse.choices[0].message.content);
+		expect(ocrText).toEqual({
+			ocrType: OcrTypes.OPEN_AI_GPT_4_O,
+			success: true,
+			text: mockResponse.choices[0].message.content,
+		});
 	});
 
 	test("Should successfully use OpenAI SDK to OCR image with GPT-4 Turbo", async () => {
@@ -47,10 +51,7 @@ describe("openAiOcr", () => {
 			choices: [{ message: { content: "Mocked OCR result" } }],
 		};
 		mockCreate.mockResolvedValue(mockResponse);
-		const ocrText = await openAiOcr(
-			png.filePath,
-			OCR_TYPES.OPEN_AI_GPT_4_TURBO,
-		);
+		const ocrText = await openAiOcr(png.filePath, OcrTypes.OPEN_AI_GPT_4_TURBO);
 
 		expect(openAi!.chat!.completions.create).toHaveBeenCalledWith({
 			model: Model.GPT_4_TURBO,
@@ -58,12 +59,16 @@ describe("openAiOcr", () => {
 			max_tokens: 300,
 		});
 
-		expect(ocrText).toEqual(mockResponse.choices[0].message.content);
+		expect(ocrText).toEqual({
+			ocrType: OcrTypes.OPEN_AI_GPT_4_TURBO,
+			success: true,
+			text: mockResponse.choices[0].message.content,
+		});
 	});
 
 	test("Should throw error on invalid model", async () => {
 		await expect(
-			openAiOcr(png.filePath, OCR_TYPES.GOOGLE_VISION),
+			openAiOcr(png.filePath, OcrTypes.GOOGLE_VISION),
 		).rejects.toThrow("Invalid OCR type for OpenAI");
 	});
 });

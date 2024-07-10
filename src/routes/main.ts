@@ -3,12 +3,13 @@ import express from "express";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 
-import { runOcr, OCR_TYPES } from "../ocr";
+import { runOcr } from "../ocr";
 import * as page from "../db/page";
 import { defaultRenderObj as _r } from "../util/constants";
 import { error404, errorHandler } from "./errorHandlers";
 import * as HtmlPage from "../models/HtmlPage";
 import { PROMPT } from "../ocr/prompt";
+import { OcrTypes } from "../types/Ocr";
 
 const router = express.Router();
 const upload = multer({ dest: process.env.IMAGES_PATH });
@@ -62,10 +63,10 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 		if (
 			!ocrTypeKey ||
 			typeof ocrTypeKey !== "string" ||
-			!(ocrTypeKey in OCR_TYPES)
+			!(ocrTypeKey in OcrTypes)
 		)
 			return errorHandler(req, res, "Invalid ocr-method", 400, { ..._r });
-		const ocrType = OCR_TYPES?.[ocrTypeKey as keyof typeof OCR_TYPES];
+		const ocrType = OcrTypes?.[ocrTypeKey as keyof typeof OcrTypes];
 
 		let imagePath: string = "";
 		if (req.file && req.file.filename) {
@@ -74,7 +75,14 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 
 		const id = uuidv4();
 
-		const htmlContent = await runOcr(imagePath, ocrType);
+		const result = await runOcr(imagePath, ocrType);
+
+		if (!result.success) {
+			return errorHandler(req, res, null, 503, {
+				..._r,
+				errorMessage: ocrType + " " + result.error?.message ?? "OCR failed",
+			});
+		}
 
 		if (imagePath) {
 			try {
@@ -83,8 +91,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 				console.log("error deleting " + imagePath + ": " + err);
 			}
 		}
-
-		await page.insert({ id, htmlContent });
+		await page.insert({ id, htmlContent: result.text });
 		const row = await page.getOne({ id });
 		if (!row?.id) throw new Error("Upload failed");
 		res.redirect(`/pages/${row.id}`);

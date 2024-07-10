@@ -4,7 +4,9 @@
 <% if (id) { %>
   <p>There was an error getting that page 🧩</p>
   <p>Page requested: <%= id %></p>
-<% } else{ %>
+<% } else if (errorMessage) { %>
+  <p><%= errorMessage %></p>  
+<% } else { %>
   <p>An unexpected error occurred. Please try again.</p>
 <% } %>
 

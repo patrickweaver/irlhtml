@@ -1,7 +1,7 @@
 import { describe, expect, test } from "@jest/globals";
 import {
 	Model,
-	claudeOcr,
+	anthropicClaudeOcr,
 	getClaudeMessages,
 	validateMimeType,
 } from "./claude";
@@ -9,6 +9,7 @@ import { PROMPT } from "./prompt";
 import Anthropic from "@anthropic-ai/sdk";
 import { bmp, png } from "../../tests/test-image-files/imageFileData";
 import { ImageBlockParam } from "@anthropic-ai/sdk/resources";
+import { OcrTypes, OcrErrorType } from "../types/Ocr";
 
 jest.mock("@anthropic-ai/sdk", () => {
 	const mockCreate = jest.fn();
@@ -35,8 +36,8 @@ describe("claudeOcr", () => {
 		const mockResponse = {
 			content: [{ text: "Mocked OCR result" }],
 		};
-		mockCreate.mockResolvedValue(mockResponse);
-		const ocrText = await claudeOcr(png.filePath);
+		mockCreate.mockResolvedValueOnce(mockResponse);
+		const result = await anthropicClaudeOcr(png.filePath);
 
 		expect(anthropic!.messages!.create).toHaveBeenCalledWith({
 			model: Model.HAIKU_3,
@@ -44,7 +45,29 @@ describe("claudeOcr", () => {
 			max_tokens: 1024,
 		});
 
-		expect(ocrText).toEqual(mockResponse);
+		expect(result).toEqual({
+			ocrType: OcrTypes.ANTHROPIC_CLAUDE,
+			success: true,
+			text: "Mocked OCR result",
+		});
+	});
+
+	test("Should gracefully handle out of credits error", async () => {
+		const errorMessage =
+			"Your credit balance is too low to access the Claude API. Please go to Plans & Billing to upgrade or purchase credits.";
+		mockCreate.mockRejectedValueOnce({
+			status: 400,
+			type: "invalid_request_error",
+			message: errorMessage,
+		});
+		expect(await anthropicClaudeOcr(png.filePath)).toEqual({
+			ocrType: OcrTypes.ANTHROPIC_CLAUDE,
+			success: false,
+			error: {
+				type: OcrErrorType.OUT_OF_CREDITS,
+				message: "The project is out of Claude API credits.",
+			},
+		});
 	});
 
 	test("Should throw error on invalid file", async () => {
@@ -52,7 +75,9 @@ describe("claudeOcr", () => {
 			content: [{ text: "Mocked OCR result" }],
 		};
 		mockCreate.mockResolvedValue(mockResponse);
-		await expect(claudeOcr(bmp.filePath)).rejects.toThrow("Invalid mimeType");
+		await expect(anthropicClaudeOcr(bmp.filePath)).rejects.toThrow(
+			"Invalid mimeType",
+		);
 	});
 });
 

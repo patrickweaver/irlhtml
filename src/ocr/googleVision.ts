@@ -1,5 +1,6 @@
 import axios from "axios";
 import base64ImageFromFile from "../util/base64ImageFromFile";
+import { OcrResponse, OcrTypes } from "../types/Ocr";
 const gcpApiUrl = "https://vision.googleapis.com/v1/images:annotate?";
 const GCP_API_KEY = process.env.GCP_API_KEY;
 
@@ -18,7 +19,7 @@ export async function getGcpRequestOptions(imagePath: string) {
 	};
 }
 
-export async function googleVisionTextDetection(imageUrl: string) {
+export async function googleVisionOcr(imageUrl: string): Promise<OcrResponse> {
 	const { url, data } = await getGcpRequestOptions(imageUrl);
 	let gvGuess: string = "";
 	try {
@@ -30,7 +31,7 @@ export async function googleVisionTextDetection(imageUrl: string) {
 		throw Error("Error making request to Google Vision");
 	}
 	if (gvGuess) {
-		return { text: gvGuess };
+		return { ocrType: OcrTypes.GOOGLE_VISION, success: true, text: gvGuess };
 	} else {
 		throw Error("No response from Google Vision");
 	}

@@ -1,10 +1,8 @@
 import { describe, expect, test } from "@jest/globals";
-import {
-	getGcpRequestOptions,
-	googleVisionTextDetection,
-} from "./googleVision";
+import { getGcpRequestOptions, googleVisionOcr } from "./googleVision";
 import { png } from "../../tests/test-image-files/imageFileData";
 import axios from "axios";
+import { OcrTypes } from "../types/Ocr";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -27,7 +25,7 @@ describe("getGcpRequestOptions", () => {
 	});
 });
 
-describe("googleVisionTextDetection", () => {
+describe("googleVisionOcr", () => {
 	test("Should successfully use Google Vision API to OCR image", async () => {
 		const mockResolvedResponse = {
 			data: {
@@ -35,8 +33,12 @@ describe("googleVisionTextDetection", () => {
 			},
 		};
 		mockedAxios.post.mockResolvedValue(mockResolvedResponse);
-		const result = await googleVisionTextDetection(png.filePath);
-		expect(result.text).toEqual("Mocked OCRed text");
+		const result = await googleVisionOcr(png.filePath);
+		expect(result).toEqual({
+			ocrType: OcrTypes.GOOGLE_VISION,
+			success: true,
+			text: "Mocked OCRed text",
+		});
 	});
 
 	test("Should throw on invalid OCR", async () => {
@@ -46,7 +48,7 @@ describe("googleVisionTextDetection", () => {
 			},
 		};
 		mockedAxios.post.mockResolvedValue(mockResolvedResponse);
-		await expect(googleVisionTextDetection(png.filePath)).rejects.toThrow(
+		await expect(googleVisionOcr(png.filePath)).rejects.toThrow(
 			"No response from Google Vision",
 		);
 	});
@@ -58,7 +60,7 @@ describe("googleVisionTextDetection", () => {
 			},
 		};
 		mockedAxios.post.mockResolvedValue(mockResolvedResponse);
-		await expect(googleVisionTextDetection(png.filePath)).rejects.toThrow(
+		await expect(googleVisionOcr(png.filePath)).rejects.toThrow(
 			"No response from Google Vision",
 		);
 	});
@@ -67,7 +69,7 @@ describe("googleVisionTextDetection", () => {
 		mockedAxios.post.mockImplementationOnce(() =>
 			Promise.reject(new Error("Network error")),
 		);
-		await expect(googleVisionTextDetection(png.filePath)).rejects.toThrow(
+		await expect(googleVisionOcr(png.filePath)).rejects.toThrow(
 			"Error making request to Google Vision",
 		);
 	});

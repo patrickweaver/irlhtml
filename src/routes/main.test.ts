@@ -14,6 +14,8 @@ import {
 import * as HTMLPage from "../models/HtmlPage";
 import * as page from "../db/page";
 import { clearPagesData } from "../../tests/util/clearPagesData";
+import setup from "../db/setup";
+import { run } from "../db";
 
 const db = new (sqlite3.verbose().Database)(DATABASE_PATH, callback);
 
@@ -24,7 +26,11 @@ const mockedCreateWorker = createWorker as jest.Mock;
 describe("Rendered view routes", () => {
 	let mockWorker: any;
 
-	beforeEach(() => {
+	beforeAll(async () => {
+		await setup(run);
+	});
+
+	afterEach(() => {
 		jest.clearAllMocks();
 
 		mockWorker = {
@@ -38,17 +44,8 @@ describe("Rendered view routes", () => {
 	});
 
 	describe("GET /", () => {
-		beforeEach(async () => {
+		afterEach(async () => {
 			await clearPagesData(db);
-		});
-
-		test("renders 500 error when thrown", async () => {
-			const indexSpy = jest
-				.spyOn(HTMLPage, "index")
-				.mockRejectedValue(new Error("DB error"));
-			const response = await request(app).get("/");
-			expect(response.statusCode).toEqual(500);
-			indexSpy.mockRestore();
 		});
 
 		test("renders successfully", async () => {
@@ -62,10 +59,19 @@ describe("Rendered view routes", () => {
 			expect(response.text).toContain(`Untitled - ${testData1.id.slice(0, 5)}`);
 			expect(response.text).toContain("Test Title");
 		});
+
+		test("renders 500 error when thrown", async () => {
+			const indexSpy = jest
+				.spyOn(HTMLPage, "index")
+				.mockRejectedValue(new Error("DB error"));
+			const response = await request(app).get("/");
+			expect(response.statusCode).toEqual(500);
+			indexSpy.mockRestore();
+		});
 	});
 
 	describe("/", () => {
-		beforeEach(async () => {
+		afterEach(async () => {
 			await clearPagesData(db);
 		});
 
@@ -75,7 +81,7 @@ describe("Rendered view routes", () => {
 	});
 
 	describe("GET /pages/:id", () => {
-		beforeEach(async () => {
+		afterEach(async () => {
 			await clearPagesData(db);
 		});
 
@@ -109,7 +115,7 @@ describe("Rendered view routes", () => {
 	});
 
 	describe("GET /new", () => {
-		beforeEach(async () => {
+		afterEach(async () => {
 			await clearPagesData(db);
 		});
 
@@ -126,7 +132,7 @@ describe("Rendered view routes", () => {
 	});
 
 	describe("POST /new", () => {
-		beforeEach(async () => {
+		afterEach(async () => {
 			await clearPagesData(db);
 		});
 
@@ -185,7 +191,7 @@ describe("Rendered view routes", () => {
 			const originalEnv = process.env;
 			let app: Express;
 
-			beforeEach(() => {
+			afterEach(() => {
 				jest.resetModules();
 				process.env = { ...originalEnv };
 				require("../../.jest/setEnvVars");
