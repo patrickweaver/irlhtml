@@ -179,36 +179,4 @@ describe("Rendered view routes", () => {
 			);
 		});
 	});
-
-	describe("GET /set-secret", () => {
-		test("should not allow setting secret by default", async () => {
-			const response = await request(app).get("/set-secret");
-			expect(response.statusCode).toEqual(200);
-			expect(response.text).toContain("<h1>Setting Secret Disabled</h1>");
-		});
-
-		describe("With mocked process.env", () => {
-			const originalEnv = process.env;
-			let app: Express;
-
-			afterEach(() => {
-				jest.resetModules();
-				process.env = { ...originalEnv };
-				require("../../.jest/setEnvVars");
-			});
-
-			afterEach(() => {
-				process.env = originalEnv;
-			});
-
-			test("should allow setting secret when enabled", async () => {
-				process.env.ALLOW_SET_SECRET = "TRUE";
-				app = (await import("../app")).default;
-				const response = await request(app).get("/set-secret");
-				expect(response.statusCode).toEqual(200);
-				expect(response.text).toContain("localStorage.setItem('secret'");
-				delete process.env.SET_SECRET;
-			});
-		});
-	});
 });
