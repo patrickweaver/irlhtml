@@ -34,6 +34,10 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 		const id = uuidv4();
 		const result = await runOcr(imagePath, ocrType);
 
+		if (!result.success) {
+			throw new Error("OCR Failed");
+		}
+
 		if (imagePath) {
 			try {
 				fs.unlinkSync(imagePath);
