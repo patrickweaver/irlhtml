@@ -100,34 +100,4 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 	}
 });
 
-router.get("/set-secret", async (req, res) => {
-	const render = (title: string, body: string, script: string = "") => {
-		return `
-		<!DOCTYPE html>
-		<html>
-			<head><title>${title}</title></head>
-			<body>${body}</body>
-			<script>${script}</script>
-		</html>
-	`;
-	};
-
-	const enabled = process.env?.ALLOW_SET_SECRET === "TRUE";
-	const title = "IRL HTML Set Secret";
-	if (!enabled) {
-		const body = "<h1>Setting Secret Disabled</h1>";
-		res.send(render(title, body));
-		return;
-	}
-	const body = '<h1>Setting Secret</h1><p id="status"></p>';
-	const secret = process.env?.SECRET ?? undefined;
-	const script = `
-		console.log("Setting Secret");
-		localStorage.setItem('secret', '${secret}');
-		console.log("Secret set:", localStorage.getItem('secret'))
-		document.getElementById("status").innerHTML = 'Secret set:' + localStorage.getItem('secret');
-	`;
-	res.send(render(title, body, script));
-});
-
 export default router;
