@@ -1,6 +1,5 @@
 export const defaultRenderObj = {
 	id: null,
 	title: "",
+	errorMessage: null,
 };
-
-export const insufficientCreditMessage = "OCR method is out of credits.";

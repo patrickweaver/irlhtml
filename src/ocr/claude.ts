@@ -3,6 +3,7 @@ import { PROMPT } from "./prompt";
 import { ContentBlock, ImageBlockParam } from "@anthropic-ai/sdk/resources";
 import base64ImageFromFile from "../util/base64ImageFromFile";
 import { z } from "zod";
+import { OcrErrorType, OcrResponse, OcrTypes } from "../types/Ocr";
 
 export enum Model {
 	HAIKU_3 = "claude-3-haiku-20240307",
@@ -31,7 +32,9 @@ export function validateMimeType(mimeType: string): ClaudeValidMimeType | null {
 	}
 }
 
-export async function claudeOcr(imagePath: string) {
+export async function anthropicClaudeOcr(
+	imagePath: string,
+): Promise<OcrResponse> {
 	const { content, mimeType: _mimeType } = await base64ImageFromFile(imagePath);
 	const mimeType: ImageBlockParam.Source["media_type"] | null =
 		validateMimeType(_mimeType);
@@ -44,22 +47,32 @@ export async function claudeOcr(imagePath: string) {
 			max_tokens: 1024,
 			messages: getClaudeMessages(content, mimeType),
 		});
-	} catch (error: any) {
-		if (error?.message.includes(noCreditSubstring)) {
+		const claudeContent: ContentBlock = msg?.content?.[0];
+		if (claudeContent && "text" in claudeContent) {
+			const claudeHtml = claudeContent?.text ?? OCR_FAILURE_TEXT;
 			return {
-				handledError: true,
-				error: "The project is out of Claude API credits.",
+				ocrType: OcrTypes.ANTHROPIC_CLAUDE,
+				success: true,
+				text: claudeHtml,
 			};
 		} else {
-			throw error;
+			throw new Error("Invalid response from Claude");
 		}
-	}
-	const claudeContent: ContentBlock = msg?.content?.[0];
-	if (claudeContent && "text" in claudeContent) {
-		const claudeHtml = claudeContent?.text ?? OCR_FAILURE_TEXT;
-		return claudeHtml;
-	} else {
-		throw new Error("Invalid response from Claude");
+	} catch (error: any) {
+		let errorMessage = "Invalid response from Claude";
+		let errorType = OcrErrorType.UNKNOWN;
+		if (error?.message.includes(noCreditSubstring)) {
+			errorMessage = "The project is out of Claude API credits.";
+			errorType = OcrErrorType.OUT_OF_CREDITS;
+		}
+		return {
+			ocrType: OcrTypes.ANTHROPIC_CLAUDE,
+			success: false,
+			error: {
+				type: errorType,
+				message: errorMessage,
+			},
+		};
 	}
 }
 

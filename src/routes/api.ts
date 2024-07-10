@@ -3,10 +3,10 @@ import express from "express";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import { apiErrorHandler } from "./errorHandlers";
-import { runOcr, OCR_TYPES } from "../ocr";
+import { runOcr } from "../ocr";
 import * as page from "../db/page";
 import * as HtmlPage from "../models/HtmlPage";
-import { insufficientCreditMessage } from "../util/constants";
+import { OcrTypes } from "../types/Ocr";
 
 if (!process.env.IMAGES_PATH) process.exit(1);
 
@@ -21,10 +21,10 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 		if (
 			!ocrTypeKey ||
 			typeof ocrTypeKey !== "string" ||
-			!(ocrTypeKey in OCR_TYPES)
+			!(ocrTypeKey in OcrTypes)
 		)
 			return apiErrorHandler(req, res, "Invalid ocrType", 400);
-		const ocrType = OCR_TYPES[ocrTypeKey as keyof typeof OCR_TYPES];
+		const ocrType = OcrTypes[ocrTypeKey as keyof typeof OcrTypes];
 
 		let imagePath = "";
 		if (req.file && req.file.filename) {
@@ -34,15 +34,6 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 		const id = uuidv4();
 		const result = await runOcr(imagePath, ocrType);
 
-		if (typeof result === "object") {
-			if (result?.handledError) {
-				throw new Error(insufficientCreditMessage);
-			}
-			throw new Error("Invalid OCR response");
-		}
-
-		const htmlContent = result;
-
 		if (imagePath) {
 			try {
 				fs.unlinkSync(imagePath);
@@ -51,7 +42,11 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 			}
 		}
 
-		await page.insert({ id, htmlContent });
+		if (!result.success) {
+			throw new Error("Ocr failed");
+		}
+
+		await page.insert({ id, htmlContent: result.text });
 		const row = await page.getOne({ id });
 		if (!row?.id) throw new Error("Upload failed");
 		return res.json({ ...row, url: `${BASE_URL}/pages/${row.id}` });

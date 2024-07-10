@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { PROMPT } from "./prompt";
 import base64ImageFromFile from "../util/base64ImageFromFile";
-import { OCR_TYPES } from ".";
+import { OcrErrorType, OcrResponse, OcrTypes } from "../types/Ocr";
 
 export enum Model {
 	GPT_4_TURBO = "gpt-4-turbo",
@@ -12,11 +12,11 @@ const apiKey = process.env["OPENAI_API_KEY"];
 
 export async function openAiOcr(
 	imagePath: string,
-	ocrType = OCR_TYPES.OPEN_AI_GPT_4_O,
-) {
+	ocrType = OcrTypes.OPEN_AI_GPT_4_O,
+): Promise<OcrResponse> {
 	let model;
-	if (ocrType === OCR_TYPES.OPEN_AI_GPT_4_O) model = Model.GPT_4_O;
-	if (ocrType === OCR_TYPES.OPEN_AI_GPT_4_TURBO) model = Model.GPT_4_TURBO;
+	if (ocrType === OcrTypes.OPEN_AI_GPT_4_O) model = Model.GPT_4_O;
+	if (ocrType === OcrTypes.OPEN_AI_GPT_4_TURBO) model = Model.GPT_4_TURBO;
 	if (!model) throw new Error("Invalid OCR type for OpenAI");
 	const { content, mimeType } = await base64ImageFromFile(imagePath);
 	const openai = new OpenAI({ apiKey });
@@ -26,7 +26,23 @@ export async function openAiOcr(
 		max_tokens: 300,
 	});
 
-	return response.choices[0].message.content;
+	const text = response.choices[0].message.content;
+
+	if (!text)
+		return {
+			ocrType,
+			success: false,
+			error: {
+				type: OcrErrorType.EMPTY_RESULT,
+				message: "No text found",
+			},
+		};
+
+	return {
+		ocrType,
+		success: true,
+		text,
+	};
 }
 
 export function getOpenAiMessages(
