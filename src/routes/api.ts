@@ -42,10 +42,6 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 			}
 		}
 
-		if (!result.success) {
-			throw new Error("Ocr failed");
-		}
-
 		await page.insert({ id, htmlContent: result.text });
 		const row = await page.getOne({ id });
 		if (!row?.id) throw new Error("Upload failed");
