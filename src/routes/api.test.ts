@@ -13,6 +13,8 @@ import {
 import * as HTMLPage from "../models/HtmlPage";
 import * as page from "../db/page";
 import { clearPagesData } from "../../tests/util/clearPagesData";
+import setup from "../db/setup";
+import { run } from "../db";
 
 const db = new (sqlite3.verbose().Database)(DATABASE_PATH, callback);
 jest.mock("tesseract.js", () => ({ createWorker: jest.fn() }));
@@ -21,6 +23,10 @@ const mockedCreateWorker = createWorker as jest.Mock;
 
 describe("API routes", () => {
 	let mockWorker: any;
+
+	beforeAll(() => {
+		setup(run);
+	});
 
 	beforeEach(() => {
 		jest.clearAllMocks();

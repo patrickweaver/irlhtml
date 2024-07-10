@@ -14,6 +14,8 @@ import {
 import * as HTMLPage from "../models/HtmlPage";
 import * as page from "../db/page";
 import { clearPagesData } from "../../tests/util/clearPagesData";
+import setup from "../db/setup";
+import { run } from "../db";
 
 const db = new (sqlite3.verbose().Database)(DATABASE_PATH, callback);
 
@@ -23,6 +25,10 @@ const mockedCreateWorker = createWorker as jest.Mock;
 
 describe("Rendered view routes", () => {
 	let mockWorker: any;
+
+	beforeAll(() => {
+		setup(run);
+	});
 
 	afterEach(() => {
 		jest.clearAllMocks();
