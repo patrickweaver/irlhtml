@@ -24,8 +24,8 @@ const mockedCreateWorker = createWorker as jest.Mock;
 describe("API routes", () => {
 	let mockWorker: any;
 
-	beforeAll(() => {
-		setup(run);
+	beforeAll(async () => {
+		await setup(run);
 	});
 
 	beforeEach(() => {

@@ -26,8 +26,8 @@ const mockedCreateWorker = createWorker as jest.Mock;
 describe("Rendered view routes", () => {
 	let mockWorker: any;
 
-	beforeAll(() => {
-		setup(run);
+	beforeAll(async () => {
+		await setup(run);
 	});
 
 	afterEach(() => {
