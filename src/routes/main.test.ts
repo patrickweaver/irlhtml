@@ -42,15 +42,6 @@ describe("Rendered view routes", () => {
 			await clearPagesData(db);
 		});
 
-		test("renders 500 error when thrown", async () => {
-			const indexSpy = jest
-				.spyOn(HTMLPage, "index")
-				.mockRejectedValue(new Error("DB error"));
-			const response = await request(app).get("/");
-			expect(response.statusCode).toEqual(500);
-			indexSpy.mockRestore();
-		});
-
 		test("renders successfully", async () => {
 			await createPagesData(db, testData1);
 			await createPagesData(db, testData2);
@@ -61,6 +52,15 @@ describe("Rendered view routes", () => {
 			expect(response.text).toContain("<h2>Pages</h2>");
 			expect(response.text).toContain(`Untitled - ${testData1.id.slice(0, 5)}`);
 			expect(response.text).toContain("Test Title");
+		});
+
+		test("renders 500 error when thrown", async () => {
+			const indexSpy = jest
+				.spyOn(HTMLPage, "index")
+				.mockRejectedValue(new Error("DB error"));
+			const response = await request(app).get("/");
+			expect(response.statusCode).toEqual(500);
+			indexSpy.mockRestore();
 		});
 	});
 
