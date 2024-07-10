@@ -2,7 +2,6 @@
 
 - Overlay on hosted pages
 - Analytics for OCR methods
-- Update copy
 - Set up Testing Library
 - Set up Playwright
 - Better admin access
@@ -10,6 +9,11 @@
 - Better typing for db modules
 - Pagination
 - EJS-Lint
+
+## 2024-07-09
+
+~~- Handle no credits Claude Response~~
+~~- Update copy~~
 
 ## 2024-07-08
 

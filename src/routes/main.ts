@@ -29,6 +29,10 @@ router.get("/pages", (req, res) => {
 	return res.redirect("/");
 });
 
+router.get("/pages/new", (req, res) => {
+	return res.redirect("/new");
+});
+
 router.get("/pages/:id", async (req, res) => {
 	const { id } = req.params;
 	try {
