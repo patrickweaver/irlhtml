@@ -31,18 +31,23 @@ export async function insert({
 	return success;
 }
 
-export const getOneQuery = `
+export const getOneByIdOrSlugQuery = `
 		SELECT *
 		FROM Pages
-		WHERE id = ?
+		WHERE (
+			id = ?
+			OR slug = ?
+		)
 	`;
-export async function getOne({ id }: { id: string }): Promise<{
+export async function getOne({ idOrSlug }: { idOrSlug: string }): Promise<{
 	id: string;
 	source_code: string;
 	date_created: string;
 	date_updated: string;
+	slug: string;
+	author?: string;
 } | null> {
-	const rows = await db.all(getOneQuery, [id]);
+	const rows = await db.all(getOneByIdOrSlugQuery, [idOrSlug, idOrSlug]);
 	return rows?.[0] ?? null;
 }
 

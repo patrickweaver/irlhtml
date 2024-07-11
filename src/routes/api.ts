@@ -47,7 +47,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 		}
 
 		await page.insert({ id, htmlContent: result.text });
-		const row = await page.getOne({ id });
+		const row = await page.getOne({ idOrSlug: id });
 		if (!row?.id) throw new Error("Upload failed");
 		return res.json({ ...row, url: `${BASE_URL}/pages/${row.id}` });
 	} catch (error) {
@@ -64,10 +64,10 @@ router.get("/pages", async (req, res) => {
 	}
 });
 
-router.get("/pages/:id", async (req, res) => {
-	const { id } = req.params;
+router.get("/pages/:idOrSlug", async (req, res) => {
+	const { idOrSlug } = req.params;
 	try {
-		const page = await HtmlPage.getOne(id);
+		const page = await HtmlPage.getOne(idOrSlug);
 		if (!page?.id) return apiErrorHandler(req, res, "Page not found", 404);
 		return res.json(page);
 	} catch (error) {

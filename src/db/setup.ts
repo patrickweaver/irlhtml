@@ -9,7 +9,9 @@ CREATE TABLE IF NOT EXISTS Pages (
 	id text NOT NULL PRIMARY KEY,
 	source_code text NOT NULL,
 	date_created text NOT NULL,
-	date_updated text NOT NULL
+	date_updated text NOT NULL,
+	slug text,
+	author text
 );
 `;
 
@@ -18,10 +20,10 @@ export const clearQuery = `
 `;
 
 export default async (dbExec: typeof run) => {
+	if (process.env.ENVIRONMENT === "production") return;
 	console.log(
 		`Running db setup on ${process.env?.ENVIRONMENT ?? "unknown"} environment`,
 	);
-	if (process.env.ENVIRONMENT === "production") return;
 	try {
 		if (checkClear()) await dbExec(clearQuery);
 		await dbExec(schema);

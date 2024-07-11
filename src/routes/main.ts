@@ -33,16 +33,16 @@ router.get("/pages/new", (req, res) => {
 	return res.redirect("/new");
 });
 
-router.get("/pages/:id", async (req, res) => {
-	const { id } = req.params;
+router.get("/pages/:idOrSlug", async (req, res) => {
+	const { idOrSlug } = req.params;
 	try {
-		const page = await HtmlPage.getOne(id);
-		if (!page?.id) return error404(req, res, id);
+		const page = await HtmlPage.getOne(idOrSlug);
+		if (!page?.id) return error404(req, res, idOrSlug);
 		const sourceCode = page?.source_code;
 		if (!sourceCode) throw new Error("Invalid page");
 		res.send(sourceCode);
 	} catch (error) {
-		return errorHandler(req, res, error, 500, { ..._r, id });
+		return errorHandler(req, res, error, 500, { ..._r, idOrSlug });
 	}
 });
 
@@ -96,7 +96,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 			}
 		}
 		await page.insert({ id, htmlContent: result.text });
-		const row = await page.getOne({ id });
+		const row = await page.getOne({ idOrSlug: id });
 		if (!row?.id) throw new Error("Upload failed");
 		res.redirect(`/pages/${row.id}`);
 	} catch (error) {
