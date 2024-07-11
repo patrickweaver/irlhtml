@@ -19,7 +19,20 @@ export const testData2: HtmlPageDb = {
   `,
 	date_created: "2024-02-02T00:00:00.000Z",
 	date_updated: "2024-02-02T02:02:02.002Z",
-	slug: "2000",
+	slug: "test-title",
+	author: "Patrick",
+};
+export const testData3: HtmlPageDb = {
+	id: "30000000-0000-0000-0000-000000000000",
+	source_code: `
+    <html>
+      <head><title>Test</title></head>
+      <body><h1>Test 3</h1></body>
+    </html>
+  `,
+	date_created: "2024-03-03T00:00:00.000Z",
+	date_updated: "2024-03-03T03:03:03.003Z",
+	slug: "test",
 	author: "Patrick",
 };
 

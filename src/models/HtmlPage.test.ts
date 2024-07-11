@@ -1,7 +1,11 @@
 import { describe, expect, test } from "@jest/globals";
-import { getOne, index } from "./HtmlPage";
+import { getOne, getSlug, index } from "./HtmlPage";
 import * as page from "../db/page";
-import { testData1, testData2 } from "../../tests/util/createPagesData";
+import {
+	testData1,
+	testData2,
+	testData3,
+} from "../../tests/util/createPagesData";
 
 jest.mock("../db/page", () => {
 	return {
@@ -52,6 +56,49 @@ describe("HtmlPage", () => {
 				date_updated: new Date(testData1.date_updated),
 				title: "",
 			});
+		});
+	});
+
+	describe("getSlug", () => {
+		test("should return slug from title", async () => {
+			mockedPage.getOne.mockResolvedValueOnce(null);
+			const result = await getSlug("abc-123", "Test Title");
+			expect(result).toEqual("test");
+		});
+
+		test("should return slug from title when first word matches another slug", async () => {
+			mockedPage.getOne.mockResolvedValueOnce(testData3);
+			const result = await getSlug("abc-123", "Test Title");
+			expect(result).toEqual("test-title");
+		});
+
+		test("should return slug from id when all candidates match another slug", async () => {
+			mockedPage.getOne.mockResolvedValueOnce(testData3);
+			mockedPage.getOne.mockResolvedValueOnce(testData2);
+			const result = await getSlug("abcd-1234", "Test Title");
+			expect(result).toEqual("abcd");
+		});
+
+		test("should return slug from id when title is null", async () => {
+			mockedPage.getOne.mockResolvedValueOnce(null);
+			const result = await getSlug("abcd-1234", null);
+			expect(result).toEqual("abcd");
+		});
+
+		test("should return longer slug from id when beginning of id matches another slug", async () => {
+			mockedPage.getOne.mockResolvedValueOnce({
+				...testData1,
+				slug: "abcd",
+			});
+			mockedPage.getOne.mockResolvedValueOnce(null);
+			const result = await getSlug("abcde-12345", null);
+			expect(result).toEqual("abcde");
+		});
+
+		test("should return slug not ending in -", async () => {
+			mockedPage.getOne.mockResolvedValueOnce(null);
+			const result = await getSlug("abc-123", null);
+			expect(result).toEqual("abc-1");
 		});
 	});
 });

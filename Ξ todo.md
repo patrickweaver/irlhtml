@@ -9,6 +9,15 @@
 - Better typing for db modules
 - Pagination
 - EJS-Lint
+- Move image delete to utils
+
+## 2024-07-10
+
+- Add slug
+- Add author
+- Lookup by slug
+- Render author
+- Submit author
 
 ## 2024-07-09
 

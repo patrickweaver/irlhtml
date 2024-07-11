@@ -17,9 +17,13 @@ export const insertQuery = `
 export async function insert({
 	id,
 	htmlContent,
+	slug,
+	author,
 }: {
 	id: string;
 	htmlContent: string;
+	slug: string;
+	author: string | null;
 }) {
 	const timestamp = new Date().toISOString();
 	const success = await db.run(insertQuery, [
