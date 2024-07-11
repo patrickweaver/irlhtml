@@ -104,10 +104,19 @@ describe("Rendered view routes", () => {
 			expect(response.text).toContain(`id (${testData2.id}) does not exist.`);
 		});
 
-		test("renders successfully for correct page", async () => {
+		test("renders successfully for correct page by id", async () => {
 			await createPagesData(db, testData1);
 			await createPagesData(db, testData2);
 			const response = await request(app).get(`/pages/${testData2.id}`);
+			expect(response.statusCode).toEqual(200);
+			expect(response.text).toContain("<title>Test Title</title>");
+			expect(response.text).toContain("<body><h1>Test Again</h1></body>");
+		});
+
+		test("renders successfully for correct page by slug", async () => {
+			await createPagesData(db, testData1);
+			await createPagesData(db, testData2);
+			const response = await request(app).get(`/pages/${testData2.slug}`);
 			expect(response.statusCode).toEqual(200);
 			expect(response.text).toContain("<title>Test Title</title>");
 			expect(response.text).toContain("<body><h1>Test Again</h1></body>");

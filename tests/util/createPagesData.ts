@@ -6,6 +6,8 @@ export const testData1: HtmlPageDb = {
 	source_code: "<h1>Test</h1>",
 	date_created: "2024-01-01T12:34:56.789Z",
 	date_updated: "2024-01-01T12:34:56.789Z",
+	slug: "1000",
+	author: null,
 };
 export const testData2: HtmlPageDb = {
 	id: "20000000-0000-0000-0000-000000000000",
@@ -17,11 +19,13 @@ export const testData2: HtmlPageDb = {
   `,
 	date_created: "2024-02-02T00:00:00.000Z",
 	date_updated: "2024-02-02T02:02:02.002Z",
+	slug: "2000",
+	author: "Patrick",
 };
 
 export async function createPagesData(
 	db: sqlite3.Database,
-	{ id, source_code, date_created, date_updated }: HtmlPageDb,
+	{ id, source_code, date_created, date_updated, slug, author }: HtmlPageDb,
 ) {
 	return await new Promise((resolve, reject) => {
 		db.run(
@@ -30,16 +34,20 @@ export async function createPagesData(
       id,
       source_code,
       date_created,
-      date_updated
+      date_updated,
+			slug,
+			author
     ) VALUES  (
       ?,
       ?,
       ?,
-      ?
+      ?,
+			?,
+			?
     )
     ;
   `,
-			[id, source_code, date_created, date_updated],
+			[id, source_code, date_created, date_updated, slug, author],
 			async (err) => {
 				if (err) {
 					reject(err);

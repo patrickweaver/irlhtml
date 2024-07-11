@@ -1,9 +1,9 @@
 <%- include('../partials/top'); %>
 
 <h2>Error</h2>
-<% if (id) { %>
+<% if (idOrSlug) { %>
   <p>There was an error getting that page 🧩</p>
-  <p>Page requested: <%= id %></p>
+  <p>Page requested: <%= idOrSlug %></p>
 <% } else if (errorMessage) { %>
   <p><%= errorMessage %></p>  
 <% } else { %>

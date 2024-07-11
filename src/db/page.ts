@@ -45,7 +45,7 @@ export async function getOne({ idOrSlug }: { idOrSlug: string }): Promise<{
 	date_created: string;
 	date_updated: string;
 	slug: string;
-	author?: string;
+	author: string | null;
 } | null> {
 	const rows = await db.all(getOneByIdOrSlugQuery, [idOrSlug, idOrSlug]);
 	return rows?.[0] ?? null;
@@ -63,6 +63,8 @@ export async function getAll(): Promise<
 		source_code: string;
 		date_created: string;
 		date_updated: string;
+		slug: string;
+		author: string | null;
 	}[]
 > {
 	return db.all(getAllQuery);

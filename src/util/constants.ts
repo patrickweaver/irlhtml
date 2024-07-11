@@ -1,5 +1,5 @@
 export const defaultRenderObj = {
-	id: null,
+	idOrSlug: null,
 	title: "",
 	errorMessage: null,
 };
