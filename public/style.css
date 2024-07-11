@@ -46,3 +46,18 @@ ol#pages-list time {
 .radio-grid input[type="radio"] {
 	margin: 0;
 }
+
+hr {
+	text-align: center;
+	line-height: 1px;
+	border-width: 1px 0 0;
+	border-color: #000;
+	overflow: visible;
+}
+
+hr:after {
+	content: "❇️";
+	display: inline;
+	background-color: #fff;
+	padding: 0 0.25em;
+}

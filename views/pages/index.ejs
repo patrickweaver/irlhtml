@@ -3,14 +3,13 @@
 <h2>About IRL HTML</h2>
 <p>
 	IRL HTML is a web app that hosts HTML web pages created from photographs of
-	HTML code. Go to <a href="/new">Create new HTML Page</a> to upload a
-	photograph of some HTML!
+	HTML code. You can upload a photograph of some HTML to <a href="/new">create a new HTML page</a>!
 </p>
 
 <hr />
 
 <h2>Pages</h2>
-<ol id="pages-list">
+<ol id="pages-list" reversed>
 	<% pages?.[0] && pages.forEach(function(page) { %>
 	<a href="<%= `/pages/${page.id}` %>">
 		<li>
