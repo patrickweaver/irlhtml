@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { defaultRenderObj as _r } from "../util/constants";
+import { defaultRenderObj as _r, OCR_ERROR } from "../util/constants";
 
 export function apiErrorHandler(
 	req: Request,
@@ -21,7 +21,8 @@ export function apiErrorHandler(
 export function errorHandler(
 	req: Request,
 	res: Response,
-	error: unknown,
+	/* eslint-disable  @typescript-eslint/no-explicit-any */
+	error: any,
 	status: number,
 	/* eslint-disable  @typescript-eslint/no-explicit-any */
 	params: any = {},
@@ -30,8 +31,14 @@ export function errorHandler(
 		console.log(error);
 		console.log({ url: req.url.slice(0, 5) });
 	}
+
+	const viewParams = params;
+	if (error?.message === OCR_ERROR) {
+		viewParams.errorMessage = `Error: The image uploaded was not able to be parsed as HTML. Please try again with a different image.`;
+	}
+
 	res.status(status);
-	return res.render("pages/error", params);
+	return res.render("pages/error", viewParams);
 }
 
 export function error404(req: Request, res: Response, id: string) {
