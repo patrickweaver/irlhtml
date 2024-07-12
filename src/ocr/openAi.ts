@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { PROMPT } from "./prompt";
+import { PROMPT } from "../util/constants";
 import base64ImageFromFile from "../util/base64ImageFromFile";
 import { OcrErrorType, OcrResponse, OcrTypes } from "../types/Ocr";
 

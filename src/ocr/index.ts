@@ -3,6 +3,9 @@ import { googleVisionOcr } from "./googleVision";
 import { openAiOcr } from "./openAi";
 import { OcrComments, OcrTypes } from "../types/Ocr";
 import { tesseractOcr } from "./tesseract";
+import { sanitizeHtml } from "../util/sanitizeHtml";
+import { fixCommonOcrErrors } from "../util/fixCommonOcrErrors";
+import { OCR_ERROR_IMAGE } from "../util/constants";
 
 const DEFAULT_OCR_TYPE = OcrTypes.TESSERACT;
 
@@ -27,9 +30,22 @@ export async function runOcr(imagePath: string, ocrType = DEFAULT_OCR_TYPE) {
 		};
 	}
 
+	const ocrHtml = result?.text ?? OCR_ERROR_IMAGE;
+	if (ocrHtml === OCR_ERROR_IMAGE) throw new Error(OCR_ERROR_IMAGE);
+	const modifiedHtml = fixCommonOcrErrors(result?.text ?? "");
+	const sanitizedHtml = sanitizeHtml(modifiedHtml);
+
+	if (process.env.NODE_ENV === "development") {
+		console.log({
+			ocrHtml,
+			modifiedHtml,
+			sanitizedHtml,
+		});
+	}
+
 	return {
 		...result,
-		text: OcrComments[ocrType] + result.text,
+		text: OcrComments[ocrType] + sanitizedHtml,
 	};
 }
 

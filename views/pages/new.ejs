@@ -24,6 +24,33 @@
 	<a href="mailto:<%= contactEmail %>"><%= contactEmail %></a>.
 </p>
 
+<h3>Code of Conduct</h3>
+<p style="font-size: 16px">
+	All Pages uploaded to IRL HTML should be original content and not copied
+	source code from another website. They should also be free of any content
+	intended to upset or harass any potential viewers of IRL HTML. Any Pages that
+	have the potential to cause harm, are not <strong>original</strong>, are not
+	<strong>intelligible</strong>, or do not contribute positive HTML Energy will
+	be <strong>removed</strong>. If you would like your page to be removed please
+	email <a href="mailto:<%= contactEmail %>"><%= contactEmail %></a>.
+</p>
+<p>
+	A full Code of Conduct can be found on
+	<a
+		href="https://github.com/patrickweaver/irlhtml/blob/main/CODE_OF_CONDUCT.md"
+		>GitHub</a
+	>.
+</p>
+<details>
+	<summary>A Note on JavaScript</summary>
+	<p>
+		JavaScript tags will be replaced with
+		<code>&lt;code style="display: none"&gt;</code>. I wanted to keep the site
+		fun and allow for things like <code>alert()</code>, but I don’t have time to
+		make it more secure.
+	</p>
+</details>
+
 <h2>Create a new HTML page</h2>
 <p>Click the button below to upload a photo of HTML.</p>
 <form method="post" enctype="multipart/form-data" id="new-page-form">
@@ -68,7 +95,9 @@
 				value="TESSERACT"
 				checked
 			/>
-			<label for="tesseract">Tesseract (local)</label>
+			<label for="tesseract"
+				>Tesseract (local, not recommended for handwriting)</label
+			>
 		</div>
 	</fieldset>
 	<input type="file" id="upload-button" name="html-image" />

@@ -5,7 +5,7 @@ import {
 	getClaudeMessages,
 	validateMimeType,
 } from "./claude";
-import { PROMPT } from "./prompt";
+import { PROMPT } from "../util/constants";
 import Anthropic from "@anthropic-ai/sdk";
 import { bmp, png } from "../../tests/test-image-files/imageFileData";
 import { ImageBlockParam } from "@anthropic-ai/sdk/resources";

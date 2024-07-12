@@ -13,6 +13,6 @@ export type HtmlPageDb = {
 	source_code: string;
 	date_created: string;
 	date_updated: string;
-	slug: string;
-	author: string | null;
+	author?: string | null;
+	slug?: string | null;
 };
