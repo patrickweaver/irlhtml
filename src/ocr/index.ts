@@ -3,6 +3,7 @@ import { googleVisionOcr } from "./googleVision";
 import { openAiOcr } from "./openAi";
 import { OcrComments, OcrTypes } from "../types/Ocr";
 import { tesseractOcr } from "./tesseract";
+import { sanitizeHtml } from "../util/sanitizeHtml";
 
 const DEFAULT_OCR_TYPE = OcrTypes.TESSERACT;
 
@@ -27,9 +28,11 @@ export async function runOcr(imagePath: string, ocrType = DEFAULT_OCR_TYPE) {
 		};
 	}
 
+	const sanitizedHtml = sanitizeHtml(result?.text ?? "");
+
 	return {
 		...result,
-		text: OcrComments[ocrType] + result.text,
+		text: OcrComments[ocrType] + sanitizedHtml,
 	};
 }
 
