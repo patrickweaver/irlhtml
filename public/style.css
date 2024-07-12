@@ -8,6 +8,11 @@ a.current {
 	font-weight: 900;
 }
 
+#pages-heading:after {
+	content: "🌿";
+	margin-left: 0.5rem;
+}
+
 ol#pages-list li {
 	margin: 0.125rem 0;
 	padding: 0.125rem 0.2rem;

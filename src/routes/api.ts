@@ -26,7 +26,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 		)
 			return apiErrorHandler(req, res, "Invalid ocrType", 400);
 		const ocrType = OcrTypes[ocrTypeKey as keyof typeof OcrTypes];
-		const author = req.body?.author ?? null;
+		const author = req.query?.author ?? req.body?.author ?? null;
 		let imagePath = "";
 		if (req.file && req.file.filename) {
 			imagePath = process.env.IMAGES_PATH + req.file.filename;
