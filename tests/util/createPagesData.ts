@@ -6,8 +6,6 @@ export const testData1: HtmlPageDb = {
 	source_code: "<h1>Test</h1>",
 	date_created: "2024-01-01T12:34:56.789Z",
 	date_updated: "2024-01-01T12:34:56.789Z",
-	author: null,
-	slug: null,
 };
 export const testData2: HtmlPageDb = {
 	id: "20000000-0000-0000-0000-000000000000",
@@ -19,8 +17,6 @@ export const testData2: HtmlPageDb = {
   `,
 	date_created: "2024-02-02T00:00:00.000Z",
 	date_updated: "2024-02-02T02:02:02.002Z",
-	author: null,
-	slug: null,
 };
 
 export async function createPagesData(
