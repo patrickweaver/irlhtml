@@ -10,6 +10,7 @@ import { error404, errorHandler } from "./errorHandlers";
 import * as HtmlPage from "../models/HtmlPage";
 import { PROMPT } from "../util/constants";
 import { OcrTypes } from "../types/Ocr";
+import getPageTitleFromSource from "../util/getPageTitleFromSource";
 
 const router = express.Router();
 const upload = multer({ dest: process.env.IMAGES_PATH });
@@ -33,16 +34,16 @@ router.get("/pages/new", (req, res) => {
 	return res.redirect("/new");
 });
 
-router.get("/pages/:id", async (req, res) => {
-	const { id } = req.params;
+router.get("/pages/:idOrSlug", async (req, res) => {
+	const { idOrSlug } = req.params;
 	try {
-		const page = await HtmlPage.getOne(id);
-		if (!page?.id) return error404(req, res, id);
+		const page = await HtmlPage.getOne(idOrSlug);
+		if (!page?.id) return error404(req, res, idOrSlug);
 		const sourceCode = page?.source_code;
 		if (!sourceCode) throw new Error("Invalid page");
 		res.send(sourceCode);
 	} catch (error) {
-		return errorHandler(req, res, error, 500, { ..._r, id });
+		return errorHandler(req, res, error, 500, { ..._r, idOrSlug });
 	}
 });
 
@@ -63,7 +64,7 @@ router.get("/new", async function (req, res) {
 router.post("/new", upload.single("html-image"), async (req, res) => {
 	try {
 		const ocrTypeKey = req.body?.["ocr-method"];
-		console.log(ocrTypeKey);
+		const author = req.body?.author ?? null;
 		if (
 			!ocrTypeKey ||
 			typeof ocrTypeKey !== "string" ||
@@ -95,11 +96,18 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 				console.log("error deleting " + imagePath + ": " + err);
 			}
 		}
-		await page.insert({ id, htmlContent: result.text });
-		const row = await page.getOne({ id });
+
+		const htmlContent = result.text;
+		const title = getPageTitleFromSource(htmlContent);
+		const slug = await HtmlPage.getSlug(id, title);
+
+		await page.insert({ id, htmlContent, slug, author });
+		const row = await page.getOne({ idOrSlug: slug });
+		console.log({ slug, row });
 		if (!row?.id) throw new Error("Upload failed");
-		res.redirect(`/pages/${row.id}`);
+		res.redirect(`/pages/${row.slug}`);
 	} catch (error) {
+		console.log({ error });
 		return errorHandler(req, res, error, 500, { ..._r });
 	}
 });

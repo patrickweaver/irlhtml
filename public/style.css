@@ -8,8 +8,14 @@ a.current {
 	font-weight: 900;
 }
 
+#pages-heading:after {
+	content: "🌿";
+	margin-left: 0.5rem;
+}
+
 ol#pages-list li {
-	margin: 0.25rem 0;
+	margin: 0.125rem 0;
+	padding: 0.125rem 0.2rem;
 }
 
 ol#pages-list li::marker {
@@ -17,7 +23,7 @@ ol#pages-list li::marker {
 }
 
 ol#pages-list li:hover {
-	background-color: #eff4ff;
+	background-color: #d7ffce;
 }
 
 ol#pages-list a {
@@ -28,13 +34,49 @@ ol#pages-list time {
 	color: black;
 }
 
+ol#pages-list .author {
+	color: #444;
+	margin-left: 0.25rem;
+}
+
 .page-title-link {
 	text-decoration: underline;
 }
 
+#new-page-form {
+	background-color: rgb(250, 255, 252);
+	border: 1px solid #eee;
+	border-radius: 3px;
+	padding: 0 0.5rem 0.5rem;
+}
 #new-page-form > * {
 	display: block;
 	margin: 1rem 0;
+}
+
+#new-page-form label {
+	font-size: 17px;
+	margin-bottom: 0;
+	font-family: sans-serif;
+}
+
+#new-page-form .text-input {
+	width: 100%;
+	max-width: 400px;
+	font-size: 16px;
+	padding: 0.25rem;
+	margin-top: 0.5rem;
+}
+
+#image-label,
+#upload-button {
+	display: inline-block;
+}
+
+.submit-button,
+#upload-button {
+	font-size: 18px;
+	padding: 0.5rem;
 }
 
 .radio-grid {
@@ -60,4 +102,12 @@ hr:after {
 	display: inline;
 	background-color: #fff;
 	padding: 0 0.25em;
+}
+
+.inline-header {
+	display: inline;
+}
+
+.small-text {
+	font-size: 16px;
 }

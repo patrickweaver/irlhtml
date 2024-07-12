@@ -7,6 +7,7 @@ import { runOcr } from "../ocr";
 import * as page from "../db/page";
 import * as HtmlPage from "../models/HtmlPage";
 import { OcrTypes } from "../types/Ocr";
+import getPageTitleFromSource from "../util/getPageTitleFromSource";
 
 if (!process.env.IMAGES_PATH) process.exit(1);
 
@@ -17,7 +18,7 @@ const upload = multer({ dest: process.env.IMAGES_PATH });
 
 router.post("/new", upload.single("html-image"), async (req, res) => {
 	try {
-		const ocrTypeKey = req.query?.ocrType;
+		const ocrTypeKey = req.query?.ocrType ?? req.body?.ocrType;
 		if (
 			!ocrTypeKey ||
 			typeof ocrTypeKey !== "string" ||
@@ -25,7 +26,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 		)
 			return apiErrorHandler(req, res, "Invalid ocrType", 400);
 		const ocrType = OcrTypes[ocrTypeKey as keyof typeof OcrTypes];
-
+		const author = req.query?.author ?? req.body?.author ?? null;
 		let imagePath = "";
 		if (req.file && req.file.filename) {
 			imagePath = process.env.IMAGES_PATH + req.file.filename;
@@ -46,10 +47,14 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 			}
 		}
 
-		await page.insert({ id, htmlContent: result.text });
-		const row = await page.getOne({ id });
+		const htmlContent = result.text;
+		const title = getPageTitleFromSource(htmlContent);
+		const slug = await HtmlPage.getSlug(id, title);
+
+		await page.insert({ id, htmlContent, slug, author });
+		const row = await page.getOne({ idOrSlug: id });
 		if (!row?.id) throw new Error("Upload failed");
-		return res.json({ ...row, url: `${BASE_URL}/pages/${row.id}` });
+		return res.json({ ...row, url: `${BASE_URL}/pages/${row.slug}` });
 	} catch (error) {
 		return apiErrorHandler(req, res, error);
 	}
@@ -64,10 +69,10 @@ router.get("/pages", async (req, res) => {
 	}
 });
 
-router.get("/pages/:id", async (req, res) => {
-	const { id } = req.params;
+router.get("/pages/:idOrSlug", async (req, res) => {
+	const { idOrSlug } = req.params;
 	try {
-		const page = await HtmlPage.getOne(id);
+		const page = await HtmlPage.getOne(idOrSlug);
 		if (!page?.id) return apiErrorHandler(req, res, "Page not found", 404);
 		return res.json(page);
 	} catch (error) {

@@ -7,7 +7,7 @@
   "scripts": {
     "start": "PORT=3000 vite-node src/server.ts",
     "dev": "tsx watch -r dotenv/config src/server.ts",
-    "test": "rm -f .data/test-db.sqlite3 && jest --runInBand"
+    "test": "NODE_ENV='test' rm -f .data/test-db.sqlite3 && jest --runInBand"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",
@@ -19,6 +19,7 @@
     "file-type": "^16.5.4",
     "multer": "^1.4.5-lts.1",
     "openai": "^4.52.0",
+    "slugify": "^1.6.6",
     "sqlite3": "^5.1.7",
     "supertest": "^7.0.0",
     "tesseract.js": "^5.1.0",

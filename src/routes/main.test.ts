@@ -55,8 +55,8 @@ describe("Rendered view routes", () => {
 			expect(response.statusCode).toEqual(200);
 			expect(response.text).toContain("<title>IRL HTML: Home</title>");
 			expect(response.text).toContain("<h2>About IRL HTML</h2>");
-			expect(response.text).toContain("<h2>Pages</h2>");
-			expect(response.text).toContain(`Untitled - ${testData1.id.slice(0, 5)}`);
+			expect(response.text).toContain('<h2 id="pages-heading">Pages</h2>');
+			expect(response.text).toContain(`Untitled - ${testData1.id.slice(0, 4)}`);
 			expect(response.text).toContain("Test Title");
 		});
 
@@ -104,10 +104,19 @@ describe("Rendered view routes", () => {
 			expect(response.text).toContain(`id (${testData2.id}) does not exist.`);
 		});
 
-		test("renders successfully for correct page", async () => {
+		test("renders successfully for correct page by id", async () => {
 			await createPagesData(db, testData1);
 			await createPagesData(db, testData2);
 			const response = await request(app).get(`/pages/${testData2.id}`);
+			expect(response.statusCode).toEqual(200);
+			expect(response.text).toContain("<title>Test Title</title>");
+			expect(response.text).toContain("<body><h1>Test Again</h1></body>");
+		});
+
+		test("renders successfully for correct page by slug", async () => {
+			await createPagesData(db, testData1);
+			await createPagesData(db, testData2);
+			const response = await request(app).get(`/pages/${testData2.slug}`);
 			expect(response.statusCode).toEqual(200);
 			expect(response.text).toContain("<title>Test Title</title>");
 			expect(response.text).toContain("<body><h1>Test Again</h1></body>");
@@ -127,7 +136,12 @@ describe("Rendered view routes", () => {
 			expect(response.text).toContain("<title>IRL HTML: New Page</title>");
 			expect(response.text).toContain("<h2>New Page</h2>");
 			expect(response.text).toContain("<legend>Select OCR method:</legend>");
-			expect(response.text).toContain('<button type="submit">Submit</button>');
+			expect(response.text).toContain(
+				'<button type="submit" class="submit-button">',
+			);
+			expect(response.text).toContain(
+				'<span aria-hidden="true">❇️ </span>Submit<span aria-hidden="true"> ❇️</span>',
+			);
 		});
 	});
 

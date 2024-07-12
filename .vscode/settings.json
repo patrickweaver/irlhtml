@@ -3,6 +3,7 @@
 		"irlhtml",
 		"linebreak",
 		"openai",
+		"substr",
 		"supertest",
 		"TESSERACT",
 		"uuidv"

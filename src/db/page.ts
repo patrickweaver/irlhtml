@@ -6,8 +6,12 @@ export const insertQuery = `
 			id,
 			source_code,
 			date_created,
-			date_updated
+			date_updated,
+			slug,
+			author
 		) VALUES (
+			?,
+			?,
 			?,
 			?,
 			?,
@@ -17,9 +21,13 @@ export const insertQuery = `
 export async function insert({
 	id,
 	htmlContent,
+	slug,
+	author,
 }: {
 	id: string;
 	htmlContent: string;
+	slug: string;
+	author: string | null;
 }) {
 	const timestamp = new Date().toISOString();
 	const success = await db.run(insertQuery, [
@@ -27,22 +35,29 @@ export async function insert({
 		htmlContent,
 		timestamp,
 		timestamp,
+		slug,
+		author,
 	]);
 	return success;
 }
 
-export const getOneQuery = `
+export const getOneByIdOrSlugQuery = `
 		SELECT *
 		FROM Pages
-		WHERE id = ?
+		WHERE (
+			id = ?
+			OR slug = ?
+		)
 	`;
-export async function getOne({ id }: { id: string }): Promise<{
+export async function getOne({ idOrSlug }: { idOrSlug: string }): Promise<{
 	id: string;
 	source_code: string;
 	date_created: string;
 	date_updated: string;
+	slug: string;
+	author: string | null;
 } | null> {
-	const rows = await db.all(getOneQuery, [id]);
+	const rows = await db.all(getOneByIdOrSlugQuery, [idOrSlug, idOrSlug]);
 	return rows?.[0] ?? null;
 }
 
@@ -58,6 +73,8 @@ export async function getAll(): Promise<
 		source_code: string;
 		date_created: string;
 		date_updated: string;
+		slug: string;
+		author: string | null;
 	}[]
 > {
 	return db.all(getAllQuery);

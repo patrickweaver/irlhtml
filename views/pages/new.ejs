@@ -6,26 +6,28 @@
 	You can create a new HTML page on IRL HTML by uploading a photo or screenshot
 	of your HTML here.
 </p>
-<h3>About the OCR methods</h3>
-<p>
-	In my experience the LLM based OCR methods, Claude and GPT-4 tend to work best
-	with handwritten text. Google Vision can also read some handwritten text, but
-	doesn’t have the ability to automatically fix syntax errors. The prompt used
-	for the LLM models is below.
-</p>
 <details>
-	<summary>LLM Prompt</summary>
-	<em><%= llmPrompt %></em>
+	<summary><h3 class="inline-header">About the OCR methods</h3></summary>
+	<p>
+		In my experience the LLM based OCR methods, Claude and GPT-4 tend to work
+		best with handwritten text. Google Vision can also read some handwritten
+		text, but doesn’t have the ability to automatically fix syntax errors. The
+		prompt used for the LLM models is below.
+	</p>
+	<details>
+		<summary>LLM Prompt</summary>
+		<em><%= llmPrompt %></em>
+	</details>
+	<p>
+		I have added $5 to both the Claude and OpenAI APIs, not sure how long it
+		will last. If the project is out of credits, or you would like to contribute
+		to buy more credits email me at
+		<a href="mailto:<%= contactEmail %>"><%= contactEmail %></a>.
+	</p>
 </details>
-<p>
-	I have added $5 to both the Claude and OpenAI APIs, not sure how long it will
-	last. If the project is out of credits, or you would like to contribute to buy
-	more credits email me at
-	<a href="mailto:<%= contactEmail %>"><%= contactEmail %></a>.
-</p>
 
 <h3>Code of Conduct</h3>
-<p style="font-size: 16px">
+<p class="small-text">
 	All Pages uploaded to IRL HTML should be original content and not copied
 	source code from another website. They should also be free of any content
 	intended to upset or harass any potential viewers of IRL HTML. Any Pages that
@@ -34,7 +36,7 @@
 	be <strong>removed</strong>. If you would like your page to be removed please
 	email <a href="mailto:<%= contactEmail %>"><%= contactEmail %></a>.
 </p>
-<p>
+<p class="small-text">
 	A full Code of Conduct can be found on
 	<a
 		href="https://github.com/patrickweaver/irlhtml/blob/main/CODE_OF_CONDUCT.md"
@@ -42,7 +44,7 @@
 	>.
 </p>
 <details>
-	<summary>A Note on JavaScript</summary>
+	<summary><h4 class="inline-header">A Note on JavaScript</h4></summary>
 	<p>
 		JavaScript tags will be replaced with
 		<code>&lt;code style="display: none"&gt;</code>. I wanted to keep the site
@@ -52,8 +54,13 @@
 </details>
 
 <h2>Create a new HTML page</h2>
-<p>Click the button below to upload a photo of HTML.</p>
 <form method="post" enctype="multipart/form-data" id="new-page-form">
+	<label for="upload-button" id="image-label"
+		><span aria-hidden="true">📸 </span>Image:
+	</label>
+	<input type="file" id="upload-button" name="html-image" />
+	<label for="author">Author Name: (optional)</label>
+	<input type="text" id="author" name="author" class="text-input" />
 	<fieldset class="ocr-method-list">
 		<legend>Select OCR method:</legend>
 		<div class="radio-grid">
@@ -100,8 +107,9 @@
 			>
 		</div>
 	</fieldset>
-	<input type="file" id="upload-button" name="html-image" />
-	<button type="submit">Submit</button>
+	<button type="submit" class="submit-button">
+		<span aria-hidden="true">❇️ </span>Submit<span aria-hidden="true"> ❇️</span>
+	</button>
 </form>
 <div id="status" style="display: none">
 	<h2>Status</h2>

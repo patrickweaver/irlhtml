@@ -4,7 +4,7 @@ import {
 	insert,
 	insertQuery,
 	getOne,
-	getOneQuery,
+	getOneByIdOrSlugQuery,
 	getAllQuery,
 	getAll,
 	del,
@@ -29,17 +29,21 @@ describe("page", () => {
 		const id = "abc-123";
 		const htmlContent = "<h1>test</h1";
 		const time = new Date().toISOString();
+		const slug = "abc";
+		const author = "pw";
 
 		test("should successfully run insert query", async () => {
 			mockedDb.run.mockResolvedValue(true);
 
-			const result = await insert({ id, htmlContent });
+			const result = await insert({ id, htmlContent, slug, author });
 			expect(result).toBe(true);
 			expect(mockedDb.run).toHaveBeenLastCalledWith(insertQuery, [
 				id,
 				htmlContent,
 				time,
 				time,
+				slug,
+				author,
 			]);
 		});
 
@@ -48,7 +52,7 @@ describe("page", () => {
 			mockedDb.run.mockImplementationOnce(() =>
 				Promise.reject(new Error(error)),
 			);
-			const result = insert({ id, htmlContent });
+			const result = insert({ id, htmlContent, slug, author });
 			await expect(result).rejects.toThrow(error);
 		});
 	});
@@ -57,20 +61,45 @@ describe("page", () => {
 		const id = "abc-123";
 		const htmlContent = "<h1>test</h1>";
 		const time = new Date().toISOString();
+		const slug = "abc";
 
-		test("should successfully run getOne query", async () => {
+		test("should successfully run getOne query with id", async () => {
 			const mockResponse = [
 				{
 					id,
 					htmlContent,
 					created_at: time,
 					updated_at: time,
+					slug: slug,
+					author: null,
 				},
 			];
 			mockedDb.all.mockResolvedValue(mockResponse);
-			const result = await getOne({ id });
+			const result = await getOne({ idOrSlug: id });
 			expect(result?.id).toEqual(id);
-			expect(db.all).toHaveBeenLastCalledWith(getOneQuery, [id]);
+			expect(result?.slug).toEqual(slug);
+			expect(db.all).toHaveBeenLastCalledWith(getOneByIdOrSlugQuery, [id, id]);
+		});
+
+		test("should successfully run getOne query with slug", async () => {
+			const mockResponse = [
+				{
+					id,
+					htmlContent,
+					created_at: time,
+					updated_at: time,
+					slug: slug,
+					author: null,
+				},
+			];
+			mockedDb.all.mockResolvedValue(mockResponse);
+			const result = await getOne({ idOrSlug: slug });
+			expect(result?.id).toEqual(id);
+			expect(result?.slug).toEqual(slug);
+			expect(db.all).toHaveBeenLastCalledWith(getOneByIdOrSlugQuery, [
+				slug,
+				slug,
+			]);
 		});
 
 		test("should handle error for failed getOne query", async () => {
@@ -78,7 +107,7 @@ describe("page", () => {
 			mockedDb.all.mockImplementationOnce(() =>
 				Promise.reject(new Error(error)),
 			);
-			const result = getOne({ id });
+			const result = getOne({ idOrSlug: id });
 			await expect(result).rejects.toThrow(error);
 		});
 	});

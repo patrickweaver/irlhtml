@@ -4,6 +4,8 @@ export type HtmlPage = {
 	date_created: Date;
 	date_updated: Date;
 	title: string;
+	slug: string;
+	author: string | null;
 };
 
 export type HtmlPageDb = {
@@ -11,6 +13,6 @@ export type HtmlPageDb = {
 	source_code: string;
 	date_created: string;
 	date_updated: string;
-	author?: string | null;
-	slug?: string | null;
+	slug: string;
+	author: string | null;
 };
