@@ -7,7 +7,7 @@
   "scripts": {
     "start": "PORT=3000 vite-node src/server.ts",
     "dev": "tsx watch -r dotenv/config src/server.ts",
-    "test": "rm -f .data/test-db.sqlite3 && jest --runInBand"
+    "test": "NODE_ENV='test' rm -f .data/test-db.sqlite3 && jest --runInBand"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",

@@ -60,5 +60,7 @@ function render(data: HtmlPageDb): HtmlPage {
 		title,
 		date_created: new Date(data.date_created),
 		date_updated: new Date(data.date_updated),
+		slug: data?.slug ?? data.id,
+		author: data?.author ?? null,
 	};
 }

@@ -29,17 +29,21 @@ describe("page", () => {
 		const id = "abc-123";
 		const htmlContent = "<h1>test</h1";
 		const time = new Date().toISOString();
+		const slug = "abc";
+		const author = "pw";
 
 		test("should successfully run insert query", async () => {
 			mockedDb.run.mockResolvedValue(true);
 
-			const result = await insert({ id, htmlContent });
+			const result = await insert({ id, htmlContent, slug, author });
 			expect(result).toBe(true);
 			expect(mockedDb.run).toHaveBeenLastCalledWith(insertQuery, [
 				id,
 				htmlContent,
 				time,
 				time,
+				slug,
+				author,
 			]);
 		});
 
@@ -48,7 +52,7 @@ describe("page", () => {
 			mockedDb.run.mockImplementationOnce(() =>
 				Promise.reject(new Error(error)),
 			);
-			const result = insert({ id, htmlContent });
+			const result = insert({ id, htmlContent, slug, author });
 			await expect(result).rejects.toThrow(error);
 		});
 	});

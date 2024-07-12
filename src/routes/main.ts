@@ -104,7 +104,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 
 		await page.insert({ id, htmlContent, slug, author });
 		const row = await page.getOne({ idOrSlug: slug });
-		console.log({ row });
+		console.log({ slug, row });
 		if (!row?.id) throw new Error("Upload failed");
 		res.redirect(`/pages/${row.slug}`);
 	} catch (error) {

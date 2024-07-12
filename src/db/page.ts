@@ -6,8 +6,12 @@ export const insertQuery = `
 			id,
 			source_code,
 			date_created,
-			date_updated
+			date_updated,
+			slug,
+			author
 		) VALUES (
+			?,
+			?,
 			?,
 			?,
 			?,
@@ -31,6 +35,8 @@ export async function insert({
 		htmlContent,
 		timestamp,
 		timestamp,
+		slug,
+		author,
 	]);
 	return success;
 }

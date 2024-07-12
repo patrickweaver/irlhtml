@@ -186,7 +186,6 @@ describe("Rendered view routes", () => {
 			expect(response.text).toEqual(
 				`<!-- Image OCRed with Tesseract, https://tesseract-ocr.github.io/ -->\n${mockedOcrResult}`,
 			);
-			console.log({ response });
 		});
 	});
 });
