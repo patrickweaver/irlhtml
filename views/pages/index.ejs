@@ -11,7 +11,7 @@
 <h2>Pages</h2>
 <ol id="pages-list" reversed>
 	<% pages?.[0] && pages.forEach(function(page) { %>
-	<a href="<%= `/pages/${page.id}` %>">
+	<a href="<%= `/pages/${page.slug}` %>">
 		<li>
 			<time><%= getReadableDate(page.date_created) %></time>:
 			<span class="page-title-link">
