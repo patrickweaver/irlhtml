@@ -5,7 +5,7 @@ import { OcrComments, OcrTypes } from "../types/Ocr";
 import { tesseractOcr } from "./tesseract";
 import { sanitizeHtml } from "../util/sanitizeHtml";
 import { fixCommonOcrErrors } from "../util/fixCommonOcrErrors";
-import { OCR_ERROR_IMAGE, OCR_ERROR_LIKELY_BAD } from "../util/constants";
+import { OCR_ERROR_IMAGE } from "../util/constants";
 
 const DEFAULT_OCR_TYPE = OcrTypes.TESSERACT;
 

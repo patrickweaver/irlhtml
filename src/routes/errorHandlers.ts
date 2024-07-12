@@ -1,9 +1,5 @@
 import { Request, Response } from "express";
-import {
-	defaultRenderObj as _r,
-	OCR_ERROR_IMAGE,
-	OCR_ERROR_LIKELY_BAD,
-} from "../util/constants";
+import { defaultRenderObj as _r, OCR_ERROR_IMAGE } from "../util/constants";
 
 export function apiErrorHandler(
 	req: Request,
