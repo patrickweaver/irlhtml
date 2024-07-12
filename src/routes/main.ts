@@ -64,7 +64,7 @@ router.get("/new", async function (req, res) {
 router.post("/new", upload.single("html-image"), async (req, res) => {
 	try {
 		const ocrTypeKey = req.body?.["ocr-method"];
-		console.log(ocrTypeKey);
+		const author = req.body?.author ?? null;
 		if (
 			!ocrTypeKey ||
 			typeof ocrTypeKey !== "string" ||
@@ -100,7 +100,6 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 		const htmlContent = result.text;
 		const title = getPageTitleFromSource(htmlContent);
 		const slug = await HtmlPage.getSlug(id, title);
-		const author = null;
 
 		await page.insert({ id, htmlContent, slug, author });
 		const row = await page.getOne({ idOrSlug: slug });

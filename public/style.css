@@ -38,6 +38,12 @@ ol#pages-list .author {
 	text-decoration: underline;
 }
 
+#new-page-form {
+	background-color: rgb(250, 255, 252);
+	border: 1px solid #eee;
+	border-radius: 3px;
+	padding: 0 0.5rem 0.5rem;
+}
 #new-page-form > * {
 	display: block;
 	margin: 1rem 0;
