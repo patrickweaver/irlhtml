@@ -18,7 +18,7 @@ const upload = multer({ dest: process.env.IMAGES_PATH });
 
 router.post("/new", upload.single("html-image"), async (req, res) => {
 	try {
-		const ocrTypeKey = req.query?.ocrType;
+		const ocrTypeKey = req.query?.ocrType ?? req.body?.ocrType;
 		if (
 			!ocrTypeKey ||
 			typeof ocrTypeKey !== "string" ||

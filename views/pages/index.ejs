@@ -14,9 +14,7 @@
 	<a href="<%= `/pages/${page.slug}` %>">
 		<li>
 			<time><%= getReadableDate(page.date_created) %></time>:
-			<span class="page-title-link">
-				<%= page.title || `Untitled - ${page.slug}` %>
-			</span>
+			<span class="page-title-link"><%= page.title || `Untitled - ${page.slug}` %></span>
 			<% if (page.author) { %>
 				<span class="author">(By: <%= ` ${page.author}` %>)</span>
 			<% } %>
