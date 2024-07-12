@@ -39,9 +39,8 @@ export function errorHandler(
 	const viewParams = params;
 	if (error?.message === OCR_ERROR_IMAGE) {
 		viewParams.errorMessage = `Error: The image uploaded was not able to be parsed as HTML. Please try again with a different image.`;
-	} else if (error?.message === OCR_ERROR_LIKELY_BAD) {
-		viewParams.errorMessage = `Error: The image uploaded was parsed as having very few English words. Try a different OCR method.`;
 	}
+
 	res.status(status);
 	return res.render("pages/error", viewParams);
 }
