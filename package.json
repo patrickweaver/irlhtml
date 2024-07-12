@@ -7,12 +7,13 @@
   "scripts": {
     "start": "PORT=3000 vite-node src/server.ts",
     "dev": "tsx watch -r dotenv/config src/server.ts",
-    "test": "jest --runInBand"
+    "test": "rm -f .data/test-db.sqlite3 && jest --runInBand"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",
     "@eslint/create-config": "^0.4.6",
     "@google-cloud/vision": "^4.3.0",
+    "an-array-of-english-words": "^2.0.0",
     "axios": "^1.7.2",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
