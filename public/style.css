@@ -43,6 +43,31 @@ ol#pages-list .author {
 	margin: 1rem 0;
 }
 
+#new-page-form label {
+	font-size: 17px;
+	margin-bottom: 0;
+	font-family: sans-serif;
+}
+
+#new-page-form .text-input {
+	width: 100%;
+	max-width: 400px;
+	font-size: 16px;
+	padding: 0.25rem;
+	margin-top: 0.5rem;
+}
+
+#image-label,
+#upload-button {
+	display: inline-block;
+}
+
+.submit-button,
+#upload-button {
+	font-size: 18px;
+	padding: 0.5rem;
+}
+
 .radio-grid {
 	display: grid;
 	grid-template-columns: auto 1fr;
@@ -66,4 +91,12 @@ hr:after {
 	display: inline;
 	background-color: #fff;
 	padding: 0 0.25em;
+}
+
+.inline-header {
+	display: inline;
+}
+
+.small-text {
+	font-size: 16px;
 }
