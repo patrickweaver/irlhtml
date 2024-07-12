@@ -4,6 +4,7 @@ import { openAiOcr } from "./openAi";
 import { OcrComments, OcrTypes } from "../types/Ocr";
 import { tesseractOcr } from "./tesseract";
 import { sanitizeHtml } from "../util/sanitizeHtml";
+import { fixCommonOcrErrors } from "../util/fixCommonOcrErrors";
 
 const DEFAULT_OCR_TYPE = OcrTypes.TESSERACT;
 
@@ -28,7 +29,8 @@ export async function runOcr(imagePath: string, ocrType = DEFAULT_OCR_TYPE) {
 		};
 	}
 
-	const sanitizedHtml = sanitizeHtml(result?.text ?? "");
+	const modifiedHtml = fixCommonOcrErrors(result?.text ?? "");
+	const sanitizedHtml = sanitizeHtml(modifiedHtml);
 
 	return {
 		...result,
