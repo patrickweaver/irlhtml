@@ -7,6 +7,7 @@ import { runOcr } from "../ocr";
 import * as page from "../db/page";
 import * as HtmlPage from "../models/HtmlPage";
 import { OcrTypes } from "../types/Ocr";
+import getPageTitleFromSource from "../util/getPageTitleFromSource";
 
 if (!process.env.IMAGES_PATH) process.exit(1);
 
@@ -46,10 +47,15 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 			}
 		}
 
-		await page.insert({ id, htmlContent: result.text });
+		const htmlContent = result.text;
+		const title = getPageTitleFromSource(htmlContent);
+		const slug = await HtmlPage.getSlug(id, title);
+		const author = null;
+
+		await page.insert({ id, htmlContent, slug, author });
 		const row = await page.getOne({ idOrSlug: id });
 		if (!row?.id) throw new Error("Upload failed");
-		return res.json({ ...row, url: `${BASE_URL}/pages/${row.id}` });
+		return res.json({ ...row, url: `${BASE_URL}/pages/${row.slug}` });
 	} catch (error) {
 		return apiErrorHandler(req, res, error);
 	}

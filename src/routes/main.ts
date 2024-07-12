@@ -11,7 +11,6 @@ import * as HtmlPage from "../models/HtmlPage";
 import { PROMPT } from "../ocr/prompt";
 import { OcrTypes } from "../types/Ocr";
 import getPageTitleFromSource from "../util/getPageTitleFromSource";
-import { getSlugOptions } from "../util/getSlugOptions";
 
 const router = express.Router();
 const upload = multer({ dest: process.env.IMAGES_PATH });
@@ -100,15 +99,16 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 
 		const htmlContent = result.text;
 		const title = getPageTitleFromSource(htmlContent);
-		const slug = HtmlPage.getSlug(id, title);
-
+		const slug = await HtmlPage.getSlug(id, title);
 		const author = null;
 
 		await page.insert({ id, htmlContent, slug, author });
 		const row = await page.getOne({ idOrSlug: slug });
+		console.log({ row });
 		if (!row?.id) throw new Error("Upload failed");
-		res.redirect(`/pages/${row.id}`);
+		res.redirect(`/pages/${row.slug}`);
 	} catch (error) {
+		console.log({ error });
 		return errorHandler(req, res, error, 500, { ..._r });
 	}
 });

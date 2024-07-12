@@ -90,9 +90,13 @@ describe("HtmlPage", () => {
 				...testData1,
 				slug: "abcd",
 			});
+			mockedPage.getOne.mockResolvedValueOnce({
+				...testData1,
+				slug: "abcde",
+			});
 			mockedPage.getOne.mockResolvedValueOnce(null);
-			const result = await getSlug("abcde-12345", null);
-			expect(result).toEqual("abcde");
+			const result = await getSlug("abcdef-123456", null);
+			expect(result).toEqual("abcdef");
 		});
 
 		test("should return slug not ending in -", async () => {
