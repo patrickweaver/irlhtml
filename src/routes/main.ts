@@ -8,7 +8,7 @@ import * as page from "../db/page";
 import { defaultRenderObj as _r } from "../util/constants";
 import { error404, errorHandler } from "./errorHandlers";
 import * as HtmlPage from "../models/HtmlPage";
-import { PROMPT } from "../ocr/prompt";
+import { PROMPT } from "../util/constants";
 import { OcrTypes } from "../types/Ocr";
 
 const router = express.Router();

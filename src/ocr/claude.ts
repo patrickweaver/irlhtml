@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { PROMPT } from "./prompt";
+import { PROMPT } from "../util/constants";
 import { ContentBlock, ImageBlockParam } from "@anthropic-ai/sdk/resources";
 import base64ImageFromFile from "../util/base64ImageFromFile";
 import { z } from "zod";
