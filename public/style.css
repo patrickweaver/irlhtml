@@ -9,7 +9,8 @@ a.current {
 }
 
 ol#pages-list li {
-	margin: 0.25rem 0;
+	margin: 0.125rem 0;
+	padding: 0.125rem 0.2rem;
 }
 
 ol#pages-list li::marker {
@@ -17,7 +18,7 @@ ol#pages-list li::marker {
 }
 
 ol#pages-list li:hover {
-	background-color: #eff4ff;
+	background-color: #d7ffce;
 }
 
 ol#pages-list a {
@@ -26,6 +27,11 @@ ol#pages-list a {
 
 ol#pages-list time {
 	color: black;
+}
+
+ol#pages-list .author {
+	color: #444;
+	margin-left: 0.5rem;
 }
 
 .page-title-link {

@@ -56,6 +56,9 @@ export async function anthropicClaudeOcr(
 				text: claudeHtml,
 			};
 		} else {
+			if (process.env.NODE_ENV === "development") {
+				console.log({ claudeContent });
+			}
 			throw new Error("Invalid response from Claude");
 		}
 	} catch (error: any) {
