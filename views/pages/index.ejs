@@ -13,11 +13,15 @@
 	<% pages?.[0] && pages.forEach(function(page) { %>
 	<a href="<%= `/pages/${page.slug}` %>">
 		<li>
-			<span class="page-title-link"><%= page.title || `Untitled - ${page.slug}` %></span>
-			<% if (page.author) { %>
-				<span class="author">(By: <%= ` ${page.author}` %>)</span>
-			<% } %>
-			<time><%= getReadableDate(page.date_created) %></time>
+			<div>
+			<span class="title-author">
+				<span class="page-title-link"><%= page.title || `Untitled - ${page.slug}` %></span>
+				<% if (page.author) { %>
+					<span class="author">(By: <%= ` ${page.author}` %>)</span>
+				<% } %>
+			</span>
+			<time class="timestamp"><%= getReadableDate(page.date_created) %></time>
+			</div>
 		</li>
 	</a>
 	<% }); %>

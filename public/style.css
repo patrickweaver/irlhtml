@@ -1,7 +1,14 @@
 body {
 	margin: 2rem;
-	max-width: 800px;
+	max-width: 768px;
 	font-size: 120%;
+}
+
+@media (max-width: 768px) {
+	ol,
+	ul {
+		padding-left: 20px;
+	}
 }
 
 a.current {
@@ -34,15 +41,36 @@ ol#pages-list li {
 	position: relative;
 }
 
-ol#pages-list time {
-	color: #444;
-	position: absolute;
-	right: 0;
-}
-
 ol#pages-list .author {
 	color: #444;
 	margin-left: 0.25rem;
+}
+
+ol#pages-list > a > li > div {
+	display: flex;
+	justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+	ol#pages-list > a > li > div {
+		flex-direction: column;
+	}
+}
+
+.title-author {
+}
+
+.timestamp {
+	min-width: 250px;
+	text-align: right;
+	color: #444;
+}
+
+@media (max-width: 768px) {
+	.timestamp {
+		text-align: left;
+		font-size: 16px;
+	}
 }
 
 .page-title-link {
