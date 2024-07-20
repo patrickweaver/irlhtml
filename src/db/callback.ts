@@ -4,7 +4,7 @@ export const successMessage = `SQLite Database at ${DATABASE_PATH} opened succes
 export default (error: unknown) => {
 	if (error) {
 		console.log(String(error));
-		return;
+	} else {
+		console.log(successMessage);
 	}
-	console.log(successMessage);
 };

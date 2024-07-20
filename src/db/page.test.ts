@@ -163,7 +163,7 @@ describe("page", () => {
 
 		test("should throw error when does not exist del query", async () => {
 			const id = "abc-123";
-			mockedDb.run.mockResolvedValueOnce(null);
+			mockedDb.all.mockResolvedValueOnce([]);
 			await expect(del({ idOrSlug: id })).rejects.toThrow("Not found");
 			expect(mockedDb.all).toHaveBeenLastCalledWith(getOneByIdOrSlugQuery, [
 				id,

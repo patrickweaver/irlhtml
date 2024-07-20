@@ -53,14 +53,14 @@ export async function getSlug(id: string, title: string | null) {
 	return slug;
 }
 
-function render(data: HtmlPageDb): HtmlPage {
+export function render(data: HtmlPageDb): HtmlPage {
 	const title = getPageTitleFromSource(data?.source_code) ?? "";
 	return {
 		...data,
 		title,
 		date_created: new Date(data.date_created),
 		date_updated: new Date(data.date_updated),
-		slug: data?.slug ?? data.id,
+		slug: data.slug,
 		author: data?.author ?? null,
 	};
 }
