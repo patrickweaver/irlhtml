@@ -153,20 +153,33 @@ describe("page", () => {
 
 	describe("del", () => {
 		test("should successfully run del query", async () => {
-			mockedDb.run.mockResolvedValue(true);
 			const id = "abc-123";
-			const result = await del({ id });
+			mockedDb.all.mockResolvedValueOnce([{ id }]);
+			mockedDb.run.mockResolvedValue(true);
+			const result = await del({ idOrSlug: id });
 			expect(result).toBe(true);
-			expect(mockedDb.run).toHaveBeenLastCalledWith(delQuery, [id]);
+			expect(mockedDb.run).toHaveBeenLastCalledWith(delQuery, [id, id]);
+		});
+
+		test("should throw error when does not exist del query", async () => {
+			const id = "abc-123";
+			mockedDb.run.mockResolvedValueOnce(null);
+			await expect(del({ idOrSlug: id })).rejects.toThrow("Not found");
+			expect(mockedDb.all).toHaveBeenLastCalledWith(getOneByIdOrSlugQuery, [
+				id,
+				id,
+			]);
+			expect(mockedDb.run).not.toHaveBeenCalled();
 		});
 
 		test("should handle error for failed del query", async () => {
 			const error = "Test error";
+			const id = "abc-123";
+			mockedDb.all.mockResolvedValueOnce([{ id }]);
 			mockedDb.run.mockImplementationOnce(() =>
 				Promise.reject(new Error(error)),
 			);
-			const id = "abc-123";
-			await expect(del({ id })).rejects.toThrow(error);
+			await expect(del({ idOrSlug: id })).rejects.toThrow(error);
 		});
 	});
 });
