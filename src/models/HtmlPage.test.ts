@@ -83,6 +83,10 @@ describe("HtmlPage", () => {
 			expect(mockedPage.getOne).toHaveBeenNthCalledWith(2, {
 				idOrSlug: "test-title",
 			});
+			expect(mockedPage.getOne).toHaveBeenNthCalledWith(3, {
+				idOrSlug: "abcd",
+			});
+			expect(mockedPage.getOne).toHaveBeenCalledTimes(3);
 		});
 
 		test("should return slug from id when title is null", async () => {
