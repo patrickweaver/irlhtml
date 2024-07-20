@@ -3,7 +3,7 @@ import { png } from "../../tests/test-image-files/imageFileData";
 import { Model, getOpenAiMessages, openAiOcr } from "./openAi";
 import { PROMPT } from "../util/constants";
 import OpenAI from "openai";
-import { OcrTypes } from "../types/Ocr";
+import { OcrErrorType, OcrTypes } from "../types/Ocr";
 
 jest.mock("openai", () => {
 	const mockCreate = jest.fn();
@@ -70,6 +70,30 @@ describe("openAiOcr", () => {
 		await expect(
 			openAiOcr(png.filePath, OcrTypes.GOOGLE_VISION),
 		).rejects.toThrow("Invalid OCR type for OpenAI");
+	});
+
+	test("Should return not success when response does not contain tetx", async () => {
+		const mimeType = png.mimeType;
+		const mockResponse = {
+			choices: [{ message: {} }],
+		};
+		mockCreate.mockResolvedValue(mockResponse);
+		const ocrText = await openAiOcr(png.filePath);
+
+		expect(openAi!.chat!.completions.create).toHaveBeenCalledWith({
+			model: Model.GPT_4_O,
+			messages: getOpenAiMessages(png.content, mimeType),
+			max_tokens: 300,
+		});
+
+		expect(ocrText).toEqual({
+			ocrType: OcrTypes.OPEN_AI_GPT_4_O,
+			success: false,
+			error: {
+				type: OcrErrorType.EMPTY_RESULT,
+				message: "No text found",
+			},
+		});
 	});
 });
 

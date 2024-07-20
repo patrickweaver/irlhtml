@@ -35,14 +35,6 @@ export async function runOcr(imagePath: string, ocrType = DEFAULT_OCR_TYPE) {
 	const modifiedHtml = fixCommonOcrErrors(result?.text ?? "");
 	const sanitizedHtml = sanitizeHtml(modifiedHtml);
 
-	if (process.env.NODE_ENV === "development") {
-		console.log({
-			ocrHtml,
-			modifiedHtml,
-			sanitizedHtml,
-		});
-	}
-
 	return {
 		...result,
 		text: OcrComments[ocrType] + sanitizedHtml,
