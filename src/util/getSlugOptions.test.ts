@@ -13,7 +13,7 @@ describe("getSlugOptions", () => {
 	});
 
 	test("should suggest correct options for multi word title up to limit", () => {
-		const result = getSlugOptions("My Fun Website Pages");
+		const result = getSlugOptions("My Fun Website Extravaganza");
 		expect(result).toEqual(["my", "my-fun", "my-fun-website"]);
 	});
 
