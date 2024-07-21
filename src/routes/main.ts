@@ -11,6 +11,7 @@ import * as HtmlPage from "../models/HtmlPage";
 import { PROMPT } from "../util/constants";
 import { OcrTypes } from "../types/Ocr";
 import getPageTitleFromSource from "../util/getPageTitleFromSource";
+import { log } from "../util/log";
 
 const router = express.Router();
 const upload = multer({ dest: process.env.IMAGES_PATH });
@@ -93,7 +94,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 			try {
 				fs.unlinkSync(imagePath);
 			} catch (err) {
-				console.log("error deleting " + imagePath + ": " + err);
+				log("error deleting " + imagePath + ": " + err);
 			}
 		}
 
@@ -103,11 +104,10 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 
 		await page.insert({ id, htmlContent, slug, author });
 		const row = await page.getOne({ idOrSlug: slug });
-		console.log({ slug, row });
 		if (!row?.id) throw new Error("Upload failed");
 		res.redirect(`/pages/${row.slug}`);
 	} catch (error) {
-		console.log({ error });
+		log({ error });
 		return errorHandler(req, res, error, 500, { ..._r });
 	}
 });

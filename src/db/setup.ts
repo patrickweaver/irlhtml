@@ -1,6 +1,7 @@
+import { log } from "../util/log";
 import { run } from "./index";
 const checkClear = () => process.env.CLEAR_ALL_ROWS === "TRUE";
-console.log("Clear:", checkClear(), `(${process.env.CLEAR_ALL_ROWS})`);
+log("Clear:", checkClear(), `(${process.env.CLEAR_ALL_ROWS})`);
 
 export const successMessage = "Tables created successfully";
 
@@ -21,14 +22,14 @@ export const clearQuery = `
 
 export default async (dbExec: typeof run) => {
 	if (process.env.ENVIRONMENT === "production") return;
-	console.log(
+	log(
 		`Running db setup on ${process.env?.ENVIRONMENT ?? "unknown"} environment`,
 	);
 	try {
 		if (checkClear()) await dbExec(clearQuery);
 		await dbExec(schema);
-		console.log(successMessage);
+		log(successMessage);
 	} catch (error) {
-		console.log(String(error));
+		log(String(error));
 	}
 };

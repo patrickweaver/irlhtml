@@ -8,6 +8,7 @@ import * as page from "../db/page";
 import * as HtmlPage from "../models/HtmlPage";
 import { OcrTypes } from "../types/Ocr";
 import getPageTitleFromSource from "../util/getPageTitleFromSource";
+import { log } from "../util/log";
 
 if (!process.env.IMAGES_PATH) process.exit(1);
 
@@ -43,7 +44,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 			try {
 				fs.unlinkSync(imagePath);
 			} catch (err) {
-				console.log("error deleting " + imagePath + ": " + err);
+				log("error deleting " + imagePath + ": " + err);
 			}
 		}
 

@@ -1,6 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
 import request from "supertest";
-import { Express } from "express";
 import app from "../app";
 import DATABASE_PATH from "../db/dbPath";
 import sqlite3 from "sqlite3";
@@ -142,6 +141,13 @@ describe("Rendered view routes", () => {
 			expect(response.text).toContain(
 				'<span aria-hidden="true">❇️ </span>Submit<span aria-hidden="true"> ❇️</span>',
 			);
+		});
+
+		test("redirects to /new", async () => {
+			await request(app)
+				.get("/pages/new")
+				.expect(302)
+				.expect("Location", "/new");
 		});
 	});
 

@@ -62,8 +62,8 @@ describe("apiErrorHandler", () => {
 			process.env = originalEnv;
 		});
 
-		test("should log in development env", () => {
-			process.env.NODE_ENV = "development";
+		test("should log in debug mode", () => {
+			process.env.DEBUG = "TRUE";
 			const errorMessage = "Test error";
 			const status = 400;
 
@@ -125,8 +125,8 @@ describe("errorHandler", () => {
 			process.env = originalEnv;
 		});
 
-		test("should log in development env", () => {
-			process.env.NODE_ENV = "development";
+		test("should log in debug mode", () => {
+			process.env.DEBUG = "TRUE";
 			const errorMessage = "Test error";
 			const status = 400;
 

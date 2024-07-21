@@ -20,7 +20,7 @@ describe("dbPath", () => {
 			process.env = originalEnv;
 		});
 
-		test("should log in development env", async () => {
+		test("should use process.env for db path", async () => {
 			const overrideDbPath = "./.data/test-db-override.sqlite3";
 			process.env.DATABASE_PATH = overrideDbPath;
 			dbPath = (await import("./dbPath")).default;

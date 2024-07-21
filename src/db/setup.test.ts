@@ -1,8 +1,9 @@
 import { describe, expect, test } from "@jest/globals";
 import setup, { successMessage, schema, clearQuery } from "./setup";
+import * as Log from "../util/log";
 
 describe("setup", () => {
-	console.log = jest.fn();
+	const logSpy = jest.spyOn(Log, "log");
 	const mockedRun = jest.fn();
 
 	test("should run setup query without clearing when not set to clear", async () => {
@@ -10,7 +11,7 @@ describe("setup", () => {
 		expect(mockedRun).toHaveBeenCalledTimes(1);
 		expect(mockedRun).not.toHaveBeenCalledWith(clearQuery);
 		expect(mockedRun).toHaveBeenCalledWith(schema);
-		expect(console.log).toHaveBeenCalledWith(successMessage);
+		expect(logSpy).toHaveBeenCalledWith(successMessage);
 	});
 
 	describe("clear set to on", () => {
@@ -26,7 +27,7 @@ describe("setup", () => {
 			expect(mockedRun).toHaveBeenCalledTimes(2);
 			expect(mockedRun).toHaveBeenCalledWith(clearQuery);
 			expect(mockedRun).toHaveBeenCalledWith(schema);
-			expect(console.log).toHaveBeenCalledWith(successMessage);
+			expect(logSpy).toHaveBeenCalledWith(successMessage);
 		});
 	});
 
@@ -35,6 +36,6 @@ describe("setup", () => {
 			Promise.reject(new Error("DB error")),
 		);
 		await setup(mockedRun);
-		expect(console.log).toHaveBeenCalledWith("Error: DB error");
+		expect(logSpy).toHaveBeenCalledWith("Error: DB error");
 	});
 });
