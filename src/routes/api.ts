@@ -8,6 +8,7 @@ import * as page from "../db/page";
 import * as HtmlPage from "../models/HtmlPage";
 import { OcrTypes } from "../types/Ocr";
 import getPageTitleFromSource from "../util/getPageTitleFromSource";
+import { log } from "../util/log";
 
 if (!process.env.IMAGES_PATH) process.exit(1);
 
@@ -43,7 +44,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 			try {
 				fs.unlinkSync(imagePath);
 			} catch (err) {
-				console.log("error deleting " + imagePath + ": " + err);
+				log("error deleting " + imagePath + ": " + err);
 			}
 		}
 
@@ -85,7 +86,7 @@ router.delete("/pages/:id", async (req, res) => {
 		const secret = req.query?.secret;
 		if (secret !== process.env.SECRET)
 			return apiErrorHandler(req, res, "Invalid secret", 401);
-		await page.del({ id: req.params.id });
+		await page.del({ idOrSlug: req.params.id });
 		return res.status(200).json({ status: "deleted" });
 	} catch (error) {
 		return apiErrorHandler(req, res, error);

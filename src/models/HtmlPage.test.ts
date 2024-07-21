@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { getOne, getSlug, index } from "./HtmlPage";
+import { getOne, getSlug, index, render } from "./HtmlPage";
 import * as page from "../db/page";
 import {
 	testData1,
@@ -72,11 +72,21 @@ describe("HtmlPage", () => {
 			expect(result).toEqual("test-title");
 		});
 
-		test("should return slug from id when all candidates match another slug", async () => {
+		test("should return slug from id when all title candidates match another slug", async () => {
 			mockedPage.getOne.mockResolvedValueOnce(testData3);
 			mockedPage.getOne.mockResolvedValueOnce(testData2);
 			const result = await getSlug("abcd-1234", "Test Title");
 			expect(result).toEqual("abcd");
+			expect(mockedPage.getOne).toHaveBeenNthCalledWith(1, {
+				idOrSlug: "test",
+			});
+			expect(mockedPage.getOne).toHaveBeenNthCalledWith(2, {
+				idOrSlug: "test-title",
+			});
+			expect(mockedPage.getOne).toHaveBeenNthCalledWith(3, {
+				idOrSlug: "abcd",
+			});
+			expect(mockedPage.getOne).toHaveBeenCalledTimes(3);
 		});
 
 		test("should return slug from id when title is null", async () => {
@@ -103,6 +113,18 @@ describe("HtmlPage", () => {
 			mockedPage.getOne.mockResolvedValueOnce(null);
 			const result = await getSlug("abc-123", null);
 			expect(result).toEqual("abc-1");
+		});
+	});
+
+	describe("render", () => {
+		test("should render with title", () => {
+			const result = render(testData2);
+			expect(result.title).toBe("Test Title");
+		});
+
+		test("should render without author when no author", () => {
+			const result = render({ ...testData1, author: null });
+			expect(result.author).toBe(null);
 		});
 	});
 });

@@ -1,6 +1,7 @@
 import axios from "axios";
 import base64ImageFromFile from "../util/base64ImageFromFile";
 import { OcrResponse, OcrTypes } from "../types/Ocr";
+import { log } from "../util/log";
 const gcpApiUrl = "https://vision.googleapis.com/v1/images:annotate?";
 const GCP_API_KEY = process.env.GCP_API_KEY;
 
@@ -27,7 +28,7 @@ export async function googleVisionOcr(imageUrl: string): Promise<OcrResponse> {
 		gvGuess = response.data.responses?.[0]?.fullTextAnnotation?.text ?? "";
 		gvGuess = gvGuess.replaceAll('"', "'");
 	} catch (error) {
-		console.log(error);
+		log(error);
 		throw Error("Error making request to Google Vision");
 	}
 	if (gvGuess) {

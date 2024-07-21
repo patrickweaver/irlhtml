@@ -79,6 +79,36 @@ describe("claudeOcr", () => {
 			"Invalid mimeType",
 		);
 	});
+
+	test("Should throw error on response with no text property", async () => {
+		const mockResponse = {
+			content: [{}],
+		};
+		mockCreate.mockResolvedValueOnce(mockResponse);
+		expect(await anthropicClaudeOcr(png.filePath)).toEqual({
+			ocrType: OcrTypes.ANTHROPIC_CLAUDE,
+			success: false,
+			error: {
+				type: OcrErrorType.UNKNOWN,
+				message: "Invalid response from Claude",
+			},
+		});
+	});
+
+	test("Should throw error on response with empty text property", async () => {
+		const mockResponse = {
+			content: [{ text: "" }],
+		};
+		mockCreate.mockResolvedValueOnce(mockResponse);
+		expect(await anthropicClaudeOcr(png.filePath)).toEqual({
+			ocrType: OcrTypes.ANTHROPIC_CLAUDE,
+			success: false,
+			error: {
+				type: OcrErrorType.UNKNOWN,
+				message: "Invalid response from Claude",
+			},
+		});
+	});
 });
 
 describe("getClaudeMessages", () => {

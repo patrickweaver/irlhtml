@@ -15,6 +15,7 @@ import * as page from "../db/page";
 import { clearPagesData } from "../../tests/util/clearPagesData";
 import setup from "../db/setup";
 import { run } from "../db";
+import router from "./api";
 
 const db = new (sqlite3.verbose().Database)(DATABASE_PATH, callback);
 jest.mock("tesseract.js", () => ({ createWorker: jest.fn() }));
@@ -65,12 +66,14 @@ describe("API routes", () => {
 			const insertSpy = jest
 				.spyOn(page, "insert")
 				.mockRejectedValue(new Error("DB error"));
+			const routeSpy = jest.spyOn(router, "post");
 			const response = await request(app)
 				.post("/api/new")
 				.query({ ocrType: "TESSERACT" })
 				.attach("html-image", "tests/test-image-files/test.jpeg");
 			expect(response.statusCode).toEqual(500);
 			expect(response.body.error).toEqual("Server error");
+			expect(routeSpy).toThrow();
 			insertSpy.mockRestore();
 		});
 

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { defaultRenderObj as _r, OCR_ERROR_IMAGE } from "../util/constants";
+import { log } from "../util/log";
 
 export function apiErrorHandler(
 	req: Request,
@@ -7,10 +8,8 @@ export function apiErrorHandler(
 	error: unknown,
 	status?: number,
 ) {
-	if (process.env.NODE_ENV === "development") {
-		console.log(error);
-		console.log({ url: req.url.slice(0, 5) });
-	}
+	log(error);
+	log({ url: req.url.slice(0, 5) });
 	if (status && status >= 400 && status < 500) {
 		return res.status(status).json({ error: String(error) });
 	}
@@ -27,10 +26,8 @@ export function errorHandler(
 	/* eslint-disable  @typescript-eslint/no-explicit-any */
 	params: any = {},
 ) {
-	if (process.env.NODE_ENV === "development") {
-		console.log(error);
-		console.log({ url: req.url.slice(0, 5) });
-	}
+	log(error);
+	log({ url: req.url.slice(0, 5) });
 
 	const viewParams = params;
 	if (error?.message === OCR_ERROR_IMAGE) {

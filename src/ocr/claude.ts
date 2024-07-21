@@ -21,7 +21,8 @@ const ClaudeValidMimeTypesEnum = z.enum([
 type ClaudeValidMimeType = z.infer<typeof ClaudeValidMimeTypesEnum>;
 
 const noCreditSubstring = "Your credit balance is too low";
-const OCR_FAILURE_TEXT = "<h1>OCR Error</h1><p>Image processing failed</p>";
+const OCR_FAILURE_TEXT: string =
+	"<h1>OCR Error</h1><p>Image processing failed</p>";
 
 export function validateMimeType(mimeType: string): ClaudeValidMimeType | null {
 	const result = ClaudeValidMimeTypesEnum.safeParse(mimeType);
@@ -48,17 +49,14 @@ export async function anthropicClaudeOcr(
 			messages: getClaudeMessages(content, mimeType),
 		});
 		const claudeContent: ContentBlock = msg?.content?.[0];
-		if (claudeContent && "text" in claudeContent) {
-			const claudeHtml = claudeContent?.text ?? OCR_FAILURE_TEXT;
+		if (claudeContent && "text" in claudeContent && !!claudeContent.text) {
+			const claudeHtml = claudeContent.text;
 			return {
 				ocrType: OcrTypes.ANTHROPIC_CLAUDE,
 				success: true,
 				text: claudeHtml,
 			};
 		} else {
-			if (process.env.NODE_ENV === "development") {
-				console.log({ claudeContent });
-			}
 			throw new Error("Invalid response from Claude");
 		}
 	} catch (error: any) {

@@ -1,10 +1,11 @@
+import { log } from "../util/log";
 import DATABASE_PATH from "./dbPath";
 export const successMessage = `SQLite Database at ${DATABASE_PATH} opened successfully.`;
 
 export default (error: unknown) => {
 	if (error) {
-		console.log(String(error));
-		return;
+		log(String(error));
+	} else {
+		log(successMessage);
 	}
-	console.log(successMessage);
 };

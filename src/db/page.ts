@@ -48,6 +48,7 @@ export const getOneByIdOrSlugQuery = `
 			id = ?
 			OR slug = ?
 		)
+		;
 	`;
 export async function getOne({ idOrSlug }: { idOrSlug: string }): Promise<{
 	id: string;
@@ -66,6 +67,7 @@ export const getAllQuery = `
 		FROM Pages
 		ORDER BY date_created
 		DESC
+		;
 	`;
 export async function getAll(): Promise<
 	{
@@ -81,9 +83,14 @@ export async function getAll(): Promise<
 }
 
 export const delQuery = `
-			DELETE FROM Pages WHERE id = ?
+			DELETE FROM Pages
+			WHERE id = ?
+			OR slug = ?
+			;
 		`;
-export async function del({ id }: { id: string }) {
-	await db.run(delQuery, [id]);
+export async function del({ idOrSlug }: { idOrSlug: string }) {
+	const row = await getOne({ idOrSlug });
+	if (!row) throw new Error("Not found");
+	await db.run(delQuery, [idOrSlug, idOrSlug]);
 	return true;
 }

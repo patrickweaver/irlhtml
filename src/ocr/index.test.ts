@@ -119,6 +119,22 @@ describe("runOcr", () => {
 		});
 	});
 
+	test("Should handle empty OpenAI OCR response without error message", async () => {
+		const errorResponse = {
+			ocrType: OcrTypes.OPEN_AI_GPT_4_O,
+			success: false,
+			error: {
+				type: OcrErrorType.EMPTY_RESULT,
+			},
+		};
+		mockedOpenAiOcr.mockResolvedValueOnce(errorResponse);
+		const result = await runOcr(png.filePath, OcrTypes.OPEN_AI_GPT_4_O);
+		expect(result).toEqual({
+			...errorResponse,
+			text: "<h1>OCR Error</h1><p>Error running OCR</p>",
+		});
+	});
+
 	test("Should use Claude OCR when passed option", async () => {
 		const result = await runOcr(png.filePath, OcrTypes.ANTHROPIC_CLAUDE);
 		expect(result).toEqual({
