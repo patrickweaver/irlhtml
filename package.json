@@ -1,6 +1,6 @@
 {
   "name": "irlhtml",
-  "version": "0.6.2",
+  "version": "1.0.0",
   "description": "A hosting service for images of HTML files",
   "type": "module",
   "main": "server.js",
