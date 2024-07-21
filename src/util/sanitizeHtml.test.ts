@@ -21,4 +21,14 @@ describe("sanitizeHtml", () => {
 			`<body><code style="display: none" data="test">alert("test")</code ></body>`,
 		);
 	});
+
+	test("Converts event handlers to data attributes", () => {
+		expect(
+			sanitizeHtml(
+				`<body><button onClick="alert('test')">Click Me</button></body>`,
+			),
+		).toEqual(
+			`<body><button data-sanitized="alert('test')">Click Me</button></body>`,
+		);
+	});
 });
