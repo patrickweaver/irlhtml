@@ -86,7 +86,7 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 		if (!result.success) {
 			return errorHandler(req, res, null, 503, {
 				..._r,
-				errorMessage: ocrType + " " + result.error?.message ?? "OCR failed",
+				errorMessage: result.error?.message ? ocrType + " " + result.error.message : "OCR failed",
 			});
 		}
 

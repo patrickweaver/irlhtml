@@ -2,6 +2,7 @@ export const defaultRenderObj = {
 	idOrSlug: null,
 	title: "",
 	errorMessage: null,
+	publishingEnabled: String(process.env.PUBLISHING_ENABLED).toLowerCase() === 'true' || false
 };
 
 // Only constraint is less than 36 so it is unique from any UUID
