@@ -107,7 +107,10 @@
 			>
 		</div>
 	</fieldset>
-	<button type="submit" class="submit-button">
+	<% if (publishingEnabled !== 'true') { %>
+	<p class="notice">IRL HTML is now closed. New HTML pages can no longer be created.</p>
+<% } %>
+	<button type="submit" class="submit-button" <% if (publishingEnabled !== 'true') { %> disabled <% } %> >
 		<span aria-hidden="true">❇️ </span>Submit<span aria-hidden="true"> ❇️</span>
 	</button>
 </form>

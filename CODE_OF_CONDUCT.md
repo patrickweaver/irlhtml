@@ -45,13 +45,13 @@ If a community member engages in unacceptable behavior, the community organizers
 
 ## 5. Reporting Guidelines
 
-If you are subject to or witness unacceptable behavior, or have any other concerns, please notify a community organizer as soon as possible. `hello.patrickw@gmail.com`.
+If you are subject to or witness unacceptable behavior, or have any other concerns, please notify a community organizer as soon as possible.
 
 Additionally, community organizers are available to help community members engage with local law enforcement or to otherwise help those experiencing unacceptable behavior feel safe. In the context of in-person events, organizers will also provide escorts as desired by the person experiencing distress.
 
 ## 6. Addressing Grievances
 
-If you feel you have been falsely or unfairly accused of violating this Code of Conduct, you should notify `hello.patrickw@gmail.com` with a concise description of your grievance.
+If you feel you have been falsely or unfairly accused of violating this Code of Conduct, you should notify the author with a concise description of your grievance.
 
 ## 7. Scope
 
@@ -61,7 +61,7 @@ This code of conduct and its related procedures also applies to unacceptable beh
 
 ## 8. Contact info
 
-`hello.patrickw@gmail.com`
+GitHub issues
 
 ## 9. License and attribution
 
