@@ -23,6 +23,7 @@
     "sqlite3": "^5.1.7",
     "supertest": "^7.0.0",
     "tesseract.js": "^5.1.0",
+    "ts-node": "^10.9.2",
     "uuid": "^10.0.0",
     "vite-node": "^0.34.7",
     "zod": "^3.23.8"
