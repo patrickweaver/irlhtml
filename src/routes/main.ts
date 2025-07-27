@@ -8,7 +8,7 @@ import * as page from "../db/page";
 import { defaultRenderObj as _r } from "../util/constants";
 import { error404, errorHandler } from "./errorHandlers";
 import * as HtmlPage from "../models/HtmlPage";
-import { PROMPT } from "../util/constants";
+import { PROMPT } from "../util/prompt";
 import { OcrTypes } from "../types/Ocr";
 import getPageTitleFromSource from "../util/getPageTitleFromSource";
 import { log } from "../util/log";
@@ -16,7 +16,19 @@ import { log } from "../util/log";
 const router = express.Router();
 const upload = multer({ dest: process.env.IMAGES_PATH });
 
-if (!process.env.IMAGES_PATH) process.exit(1);
+if (process.env.NODE_ENV === "production") {
+	console.log("NODE_ENV: production");
+	if (!process.env.SECRET) {
+		console.error("Error:");
+		console.error("Environment variables not set, see .env.example.");
+		process.exit(1);
+	}
+}
+
+if (!process.env.IMAGES_PATH) {
+	console.log(`Error:\n\nIMAGES_PATH not set in .env\nExiting process`);
+	process.exit(1);
+}
 
 router.get("/", async function (req, res) {
 	try {
@@ -54,8 +66,7 @@ router.get("/new", async function (req, res) {
 			..._r,
 			title: "New Page",
 			llmPrompt: PROMPT,
-			contactEmail:
-				process.env.CONTACT_EMAIL ?? "[Error: Email not configured]",
+			contactEmail: process.env?.CONTACT_EMAIL || null,
 		});
 	} catch (error) {
 		return errorHandler(req, res, error, 500, { ..._r });
@@ -86,7 +97,9 @@ router.post("/new", upload.single("html-image"), async (req, res) => {
 		if (!result.success) {
 			return errorHandler(req, res, null, 503, {
 				..._r,
-				errorMessage: result.error?.message ? ocrType + " " + result.error.message : "OCR failed",
+				errorMessage: result.error?.message
+					? ocrType + " " + result.error.message
+					: "OCR failed",
 			});
 		}
 

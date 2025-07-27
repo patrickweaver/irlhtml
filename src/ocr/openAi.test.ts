@@ -1,7 +1,7 @@
 import { describe, expect, test } from "@jest/globals";
 import { png } from "../../tests/test-image-files/imageFileData";
 import { Model, getOpenAiMessages, openAiOcr } from "./openAi";
-import { PROMPT } from "../util/constants";
+import { PROMPT } from "../util/prompt";
 import OpenAI from "openai";
 import { OcrErrorType, OcrTypes } from "../types/Ocr";
 

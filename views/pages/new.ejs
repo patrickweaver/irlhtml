@@ -18,12 +18,14 @@
 		<summary>LLM Prompt</summary>
 		<em><%= llmPrompt %></em>
 	</details>
-	<p>
-		I have added $5 to both the Claude and OpenAI APIs, not sure how long it
-		will last. If the project is out of credits, or you would like to contribute
-		to buy more credits email me at
-		<a href="mailto:<%= contactEmail %>"><%= contactEmail %></a>.
-	</p>
+	<% if(contactEmail) { %>
+		<p>
+			I have added $5 to both the Claude and OpenAI APIs, not sure how long it
+			will last. If the project is out of credits, or you would like to contribute
+			to buy more credits email me at
+			<a href="mailto:<%= contactEmail %>"><%= contactEmail %></a>.
+		</p>
+	<% } %>
 </details>
 
 <h3>Code of Conduct</h3>

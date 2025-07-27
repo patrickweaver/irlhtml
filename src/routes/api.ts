@@ -10,7 +10,19 @@ import { OcrTypes } from "../types/Ocr";
 import getPageTitleFromSource from "../util/getPageTitleFromSource";
 import { log } from "../util/log";
 
-if (!process.env.IMAGES_PATH) process.exit(1);
+if (process.env.NODE_ENV === "production") {
+	console.log("NODE_ENV: production");
+	if (!process.env.SECRET) {
+		console.error("Error:");
+		console.error("Environment variables not set, see .env.example.");
+		process.exit(1);
+	}
+}
+
+if (!process.env.IMAGES_PATH) {
+	console.log(`Error:\n\nIMAGES_PATH not set in .env\nExiting process`);
+	process.exit(1);
+}
 
 const BASE_URL = process.env.BASE_URL;
 
